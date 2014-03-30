@@ -166,7 +166,6 @@
 		5071FEA2164A9DD400ED7537 /* ConfirmationButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConfirmationButton.m; path = Shared/ConfirmationButton.m; sourceTree = "<group>"; };
 		5071FEA4164AA3C400ED7537 /* confirmation-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "confirmation-button.png"; sourceTree = "<group>"; };
 		5071FEA5164AA3C400ED7537 /* confirmation-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "confirmation-button@2x.png"; sourceTree = "<group>"; };
-		507489FC15178B4200F28B98 /* To Do List.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = "To Do List.rtf"; sourceTree = "<group>"; };
 		5082648016C4071E00AFECFF /* info-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "info-button.png"; sourceTree = "<group>"; };
 		5082648116C4071E00AFECFF /* info-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "info-button@2x.png"; sourceTree = "<group>"; };
 		5082648416C4133900AFECFF /* quiz-field.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "quiz-field.png"; sourceTree = "<group>"; };
@@ -397,7 +396,6 @@
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				507489FC15178B4200F28B98 /* To Do List.rtf */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
