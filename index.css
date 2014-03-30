@@ -1,0 +1,134 @@
+/* iPhone */
+@media screen and (device-width:320px) and (device-height:568px){/* For iPhone 5, 320px width and 568px height */
+	#content {
+		min-height:484px;/* 396px = 568px - 20px (status bar) - 44px (navigation bar) - 2 * 10px (padding) */
+	}
+}
+
+@media screen and (device-width:320px) and (device-height:480px) {/* For iPhone, 320px width and 480px height */
+	#content {
+		min-height:396px;/* 396px = 480px - 20px (status bar) - 44px (navigation bar) - 2 * 10px (padding) */
+	}
+}
+
+/* iPad */
+@media screen and (width:448px) {/* For iPad in portrait, between 321px and 448px (768px - 320px)) */
+	#content {
+		min-height:940px;/* 1024px - 20px (status bar) - 44px (navigation bar) - 2 * 10px (padding) */
+		
+		border-left:1px solid #e5e5e5;
+	}
+}
+
+@media screen and (width:704px) {/* For iPad in landscape, larger than 704px (1024px - 320px) */
+	#content {
+		min-height:684px;/* 768px - 20px (status bar) - 44px (navigation bar) - 2 * 10px (padding) */
+		
+		border-left:1px solid #e5e5e5;
+	}
+}
+
+@media screen and (width:1024px) {/* For iPad in landscape in fullscreen, larger than 600px */
+	#content {
+		min-height:728px;/* 768px - 20px (status bar) - 2 * 10px (padding) */
+		
+		border-left:1px solid #e5e5e5;
+	}
+}
+
+body {
+	font-family:"Helvetica";
+	font-size:12pt;
+	color:#555555;
+	
+	margin:0px;
+	margin-top:600px;
+	margin-bottom:600px;
+	
+	background-color:#e5e5e5;
+	
+	width:100%;
+}
+
+#content {
+	background-color:#fff;
+	
+	-webkit-box-shadow:#777 0px 0px 5px;
+	box-shadow:#777 0px 0px 5px;
+	
+	padding:10px;
+}
+
+i.section {
+	color:#aaa;
+}
+
+span.section {
+	font-family:"Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+	font-weight:200;
+	
+	color:#aaa;
+}
+
+.verb-form {
+	font-weight:bold;
+	font-size:20px;
+	
+	padding:15px;
+}
+
+.verb-definition, .verb-example, .verb-composition, .verb-notes  {
+	font-weight:bold;
+	font-size:14px;
+	
+	padding:15px;
+}
+
+hr {
+	position:relative;
+	bottom:10px;
+	width:70%;
+	border:0px;
+	border-top:1px solid #aaa;
+}
+
+a[href="#listen"] {
+	
+	position:absolute;
+	top:400px;
+	right:8px;
+}
+
+a[href="#listen"]:hover {
+	opacity:0.6;
+}
+
+a[href="#help"] {
+	position:relative;
+	width:0px;
+	height:0px;
+	
+	float:right;
+	top:-42px; /* 34px (size of the image) + 8px margin */
+	right:8px;
+	
+	padding:17px;
+	background:url("help-button.png");/* Normal definition*/
+	background:url("help-button@2x.png");/* Retina definition */
+	background-size:34px 34px;
+	
+	-webkit-touch-callout:none;/* Don't show an alert on long press */
+	
+	-webkit-tap-highlight-color:rgba(0,0,0,0.4); /* Don't show selection highlight */
+}
+
+a[href="#help"]:hover {
+	
+	border-radius:17px;
+	background-color:#ccc;
+	
+	opacity:0.6;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio:2) {
+}

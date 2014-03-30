@@ -1,0 +1,18 @@
+//
+// Prefix header for all source files of the 'iVerb' target in the 'iVerb' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <UIKit/UIKit.h>
+#endif
+
+#define kTopMargin 600.
+
+#if TARGET_IPHONE_SIMULATOR
+#define NSDebugLog(format, ...)  NSLog(format, ##__VA_ARGS__)
+#else
+#define NSDebugLog(format, ...)
+#endif
+
+#define TARGET_IS_IPAD() (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
