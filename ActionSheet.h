@@ -20,6 +20,7 @@ typedef enum _ActionSheetButtonType ActionSheetButtonType;
 }
 
 @property (nonatomic, assign) ActionSheetButtonType type;
+@property (nonatomic, strong) UIColor * titleColor;
 
 @end
 

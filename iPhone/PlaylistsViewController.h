@@ -8,35 +8,26 @@
 
 #import <UIKit/UIKit.h>
 
+#import "IVTableViewController.h"
+
 #import "Playlist.h"
 
 #import "EditableTableViewCell.h"
 
 #import "ActionSheet.h"
 
-@interface PlaylistsViewController : UIViewController <UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource, EditableTableViewCellDelegate, ActionSheetDelegate, UIActionSheetDelegate>
+@interface PlaylistsViewController : IVTableViewController <UINavigationControllerDelegate, EditableTableViewCellDelegate, ActionSheetDelegate, UIActionSheetDelegate>
 {
-	IBOutlet UITableView * tableView;
-	
 	@private
 	NSArray * defaultPlaylists;
-	//NSArray * cellTitles;
 	NSArray * userPlaylists;
-	
-	NSInteger rowWithDeleteConfirmation;
 	
 	Playlist * selectedPlaylist;
 }
-
-@property (nonatomic, strong) IBOutlet UITableView * tableView;
 
 // Private
 - (void)reloadData;
 
 - (void)createNewListWithName:(NSString *)name;
-
-- (void)removeCell:(id)sender;
-- (void)cellsGestureRecognized:(UIGestureRecognizer *)recognizer;
-- (void)cellDidSwipe:(UITableViewCell *)cell;
 
 @end

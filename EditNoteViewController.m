@@ -8,7 +8,7 @@
 
 #import "EditNoteViewController.h"
 
-#import "UIBarButtonItem+addition.h"
+//#import "UIBarButtonItem+addition.h"
 
 @interface EditNoteViewController ()
 
@@ -31,11 +31,17 @@
 {
     [super viewDidLoad];
 	
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleDefault target:self action:@selector(cancelAction:)];
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDefault target:self action:@selector(doneAction:)];
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                            target:self
+                                                                            action:@selector(cancelAction:)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                           target:self
+                                                                                           action:@selector(doneAction:)];
 	
 	self.title = [NSString stringWithFormat:@"To %@", _verb.infinitif];
 	
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
 	_textView.text = _verb.note;
 	[_textView becomeFirstResponder];
 }
@@ -50,7 +56,7 @@
 
 - (IBAction)cancelAction:(id)sender
 {
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (IBAction)doneAction:(id)sender
@@ -63,10 +69,11 @@
 		[userDefaults setObject:_textView.text forKey:key];
 	else
 		[userDefaults removeObjectForKey:key];
+    [userDefaults synchronize];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResultDidReloadNotification" object:nil];
 	
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (BOOL)shouldAutorotate

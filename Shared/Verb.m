@@ -30,13 +30,13 @@
 	//request.fetchLimit = 1;
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
-	request.sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+	request.sortDescriptors = @[sortDescriptor];
 	
 	NSArray * verbs = [context executeFetchRequest:request
 												 error:NULL];
 	
 	if (verbs.count > 0)
-		return [verbs objectAtIndex:0];
+		return verbs[0];
 	
 	return nil;
 }
@@ -49,14 +49,14 @@
 - (BOOL)isBasicVerb
 {
 	/* "components" return the composition of the verb separated by dot ("."), for non-composed (basic) verbs, "components" have the same value than infinitif */
-	return ([self.components componentsSeparatedByString:@"."].count == 1);
+	return (!self.components || [self.components componentsSeparatedByString:@"."].count == 1);
 }
 
 - (Playlist *)playlist
 {
 	NSSet * playlists = [self mutableSetValueForKey:@"playlists"];
 	if (playlists.count > 0)
-		return [[playlists allObjects] objectAtIndex:0];
+		return [playlists allObjects][0];
 	
 	return nil;
 }

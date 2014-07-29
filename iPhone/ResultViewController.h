@@ -11,13 +11,16 @@
 #import <MessageUI/MessageUI.h>
 #import <AVFoundation/AVFoundation.h>
 
+#import "IVViewController.h"
+#import "IVWebView.h"
+
 #import "Playlist.h"
 #import "Verb.h"
 #import "Verb+additions.h"
 
 #import "ActionSheet.h"
 
-@interface ResultViewController : UIViewController <UIWebViewDelegate, UIActionSheetDelegate, ActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface ResultViewController : IVViewController <UIWebViewDelegate, UIActionSheetDelegate, ActionSheetDelegate, MFMailComposeViewControllerDelegate>
 {
 	AVAudioPlayer * player;
 }
@@ -25,7 +28,7 @@
 @property (nonatomic, strong) NSString * verbString;
 @property (nonatomic, strong) Verb * verb;
 
-@property (nonatomic, unsafe_unretained) IBOutlet UIWebView * webView;
+@property (nonatomic, unsafe_unretained) IBOutlet IVWebView * webView;
 
 @property (nonatomic, unsafe_unretained) IBOutlet UILabel * infinitiveLabel, * pastLabel, * participleLabel, * translationLabel;
 @property (nonatomic, unsafe_unretained) IBOutlet UIImageView * bookmarkImageView;

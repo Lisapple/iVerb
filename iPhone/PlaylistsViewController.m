@@ -18,7 +18,7 @@
 #import "ConfirmationButton.h"
 #import "MoreTableViewCell.h"
 
-#import "UIBarButtonItem+addition.h"
+//#import "UIBarButtonItem+addition.h"
 
 #import "Playlist+additions.h"
 
@@ -28,8 +28,6 @@
 #define kAlertMore 2345
 
 @implementation PlaylistsViewController
-
-@synthesize tableView;
 
 - (void)didReceiveMemoryWarning
 {
@@ -43,37 +41,35 @@
 
 - (void)viewDidLoad
 {
-	self.title = @"Verbs Lists";
-	self.navigationController.delegate = self;
+    self.clearsSelectionOnViewWillAppear = YES;
+    
+	self.title = @"Lists";
+	//self.navigationController.delegate = self;
 	
-	CGRect frame = CGRectMake(2., 0., 23. + 2. * 2, 23.);
-	UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+	CGRect frame = CGRectMake(0., 0., 23., 23.);
+	UIButton * button = [UIButton buttonWithType:UIButtonTypeInfoDark];
 	button.frame = frame;
-	[button setImage:[UIImage imageNamed:@"info-button"] forState:UIControlStateNormal];
+	//[button setImage:[UIImage imageNamed:@"info-button"] forState:UIControlStateNormal];
 	[button addTarget:self action:@selector(moreInfo:) forControlEvents:UIControlEventTouchUpInside];
-	
+	button.tintColor = self.view.window.tintColor;
+    
 	UIBarButtonItem * infoButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
 	self.navigationItem.leftBarButtonItem = infoButtonItem;
 	
-	self.navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
+	//self.navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
 	
-	tableView.delegate = self;
-	tableView.dataSource = self;
-	
-	UIEdgeInsets insets = UIEdgeInsetsMake(44., 0., 0., 0.);
-	tableView.contentInset = insets;
-	tableView.scrollIndicatorInsets = insets;
-	
+    /*
+     UIEdgeInsets insets = UIEdgeInsetsMake(44., 0., 0., 0.);
+     tableView.contentInset = insets;
+     tableView.scrollIndicatorInsets = insets;
+     */
+    
 	defaultPlaylists = [Playlist defaultPlaylists];
 	
 	SearchViewController * searchViewController = [[SearchViewController alloc] init];
 	searchViewController.playlist = [Playlist allVerbsPlaylist];
 	[self.navigationController pushViewController:searchViewController animated:NO];
 	
-	self.navigationItem.backBarButtonItem = [UIBarButtonItem backBarButtonItemWithTitle:@"Back"
-																				  style:UIBarButtonItemStyleDefault];
-	
-	rowWithDeleteConfirmation = -1;
 	[self reloadData];
 	
     [super viewDidLoad];
@@ -93,31 +89,23 @@
 - (IBAction)moreInfo:(id)sender
 {
 	NSDictionary * infoDictionary = [[NSBundle mainBundle] infoDictionary];
-	NSString * title = [NSString stringWithFormat:NSLocalizedString(@"iVerb %@\nCopyright © 2013, Lis@cintosh\n", nil), [infoDictionary objectForKey:@"CFBundleShortVersionString"]];
+	NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © 2014", infoDictionary[@"CFBundleShortVersionString"]];
 	
 	if (TARGET_IS_IPAD()) {
 		UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:title
 																  delegate:self
-														 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+														 cancelButtonTitle:@"Cancel"
 													destructiveButtonTitle:nil
-														 otherButtonTitles:
-									   NSLocalizedString(@"Feedback & Support", nil),
-									   /*NSLocalizedString(@"Send me an e-mail", nil),*/
-									   NSLocalizedString(@"Go to my website", nil),
-									   NSLocalizedString(@"See all my applications", nil), nil];
+														 otherButtonTitles: @"Feedback & Support", @"Go to my website", @"See all my application", nil];
 		actionSheet.tag = kAlertInfo;
 		[actionSheet showInView:self.view];
 		
 	} else {
 		ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:title
 															  delegate:self
-													 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+													 cancelButtonTitle:@"Cancel"
 												destructiveButtonTitle:nil
-													 otherButtonTitles:
-									 NSLocalizedString(@"Feedback & Support", nil),
-									 /*NSLocalizedString(@"Send me an e-mail", nil),*/
-									 NSLocalizedString(@"Go to my website", nil),
-									 NSLocalizedString(@"See all my applications", nil), nil];
+													 otherButtonTitles: @"Feedback & Support", @"Go to my website", @"See all my application", nil];
 		actionSheet.tag = kAlertInfo;
 		[actionSheet showInView:self.view];
 	}
@@ -138,10 +126,11 @@
 	[context save:NULL];
 }
 
+#if 0
 - (void)removeCell:(id)sender
 {
 	UITableViewCell * cell = (UITableViewCell *)[sender superview];
-	NSIndexPath * indexPath = [tableView indexPathForCell:cell];
+	NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
 	Playlist * playlist = [userPlaylists objectAtIndex:indexPath.row];
 	
 	/* Delete the playlist from Core Data */
@@ -150,14 +139,14 @@
 	[context save:NULL];
 	
 	/* Reload the TableView */
-	[tableView beginUpdates];
+	[self.tableView beginUpdates];
 	
-	[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-					 withRowAnimation:UITableViewRowAnimationFade];
+	[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                          withRowAnimation:UITableViewRowAnimationFade];
 	
 	userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
 	
-	[tableView endUpdates];
+	[self.tableView endUpdates];
 	
 	rowWithDeleteConfirmation = -1;
 }
@@ -170,7 +159,7 @@
 - (void)cellDidSwipe:(UITableViewCell *)cell
 {
 	if (rowWithDeleteConfirmation > -1) {
-		MoreTableViewCell * oldCell = (MoreTableViewCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:2]];
+		MoreTableViewCell * oldCell = (MoreTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:2]];
 		[[oldCell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
 		
 		Playlist * playlist = [userPlaylists objectAtIndex:rowWithDeleteConfirmation];
@@ -195,16 +184,17 @@
 					 }
 					 completion:NULL];
 	
-	rowWithDeleteConfirmation = [tableView indexPathForCell:cell].row;
+	rowWithDeleteConfirmation = [self.tableView indexPathForCell:cell].row;
 	((MoreTableViewCell *)cell).showsMoreButton = NO;
 }
+#endif
 
 - (void)reloadData
 {
 	userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
 	
-	[tableView reloadSections:[NSIndexSet indexSetWithIndex:2]
-			 withRowAnimation:UITableViewRowAnimationNone];
+	[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:2]
+                  withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (void)viewDidUnload
@@ -219,8 +209,8 @@
     [super viewWillAppear:animated];
 	
 	if (userPlaylists.count > 0) {
-		[tableView reloadSections:[NSIndexSet indexSetWithIndex:2]
-				 withRowAnimation:UITableViewRowAnimationNone];
+		[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:2]
+                      withRowAnimation:UITableViewRowAnimationNone];
 	}
 }
 
@@ -229,43 +219,44 @@
     [super viewDidAppear:animated];
 	
 	[Playlist setCurrentPlaylist:nil];
-	
-	NSIndexPath * selectedRows = [tableView indexPathForSelectedRow];
-	[tableView deselectRowAtIndexPath:selectedRows animated:YES];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-}
+/*
+ - (void)viewWillDisappear:(BOOL)animated
+ {
+ [super viewWillDisappear:animated];
+ }
+ 
+ - (void)viewDidDisappear:(BOOL)animated
+ {
+ [super viewDidDisappear:animated];
+ }
+ */
 
 - (void)editableCellDidBeginEditing:(EditableTableViewCell *)cell
 {
 	NSDebugLog(@"editableCellDidBeginEditing");
-	
-	UIEdgeInsets insets = UIEdgeInsetsMake(44., 0., 216., 0.);
-	tableView.contentInset = insets;
-	tableView.scrollIndicatorInsets = insets;
-	[tableView scrollToRowAtIndexPath:[tableView indexPathForCell:cell]
-					 atScrollPosition:UITableViewScrollPositionTop
-							 animated:YES];
+	/*
+     UIEdgeInsets insets = UIEdgeInsetsMake(44., 0., 216., 0.);
+     self.tableView.contentInset = insets;
+     self.tableView.scrollIndicatorInsets = insets;
+     */
+	[self.tableView scrollToRowAtIndexPath:[self.tableView indexPathForCell:cell]
+                          atScrollPosition:UITableViewScrollPositionTop
+                                  animated:YES];
 }
 
 - (void)editableCellDidEndEditing:(EditableTableViewCell *)cell
 {
 	NSDebugLog(@"editableCellDidEndEditing: %@", cell.fieldValue);
-	
-	UIEdgeInsets insets = UIEdgeInsetsMake(44., 0., 0., 0.);
-	tableView.contentInset = insets;
-	tableView.scrollIndicatorInsets = insets;
-	[tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-					 atScrollPosition:UITableViewScrollPositionTop
-							 animated:YES];
+	/*
+     UIEdgeInsets insets = UIEdgeInsetsMake(44., 0., 0., 0.);
+     self.tableView.contentInset = insets;
+     self.tableView.scrollIndicatorInsets = insets;
+     [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+     atScrollPosition:UITableViewScrollPositionTop
+     animated:YES];
+     */
 	
 	NSString * name = cell.fieldValue;
 	if (name.length > 0) {
@@ -274,7 +265,7 @@
 	}
 }
 
-#pragma mark UITableViewDataSource
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -299,20 +290,28 @@
 	static NSString * cellID = @"CellID";
 	if (indexPath.section == 0) {
 		
-		cell = (MyTableViewCell *)[aTableView dequeueReusableCellWithIdentifier:cellID];
+		cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
 		
-		if (!cell)
-			cell = [[MyTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+		if (!cell) {
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
 		
-		Playlist * playlist = [defaultPlaylists objectAtIndex:indexPath.row];
+		Playlist * playlist = defaultPlaylists[indexPath.row];
 		cell.textLabel.text = NSLocalizedString(playlist.name, nil);
+        
+        cell.detailTextLabel.text = (playlist.isBookmarksPlaylist && playlist.verbs.count > 0)? [NSString stringWithFormat:@"%lu", (unsigned long)playlist.verbs.count] : @"";
 		
 	} else if (indexPath.section == 1) {
 		
-		cell = (MyTableViewCell *)[aTableView dequeueReusableCellWithIdentifier:cellID];
+		cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
 		
-		if (!cell)
-			cell = [[MyTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+		if (!cell) {
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }
 		
 		cell.textLabel.text = @"Cloud";
 		
@@ -338,19 +337,23 @@
 			cell = (MoreTableViewCell *)[aTableView dequeueReusableCellWithIdentifier:userCellID];
 			
 			if (!cell) {
-				cell = [[MoreTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:userCellID];
-				
-				UISwipeGestureRecognizer * recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellsGestureRecognized:)];
-				recognizer.direction = (UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight);
-				[cell addGestureRecognizer:recognizer];
+				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:userCellID];
+                /*
+                 UISwipeGestureRecognizer * recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellsGestureRecognized:)];
+                 recognizer.direction = (UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight);
+                 [cell addGestureRecognizer:recognizer];
+                 */
 			}
 			
-			Playlist * playlist = [userPlaylists objectAtIndex:indexPath.row];
+			Playlist * playlist = userPlaylists[indexPath.row];
 			cell.textLabel.text = NSLocalizedString(playlist.name, nil);
 			
 			/* If the playlist is not empty, show the number of verbs */
-			cell.detailTextLabel.text = (playlist.verbs.count > 0)? [NSString stringWithFormat:@"%ld verbs", (unsigned long)playlist.verbs.count] : @"";
+			cell.detailTextLabel.text = (playlist.verbs.count > 0)? [NSString stringWithFormat:@"%lu", (unsigned long)playlist.verbs.count] : @"";
+            
+            cell.accessoryType = (playlist.verbs.count > 0) ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
 			
+#if 0
 			if (indexPath.row == rowWithDeleteConfirmation) {
 				ConfirmationButton * confirmationButton = [[ConfirmationButton alloc] initWithCell:cell];
 				confirmationButton.tag = kConfirmationButtonTag;
@@ -383,16 +386,20 @@
 			((MoreTableViewCell *)cell).showsMoreButton = (playlist.verbs.count > 0);
 			((MoreTableViewCell *)cell).moreTarget = self;
 			((MoreTableViewCell *)cell).moreAction = @selector(moreCellDidSelectedAction:);
+#endif
 		}
 	}
 	
+    cell.textLabel.textColor = [UIColor darkGrayColor];
+    
 	return cell;
 }
 
+#if 0
 - (IBAction)moreCellDidSelectedAction:(id)sender
 {
 	UITableViewCell * cell = (UITableViewCell *)sender;
-	NSInteger row = [tableView indexPathForCell:cell].row;
+	NSInteger row = [self.tableView indexPathForCell:cell].row;
 	selectedPlaylist = [userPlaylists objectAtIndex:row];
 	
 	if (TARGET_IS_IPAD()) {
@@ -416,24 +423,74 @@
 		[actionSheet showInView:self.view];
 	}
 }
+#endif
 
 #pragma mark UITableViewDelegate
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return indexPath.section == 2;
+}
+
+- (void)tableView:(UITableView *)aTableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	Playlist * playlist = userPlaylists[indexPath.row];
+	
+	/* Delete the playlist from Core Data */
+	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
+	[context deleteObject:playlist];
+	[context save:NULL];
+	
+	/* Reload the TableView */
+	[aTableView beginUpdates];
+	[aTableView deleteRowsAtIndexPaths:@[indexPath]
+                      withRowAnimation:UITableViewRowAnimationFade];
+	userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
+	[aTableView endUpdates];
+}
+
+- (void)tableView:(UITableView *)aTableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+{
+	selectedPlaylist = userPlaylists[indexPath.row];
+	
+	if (TARGET_IS_IPAD()) {
+		UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+																  delegate:self
+														 cancelButtonTitle:@"Cancel"
+													destructiveButtonTitle:@"Delete"
+														 otherButtonTitles:@"Launch the Quiz", /*@"Rename",*/ nil];
+		actionSheet.tag = kAlertMore;
+        CGRect frame = [aTableView cellForRowAtIndexPath:indexPath].frame;
+		CGRect newFrame = CGRectOffset(frame, 115., 7.);
+		[actionSheet showFromRect:newFrame inView:self.view animated:NO];
+	} else {
+		ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:nil
+															  delegate:self
+													 cancelButtonTitle:@"Cancel"
+												destructiveButtonTitle:@"Delete"
+													 otherButtonTitles:@"Launch the Quiz", /*@"Rename",*/ nil];
+		actionSheet.tag = kAlertMore;
+		[actionSheet showInView:self.view];
+	}
+}
+
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (rowWithDeleteConfirmation > -1) {
-		MoreTableViewCell * oldCell = (MoreTableViewCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:2]];
-		[[oldCell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
-		
-		Playlist * playlist = [userPlaylists objectAtIndex:rowWithDeleteConfirmation];
-		oldCell.showsMoreButton = (playlist.verbs.count > 0);
-		
-		rowWithDeleteConfirmation = -1;
-	}
+    /*
+     if (rowWithDeleteConfirmation > -1) {
+     MoreTableViewCell * oldCell = (MoreTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:2]];
+     [[oldCell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
+     
+     Playlist * playlist = [userPlaylists objectAtIndex:rowWithDeleteConfirmation];
+     oldCell.showsMoreButton = (playlist.verbs.count > 0);
+     
+     rowWithDeleteConfirmation = -1;
+     }
+     */
 	
 	if (indexPath.section == 0) {
 		
-		Playlist * playlist = [defaultPlaylists objectAtIndex:indexPath.row];
+		Playlist * playlist = defaultPlaylists[indexPath.row];
 		[Playlist setCurrentPlaylist:playlist];
 		
 		SearchViewController * searchViewController = [[SearchViewController alloc] init];
@@ -447,17 +504,17 @@
 		if (TARGET_IS_IPAD()) {
 			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:cloudViewController];
 			
-			navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-			navigationController.navigationBar.translucent = YES;
+			//navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
+			//navigationController.navigationBar.translucent = YES;
 			
-			navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
+			//navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
 			
 			navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 			
-			[self presentModalViewController:navigationController animated:YES];
+			[self.view.window.rootViewController presentViewController:navigationController animated:YES completion:NULL];
 			
 			/* Deselect the cell */
-			[tableView deselectRowAtIndexPath:indexPath animated:YES];
+			[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 		} else {
 			[self.navigationController pushViewController:cloudViewController animated:YES];
 		}
@@ -465,32 +522,34 @@
 	} else {
 		if (indexPath.row <= (NSInteger)(userPlaylists.count - 1)) {
 			
-			Playlist * playlist = [userPlaylists objectAtIndex:indexPath.row];
+			Playlist * playlist = userPlaylists[indexPath.row];
 			[Playlist setCurrentPlaylist:playlist];
 			
 			SearchViewController * searchViewController = [[SearchViewController alloc] init];
 			searchViewController.playlist = playlist;
 			[self.navigationController pushViewController:searchViewController animated:YES];
 		} else {
-			[tableView deselectRowAtIndexPath:indexPath animated:YES];
+			[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 		}
 	}
 }
 
-#pragma mark - UIScrollView Delegate
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-	if (rowWithDeleteConfirmation > -1) {
-		MoreTableViewCell * oldCell = (MoreTableViewCell *)[tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:2]];
-		[[oldCell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
-		
-		Playlist * playlist = [userPlaylists objectAtIndex:rowWithDeleteConfirmation];
-		oldCell.showsMoreButton = (playlist.verbs.count > 0);
-		
-		rowWithDeleteConfirmation = -1;
-	}
-}
+/*
+ #pragma mark - UIScrollView Delegate
+ 
+ - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+ {
+ if (rowWithDeleteConfirmation > -1) {
+ MoreTableViewCell * oldCell = (MoreTableViewCell *)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:2]];
+ [[oldCell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
+ 
+ Playlist * playlist = [userPlaylists objectAtIndex:rowWithDeleteConfirmation];
+ oldCell.showsMoreButton = (playlist.verbs.count > 0);
+ 
+ rowWithDeleteConfirmation = -1;
+ }
+ }
+ */
 
 #pragma mark -
 #pragma mark ActionSheetDelegate
@@ -517,7 +576,7 @@
 				//[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.com/apps/lisacintosh/"]];
 			}
 				break;
-			default:// Cancel
+                default:// Cancel
 				break;
 		}
 	} else if (actionSheet.tag == kAlertMore) {
@@ -530,19 +589,19 @@
 				
 				UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:quizViewController];
 				
-				navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-				navigationController.navigationBar.translucent = YES;
+				//navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
+				//navigationController.navigationBar.translucent = YES;
 				
-				navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
+				//navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
 				
 				if (TARGET_IS_IPAD()) {
 					navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 				}
 				
-				[self presentModalViewController:navigationController animated:YES];
+				[self presentViewController:navigationController animated:YES completion:NULL];
 			}
 				break;
-			default:// Cancel
+                default:// Cancel
 				break;
 		}
 	}
@@ -563,7 +622,7 @@
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationPortrait;
+	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAllButUpsideDown : UIInterfaceOrientationPortrait;
 }
 
 @end

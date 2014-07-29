@@ -13,7 +13,7 @@
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
 
-#import "UIBarButtonItem+addition.h"
+//#import "UIBarButtonItem+addition.h"
 
 #define kPinchOutScale 1. + 1./3.
 #define kPinchInScale 1. - 1./3.
@@ -37,20 +37,20 @@
 	NSDebugLog(@"webviewDidZoomIn");
 	[recognizer.view removeGestureRecognizer:recognizer];
 	
-	Playlist * playlist = [[verb.playlists allObjects] objectAtIndex:0];
+	Playlist * playlist = [verb.playlists allObjects][0];
 	[webView loadHTMLString:playlist.HTMLFormat
 					baseURL:nil];
 	
 	[UIView animateWithDuration:0.5
 					 animations:^{
 						 leftNavigationController.view.transform = CGAffineTransformMakeTranslation(-leftNavigationController.view.frame.size.width, 0.);
-						 navigationBar.transform = CGAffineTransformMakeTranslation(0., -navigationBar.frame.size.height);
-						 
-						 originalWebViewFrame = webView.frame;
-						 CGRect frame = self.view.bounds;
-						 frame.origin.y -= kTopMargin;
-						 frame.size.height += kTopMargin * 2.;
-						 webView.frame = frame;
+						 navigationBar2.transform = navigationBar.transform = CGAffineTransformMakeTranslation(0., -66.);
+                         
+                         originalWebViewFrame = webView.frame;
+                         CGRect frame = self.view.bounds;
+                         frame.origin.y = 20.;
+                         frame.size.height -= 20.;
+                         webView.frame = frame;
 					 }
 					 completion:^(BOOL finished) {
 						 UIPinchGestureRecognizer * gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
@@ -65,13 +65,14 @@
 	NSDebugLog(@"webviewDidZoomOut");
 	[recognizer.view removeGestureRecognizer:recognizer];
 	
-	[webView loadHTMLString:verb.HTMLFormat
-					baseURL:nil];
+	NSString * basePath = [[NSBundle mainBundle] bundlePath];
+    [webView loadHTMLString:verb.HTMLFormat
+                    baseURL:[NSURL fileURLWithPath:basePath]];
 	
 	[UIView animateWithDuration:0.5
 					 animations:^{
 						 leftNavigationController.view.transform = CGAffineTransformIdentity;
-						 navigationBar.transform = CGAffineTransformIdentity;
+						 navigationBar2.transform =navigationBar.transform = CGAffineTransformIdentity;
 						 
 						 webView.frame = originalWebViewFrame;
 					 }
@@ -92,49 +93,58 @@
 		Playlist * lastUsedPlaylist = [Playlist lastUsedPlaylist];
 		NSArray * verbs = [lastUsedPlaylist.verbs allObjects];
 		if (verbs.count > 0) {
-			verb = [verbs objectAtIndex:0];
+			verb = verbs[0];
 		} else {
-			verb = [[[Playlist allVerbsPlaylist].verbs allObjects] objectAtIndex:0];
+			verb = [[Playlist allVerbsPlaylist].verbs allObjects][0];
 		}
 	}
 	[self refreshWebview];
 	
-	navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-	navigationBar.translucent = YES;
+    /*
+     navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
+     navigationBar.translucent = YES;
+     
+     navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
+     */
+    
+    NSString * title = [NSString stringWithFormat:@"To %@", verb.infinitif];
+    UIFont * font = [UIFont boldSystemFontOfSize:20.];
+	CGSize size = [title sizeWithAttributes:@{ NSFontAttributeName : font }];
 	
-	navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
+	CGRect rect = CGRectMake(0., 0., size.width, 40.);
+	UILabel * titleLabel = [[UILabel alloc] initWithFrame:rect];
+	titleLabel.backgroundColor = [UIColor clearColor];
+	titleLabel.text = title;
+	titleLabel.font = font;
+	titleLabel.textAlignment = NSTextAlignmentCenter;
+	titleLabel.textColor = [UIColor darkGrayColor];
 	
-	self.navigationItem.title = [NSString stringWithFormat:@"To %@", verb.infinitif];
-	
-	CGRect frame = CGRectMake(0., 0., 28, 24.);
-	UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
-	button.frame = frame;
-	[button setImage:[UIImage imageNamed:@"share-button"] forState:UIControlStateNormal];
-	[button addTarget:self action:@selector(showOptionsAction:) forControlEvents:UIControlEventTouchUpInside];
-	
-	UIBarButtonItem * optionButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
-	self.navigationItem.rightBarButtonItem = optionButtonItem;
-	
+	self.navigationItem.titleView = titleLabel;
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                                           target:self
+                                                                                           action:@selector(showOptionsAction:)];
 	/* Add items from "self.navigationController" to "navigationBar" */
-	navigationBar.items = [NSArray arrayWithObject:self.navigationItem];
+	navigationBar.items = @[self.navigationItem];
 	
 	webView.delegate = self;
 	
-	frame = webView.frame;
-	frame.origin.y -= kTopMargin;
-	frame.size.height += kTopMargin * 2.;
-	webView.frame = frame;
-	
-	UIScrollView * scrollView = nil;
-	if ([webView respondsToSelector:@selector(scrollView)]) {
-		scrollView = webView.scrollView;
-	} else {
-		scrollView = [webView.subviews objectAtIndex:0];
-	}
-	
-	scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
-	scrollView.showsHorizontalScrollIndicator = NO;
-	
+    /*
+     frame = webView.frame;
+     frame.origin.y -= kTopMargin;
+     frame.size.height += kTopMargin * 2.;
+     webView.frame = frame;
+     
+     UIScrollView * scrollView = nil;
+     if ([webView respondsToSelector:@selector(scrollView)]) {
+     scrollView = webView.scrollView;
+     } else {
+     scrollView = (webView.subviews)[0];
+     }
+     
+     scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
+     scrollView.showsHorizontalScrollIndicator = NO;
+     */
+    
 	UIPinchGestureRecognizer * gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
 																				   action:@selector(webviewDidZoomIn:)];
 	gesture.scale = kPinchOutScale;
@@ -143,8 +153,10 @@
 	PlaylistsViewController * playlistsViewController = [[PlaylistsViewController alloc] init];
 	leftNavigationController = [[UINavigationController alloc] initWithRootViewController:playlistsViewController];
 	
-	leftNavigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-	leftNavigationController.navigationBar.translucent = YES;
+    /*
+     leftNavigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
+     leftNavigationController.navigationBar.translucent = YES;
+     */
 	leftNavigationController.view.frame = leftContainerView.bounds;
 	leftNavigationController.title = @"Search";
 	[leftContainerView addSubview:leftNavigationController.view];
@@ -155,6 +167,10 @@
 												  usingBlock:^(NSNotification *note) {
 													  verb = (Verb *)note.object;
 													  [self refreshWebview];
+                                                      
+                                                      /* Update the verb from the history */
+                                                      verb.lastUse = [NSDate date];
+                                                      [verb addToPlaylist:[Playlist historyPlaylist]];
 												  }];
 	
 	[[NSNotificationCenter defaultCenter] addObserverForName:@"ResultDidReloadNotification"
@@ -187,7 +203,6 @@
 														 cancelButtonTitle:@"Cancel"
 													destructiveButtonTitle:nil
 														 otherButtonTitles:@"Add to list...", noteButton, @"Listen", @"Copy", mail, nil];
-		
 		[actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
 		showingOptions = YES;
 	}
@@ -203,7 +218,7 @@
 			dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
 			dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 				VerbOptionsViewController_Pad * verbOptionsViewController = [[VerbOptionsViewController_Pad alloc] init];
-				verbOptionsViewController.verbs = [NSArray arrayWithObject:verb];
+				verbOptionsViewController.verbs = @[verb];
 				popoverController = [[UIPopoverController alloc] initWithContentViewController:verbOptionsViewController];
 				popoverController.delegate = self;
 				
@@ -225,13 +240,14 @@
 			editNoteViewController.verb = verb;
 			
 			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
-			navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-			navigationController.navigationBar.translucent = YES;
-			
-			navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
-			
+            /*
+             navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
+             navigationController.navigationBar.translucent = YES;
+             
+             navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
+             */
 			navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-			[self presentModalViewController:navigationController animated:YES];
+			[self presentViewController:navigationController animated:YES completion:NULL];
 		}
 			break;
 		case 2: { // "Listen"
@@ -260,10 +276,10 @@
 			mailCompose.mailComposeDelegate = self;
 			[mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", verb.infinitif]];
 			[mailCompose setMessageBody:verb.HTMLFormatInlineCSS isHTML:YES];
-			[self presentModalViewController:mailCompose animated:YES];
+			[self presentViewController:mailCompose animated:YES completion:NULL];
 		}
 			break;
-		default: // "Cancel"
+            default: // "Cancel"
 			break;
 	}
 	
@@ -281,7 +297,7 @@
 		[alertView show];
 	}
 	
-	[controller dismissModalViewControllerAnimated:YES];
+	[controller dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)aPopoverController
@@ -295,33 +311,42 @@
 
 - (BOOL)webView:(UIWebView *)aWebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-	if (navigationType == UIWebViewNavigationTypeLinkClicked && [request.URL.fragment isEqualToString:@"help"]) {
-		
-		HelpViewController * helpViewController = [[HelpViewController alloc] init];
-		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
-		
-		navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-		navigationController.navigationBar.translucent = YES;
-		
-		navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
-		
-		navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-		
-		[self presentModalViewController:navigationController animated:YES];
-		
-		/* Reload the webView from stratch (not by calling "-[UIWebView reload]") */
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        if ([request.URL.fragment isEqualToString:@"help-infinitive"] ||
+            [request.URL.fragment isEqualToString:@"help-simple-past"] ||
+            [request.URL.fragment isEqualToString:@"help-past-participle"] ||
+            [request.URL.fragment isEqualToString:@"help-definition"] ||
+            [request.URL.fragment isEqualToString:@"help-example"] ||
+            [request.URL.fragment isEqualToString:@"help-composition"]) {
+            
+            HelpViewController * helpViewController = [[HelpViewController alloc] init];
+            helpViewController.anchor = request.URL.fragment;
+            UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
+            navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+            [self presentViewController:navigationController animated:YES completion:NULL];
+            
+        } else if ([request.URL.fragment isEqualToString:@"edit-note"]) {
+            
+            EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
+            editNoteViewController.verb = verb;
+            UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
+            navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+			[self presentViewController:navigationController animated:YES completion:NULL];
+        }
+        
+        /* Reload the webView from stratch (not by calling "-[UIWebView reload]") */
 		double delayInSeconds = 1.;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 			
 			NSString * basePath = [[NSBundle mainBundle] bundlePath];
 			[webView loadHTMLString:verb.HTMLFormat
-							baseURL:[NSURL fileURLWithPath:basePath]];
+                            baseURL:[NSURL fileURLWithPath:basePath]];
 		});
-		
-		return NO;
-	}
-	
+        
+        return NO;
+    }
+    
 	return YES;
 }
 
@@ -357,7 +382,6 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	
 }
 
 @end

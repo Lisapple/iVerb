@@ -34,7 +34,10 @@
 + (Playlist *)playlistWithName:(NSString *)name;
 
 - (BOOL)canBeModified;
+- (BOOL)isBasicPlaylist;
+- (BOOL)isAllVerbsPlaylist;
 - (BOOL)isHistoryPlaylist;
+- (BOOL)isBookmarksPlaylist;
 - (BOOL)isDefaultPlaylist;
 - (BOOL)isUserPlaylist;
 

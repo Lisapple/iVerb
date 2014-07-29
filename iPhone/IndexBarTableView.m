@@ -65,7 +65,7 @@
 		if ([(NSObject <IndexBarTableViewDataSource> *)self.dataSource respondsToSelector:@selector(indexBarTableView:sectionForSectionIndexTitle:atIndex:)]) {
 			NSString * indexTitle = nil;
 			if ([(id <UITableViewDataSource, IndexBarTableViewDataSource>)self.dataSource respondsToSelector:@selector(sectionIndexTitlesForIndexBarTableView:)])
-				indexTitle = [[(id <UITableViewDataSource, IndexBarTableViewDataSource>)self.dataSource sectionIndexTitlesForIndexBarTableView:self] objectAtIndex:index];
+				indexTitle = [(id <UITableViewDataSource, IndexBarTableViewDataSource>)self.dataSource sectionIndexTitlesForIndexBarTableView:self][index];
 			
 			[(NSObject <IndexBarTableViewDataSource> *)self.dataSource indexBarTableView:self
 															 sectionForSectionIndexTitle:indexTitle

@@ -10,14 +10,9 @@
 
 @implementation _ActionSheetButton
 
-@synthesize type = _type;
-
 - (id)initWithFrame:(CGRect)frame
 {
 	if ((self = [super initWithFrame:frame])) {
-		[self setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-		[self setTitleColor:[UIColor blackColor] forState:UIControlStateHighlighted];
-		self.titleLabel.font = [UIFont boldSystemFontOfSize:17.];
 	}
 	return self;
 }
@@ -25,7 +20,7 @@
 - (void)drawRect:(CGRect)rect
 {
 	float x = .5, y = .5, width = rect.size.width - 1., height = rect.size.height - 1.;
-	float radius = 8.;
+	float radius = 0.;
 	
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGContextBeginPath(context);
@@ -36,41 +31,37 @@
 	CGContextAddArcToPoint(context, x, height + y, x, height - radius, radius);
 	CGContextClosePath(context);
 	
-	switch (_type) {
-		case ActionSheetButtonTypeDelete: {
-			[(self.highlighted)? [UIColor blackColor] : [UIColor darkGrayColor] setFill];
-			[(self.highlighted)? [UIColor blackColor] : [UIColor darkGrayColor] setStroke];
-		}
+    [(self.highlighted)? [UIColor colorWithWhite:0. alpha:0.07] : [UIColor clearColor] setFill];
+	CGContextFillPath(context);
+}
+
+- (void)update
+{
+    self.titleLabel.font = [UIFont systemFontOfSize:21.];
+    switch (_type) {
+		case ActionSheetButtonTypeDelete:
+			[self setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+            [self setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
 			break;
-		case ActionSheetButtonTypeCancel: {
-			[(self.highlighted)? [UIColor lightGrayColor] : [UIColor colorWithWhite:0.9 alpha:1.] setFill];
-			[[UIColor grayColor] setStroke];
-		}
-			break;
-		default: { // "ActionSheetButtonTypeDefault"
-			[(self.highlighted)? [UIColor grayColor] : [UIColor whiteColor] setFill]; // [UIColor colorWithWhite:0.9 alpha:1.]
-			[[UIColor grayColor] setStroke];
-		}
+		case ActionSheetButtonTypeCancel:
+            self.titleLabel.font = [UIFont boldSystemFontOfSize:21.];
+		default: // "ActionSheetButtonTypeDefault"
+			[self setTitleColor:_titleColor forState:UIControlStateNormal];
+            [self setTitleColor:_titleColor forState:UIControlStateHighlighted];
 			break;
 	}
-	
-	CGPathRef pathRef = CGContextCopyPath(context);
-	CGContextFillPath(context);
-	
-	CGContextAddPath(context, pathRef);
-	CGContextSetLineWidth(context, 1.);
-	CGContextStrokePath(context);
-	CGPathRelease(pathRef);
+}
+
+- (void)setTitleColor:(UIColor *)titleColor
+{
+    _titleColor = titleColor;
+    [self update];
 }
 
 - (void)setType:(ActionSheetButtonType)type
 {
 	_type = type;
-	
-	if (type == ActionSheetButtonTypeDelete) {
-		[self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-		[self setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-	}
+	[self update];
 }
 
 - (void)setHighlighted:(BOOL)highlighted
@@ -82,6 +73,14 @@
 @end
 
 
+@interface ActionSheet ()
+{
+    NSString * _title;
+    UILabel * _titleLabel;
+    UIColor * _tintColor;
+}
+@end
+
 @implementation ActionSheet
 
 - (id)initWithTitle:(NSString *)title delegate:(id <ActionSheetDelegate>)delegate cancelButtonTitle:(NSString *)cancelButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...
@@ -90,9 +89,12 @@
 	CGRect frame = mainScreen.applicationFrame;
 	if ((self = [super initWithFrame:frame])) {
 		
+        _title = title;
+        
 		self.delegate = delegate;
 		
-		self.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.];
+		self.backgroundColor = [UIColor clearColor];
+        UIColor * tintColor = [UIApplication sharedApplication].keyWindow.tintColor;
 		
 		buttons = [[NSMutableArray alloc] initWithCapacity:5];
 		
@@ -109,13 +111,17 @@
 			va_end(list);
 		}
 		
-		CGFloat height = 20. /* Bottom margin */ + 44. /* Cancel button's height */ + 20. /* Margin between "Cancel" button and other buttons */ + ((44. + 10.) * titles.count) /* 44px height + 10px for each button */ + 10. /* 10px for top margin */;
-		if (destructiveButtonTitle && destructiveButtonTitle.length > 0) height += 44. + 10.; /* Add 44px height + 10px for the top margin */
+		CGFloat height = 7. /* Bottom margin */ + 44. /* Cancel button's height */ + 10. /* Margin between "Cancel" button and other buttons */ + (44. * titles.count) /* 44px height + 10px for each button */ + 10. /* 10px for top margin */;
+		if (destructiveButtonTitle && destructiveButtonTitle.length > 0) height += 44.; /* Add 44px height + 10px for the top margin */
 		
+        CGSize titleSize = CGSizeZero;
 		if (title.length > 0) {
-			CGSize size = [title sizeWithFont:[UIFont systemFontOfSize:13.]
-							constrainedToSize:CGSizeMake(280., INFINITY)];
-			height += size.height;
+            titleSize = [title boundingRectWithSize:CGSizeMake(306., INFINITY)
+                                options:NSStringDrawingUsesLineFragmentOrigin
+                             attributes:@{ NSFontAttributeName : [UIFont systemFontOfSize:13.] }
+                                context:NULL].size;
+            
+			height += titleSize.height + 20.;
 		}
 		
 		CGRect newFrame = self.frame;
@@ -124,13 +130,14 @@
 		self.frame = newFrame;
 		
 		
-		CGFloat y = 20. + 20. + 20.; // 20px from status bar offset + 20px bottom margin + 20px (=> ???)
+		CGFloat y = 20. + 20. + 10.; // 20px from status bar offset + 20px bottom margin + 10px (=> ???)
 		
 		if (cancelButtonTitle && cancelButtonTitle.length > 0) {
-			CGRect rect = CGRectMake(20., newFrame.size.height - y, 280., 44.);
+			CGRect rect = CGRectMake(7., newFrame.size.height - y, 306., 44.);
 			_ActionSheetButton * button = [[_ActionSheetButton alloc] initWithFrame:rect];
 			button.frame = rect;
 			button.type = ActionSheetButtonTypeCancel;
+            button.titleColor = tintColor;
 			[button setTitle:cancelButtonTitle forState:UIControlStateNormal];
 			[button addTarget:self action:@selector(defaultAction:) forControlEvents:UIControlEventTouchUpInside];
 			[self addSubview:button];
@@ -138,15 +145,14 @@
 			y += 44.;
 		}
 		
-		
 		y += 10.;
 		
 		for (NSString * aTitle in titles.reverseObjectEnumerator) {
-			y += 10.;
-			CGRect rect = CGRectMake(20., newFrame.size.height - y, 280., 44.);
+			CGRect rect = CGRectMake(7., newFrame.size.height - y, 306., 44.);
 			_ActionSheetButton * button = [[_ActionSheetButton alloc] initWithFrame:rect];
 			button.frame = rect;
 			button.type = ActionSheetButtonTypeDefault;
+            button.titleColor = tintColor;
 			[button setTitle:aTitle forState:UIControlStateNormal];
 			[button addTarget:self action:@selector(defaultAction:) forControlEvents:UIControlEventTouchUpInside];
 			[self addSubview:button];
@@ -156,11 +162,11 @@
 		
 		if (destructiveButtonTitle && destructiveButtonTitle.length > 0) {
 			
-			y += 10.;
-			CGRect rect = CGRectMake(20., newFrame.size.height - y, 280., 44.);
+			CGRect rect = CGRectMake(7., newFrame.size.height - y, 306., 44.);
 			_ActionSheetButton * button = [[_ActionSheetButton alloc] initWithFrame:rect];
 			button.frame = rect;
 			button.type = ActionSheetButtonTypeDelete;
+            button.titleColor = tintColor;
 			[button setTitle:destructiveButtonTitle forState:UIControlStateNormal];
 			[button addTarget:self action:@selector(defaultAction:) forControlEvents:UIControlEventTouchUpInside];
 			[self addSubview:button];
@@ -168,25 +174,23 @@
 			y += 44.;
 		}
 		
-		y += 10. - 44.;
+		y -= 44.;
 		
 		if (title && title.length > 0) {
+            
+			y += 10. + titleSize.height;
 			
-			CGSize size = [title sizeWithFont:[UIFont systemFontOfSize:13.]
-							constrainedToSize:CGSizeMake(280., INFINITY)];
-			y += size.height;
-			
-			CGRect rect = CGRectMake(20., newFrame.size.height - y, 280., size.height);
-			UILabel * titleLabel = [[UILabel alloc] initWithFrame:rect];
-			titleLabel.backgroundColor = [UIColor clearColor];
-			titleLabel.text = title;
-			titleLabel.textAlignment = NSTextAlignmentCenter;
-			titleLabel.numberOfLines = 0;
-			titleLabel.textColor = [UIColor darkGrayColor];
-			titleLabel.font = [UIFont systemFontOfSize:13.];
-			titleLabel.shadowOffset = CGSizeMake(0., 1.);
-			titleLabel.shadowColor = [UIColor colorWithWhite:1. alpha:0.5];
-			[self addSubview:titleLabel];
+			CGRect rect = CGRectMake(7., newFrame.size.height - y, 306., titleSize.height);
+			_titleLabel = [[UILabel alloc] initWithFrame:rect];
+			_titleLabel.backgroundColor = [UIColor clearColor];
+			_titleLabel.text = title;
+			_titleLabel.textAlignment = NSTextAlignmentCenter;
+			_titleLabel.numberOfLines = 0;
+			_titleLabel.textColor = [UIColor colorWithWhite:0.6 alpha:1.];
+			_titleLabel.font = [UIFont systemFontOfSize:13.];
+			//titleLabel.shadowOffset = CGSizeMake(0., 1.);
+			//titleLabel.shadowColor = [UIColor colorWithWhite:1. alpha:0.5];
+			[self addSubview:_titleLabel];
 		}
     }
     return self;
@@ -232,18 +236,21 @@
 
 - (NSString *)buttonTitleAtIndex:(NSInteger)buttonIndex
 {
-	return [(UIButton *)[buttons objectAtIndex:buttonIndex] titleForState:UIControlStateNormal];
+	return [(UIButton *)buttons[buttonIndex] titleForState:UIControlStateNormal];
 }
 
 - (void)showInView:(UIView *)view
 {
+    _tintColor = [UIApplication sharedApplication].keyWindow.tintColor.copy;
+    [UIApplication sharedApplication].keyWindow.tintColor = [UIColor colorWithWhite:0.205 alpha:0.8];
+    
 	UIScreen * mainScreen = [UIScreen mainScreen];
 	CGRect frame = mainScreen.bounds;
 	window = [[UIWindow alloc] initWithFrame:frame];
 	window.windowLevel = UIWindowLevelStatusBar;
 	[window addSubview:self];
 	
-	window.backgroundColor = [UIColor colorWithWhite:0. alpha:0.5];
+	window.backgroundColor = [UIColor colorWithWhite:0. alpha:0.4];
 	
 	[window makeKeyAndVisible];
 	
@@ -268,7 +275,7 @@
 - (void)showInView:(UIView *)view usingBlock:(void (^)(NSInteger buttonIndex))block
 {
 	usingBlock = [block copy];
-	
+    
 	[self showInView:view];
 }
 
@@ -290,31 +297,57 @@
 					 completion:^(BOOL finished) {
 						 [window setHidden:YES];
 						 [window resignKeyWindow];
+                         // Re-set the tintColor of the key window (the main window of the app now that |window| is resigned)
+                         [UIApplication sharedApplication].keyWindow.tintColor = _tintColor;
 					 }];
 }
 
+- (void)fillRoundedRect:(CGRect)rect radius:(CGFloat)radius
+{
+    float x = rect.origin.x, y = rect.origin.y;
+    float width = rect.size.width, height = rect.size.height;
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextBeginPath(context);
+	CGContextMoveToPoint(context, x, y + radius);
+	CGContextAddArcToPoint(context, x, y, x + radius, y, radius);
+	CGContextAddArcToPoint(context, x + width, y, x + width, y + radius, radius);
+	CGContextAddArcToPoint(context, x + width, height + y, x + width - radius, height + y, radius);
+	CGContextAddArcToPoint(context, x, height + y, x, height - radius, radius);
+	CGContextClosePath(context);
+    CGContextFillPath(context);
+}
+
 - (void)drawRect:(CGRect)rect
-{	
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-	
-	/* Draw the gradient to the background */
-	CFMutableArrayRef colors = CFArrayCreateMutable(kCFAllocatorDefault, 3, NULL);
-	CFArrayAppendValue(colors, (const void *)[UIColor darkGrayColor].CGColor);
-	CFArrayAppendValue(colors, (const void *)[UIColor whiteColor].CGColor);
-	
-	CGColorRef color = CGColorRetain([UIColor colorWithWhite:0.9 alpha:1.].CGColor); // Force retaining of this value (because ARC could release it)
-	CFArrayAppendValue(colors, (const void *)color);
-	
-	const CGFloat locations[3] = { 1. / rect.size.height, 1.5 / rect.size.height, 0.08 }; // Use fix to get a 1px dark gray on top, then a gradient from white to light gray (90% white)
-	
-	CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, colors, locations);
-	CFRelease(colors);
-	CGColorSpaceRelease(colorSpace);
-	CGColorRelease(color);
-	
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	CGContextDrawLinearGradient(context, gradient, rect.origin, CGPointMake(rect.origin.x, rect.origin.y + rect.size.height), kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
-	CGGradientRelease(gradient);
+{
+    /*
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [[UIColor redColor] setFill];
+    CGContextFillRect(context, rect);
+    */
+    
+    [[UIColor colorWithWhite:0.9 alpha:1.] setFill];
+    
+    CGFloat height = [_titleLabel sizeThatFits:CGSizeMake(306., INFINITY)].height;
+    height += (height > 0.) ? 20. : 0.;
+    height += (buttons.count - 1) * 44.;
+    
+    CGRect frame = CGRectMake(7., 10., rect.size.width - 2. * 7., height);
+    [self fillRoundedRect:frame radius:4.];
+    
+    frame = CGRectMake(7., rect.size.height - 50., rect.size.width - 2. * 7., 44.);
+	[self fillRoundedRect:frame radius:4.];
+    
+    [[UIColor colorWithWhite:0.85 alpha:1.] setFill];
+    CGFloat y = rect.size.height - 104.;
+    NSInteger count = buttons.count - ((_title.length) ? 1 : 2);
+    for (int i = 0; i < count; ++i) {
+        CGRect frame = CGRectMake(7., y, rect.size.width - 2. * 7., 1.);
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextFillRect(context, frame);
+        
+        y -= 44.;
+    }
 }
 
 @end

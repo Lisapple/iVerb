@@ -8,7 +8,7 @@
 
 #import "AppDelegate_Phone.h"
 
-#import "UIBarButtonItem+addition.h"
+//#import "UIBarButtonItem+addition.h"
 
 #import "LandscapeViewController.h"
 
@@ -62,7 +62,7 @@
 - (void)drawRect:(CGRect)rect
 {
 	if (self.subviews.count > 1) {
-		[[self.subviews objectAtIndex:0] removeFromSuperview];
+		[(self.subviews)[0] removeFromSuperview];
 	}
 	
 	self.opaque = NO;
@@ -80,6 +80,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    window.tintColor = [UIColor purpleColor];
+    
+    /*
 	CGRect frame = window.frame;
 	frame.size.height -= 20.;
 	frame.origin.y = 20.;
@@ -88,20 +91,21 @@
 	borderMaskWindow.windowLevel = UIWindowLevelStatusBar;
 	borderMaskWindow.userInteractionEnabled = NO;
 	[borderMaskWindow makeKeyAndVisible];
+    */
 	
 	PlaylistsViewController * playlistsViewController = [[PlaylistsViewController alloc] init];
 	
 	navigationController = [[UINavigationController alloc] initWithRootViewController:playlistsViewController];
-	navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-	navigationController.navigationBar.translucent = YES;
+	//navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
+	//navigationController.navigationBar.translucent = YES;
 	
-	navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
+	//navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
 	
-	window.backgroundColor = [UIColor blackColor];
+	//window.backgroundColor = [UIColor blackColor];
 	window.rootViewController = navigationController;
 	
     [window makeKeyAndVisible];
-	
+    
 	/*** Hack: Disable the sending of notifications when the device rotate (enabled by default, should be set to one) to set the count to zero... ***/
 	while ([UIDevice currentDevice].generatesDeviceOrientationNotifications) {
 		[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
@@ -128,9 +132,10 @@
 	static UIDeviceOrientation oldLandscapeOrientation = UIDeviceOrientationUnknown;
 	UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
 	
+#if 0
 	// @TODO: Test with all device orientation (face up, face down, etc.)
 	borderMaskWindow.hidden = (UIDeviceOrientationIsLandscape(orientation) /*&& !UIDeviceOrientationIsLandscape(oldLandscapeOrientation))*/ || orientation == UIDeviceOrientationPortraitUpsideDown);
-	
+#endif
 	if (UIDeviceOrientationIsLandscape(orientation)) {
 		if (landscapeWindow) {
 			/*  If the "landscapeWindow" is showing and we are into the landscape mode,
@@ -138,7 +143,7 @@
 			 change the anchor and frame of the window to have a rotation on center effect */
 			
 			landscapeWindow.layer.anchorPoint = CGPointMake(0.5, 0.5);
-			landscapeWindow.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
+			landscapeWindow.frame = CGRectMake(0., 0., screenSize.height, screenSize.width);
 			
 			CGAffineTransform transform = CGAffineTransformMakeRotation((orientation == UIDeviceOrientationLandscapeLeft)? M_PI_2 : -M_PI_2);
 			[UIView animateWithDuration:0.5
@@ -159,7 +164,7 @@
 			}
 			
 		} else {
-			CGRect frame = CGRectMake(0., 0., screenSize.height, screenSize.width);
+			CGRect frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
 			landscapeWindow = [[UIWindow alloc] initWithFrame:frame];
 			landscapeWindow.backgroundColor = [UIColor redColor];
 			
@@ -167,6 +172,7 @@
 			landscapeViewController.view.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
 			[landscapeWindow addSubview:landscapeViewController.view];
 			
+            landscapeWindow.windowLevel = UIWindowLevelAlert;
 			[landscapeWindow makeKeyAndVisible];
 			landscapeWindow.clipsToBounds = YES;
 			
@@ -188,7 +194,7 @@
 				window.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
 			}
 			
-			[[UIApplication sharedApplication] setStatusBarHidden:YES];
+            [UIApplication sharedApplication].statusBarHidden = YES;
 			
 			[UIView animateWithDuration:0.5
 							 animations:^{
@@ -303,7 +309,7 @@
 	
 	NSURL *storeUrl = [NSURL fileURLWithPath:storePath];
 	
-	NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];	
+	NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};	
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
 	
 	NSError *error;
@@ -326,7 +332,7 @@
 - (NSString *)applicationDocumentsDirectory {
 	
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *basePath = ([paths count] > 0) ? paths[0] : nil;
     return basePath;
 }
 

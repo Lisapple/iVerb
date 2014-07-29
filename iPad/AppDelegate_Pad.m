@@ -16,14 +16,17 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 	MainViewController * mainViewController = [[MainViewController alloc] init];
+    /*
 	CGRect rect = self.window.frame;
 	
 	rect.origin.y += 20.;
 	rect.size.height -= 20.;
 	mainViewController.view.frame = rect;
+     */
 	window.rootViewController = mainViewController;
 	
     [window makeKeyAndVisible];
+    window.tintColor = [UIColor purpleColor];
 	
 	return YES;
 }
@@ -108,7 +111,7 @@
 	
 	NSURL *storeUrl = [NSURL fileURLWithPath:storePath];
 	
-	NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+	NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
 	
 	NSError *error;
@@ -131,7 +134,7 @@
 - (NSString *)applicationDocumentsDirectory {
 	
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *basePath = ([paths count] > 0) ? paths[0] : nil;
     return basePath;
 }
 

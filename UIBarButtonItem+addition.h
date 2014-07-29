@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
-#define UIBarButtonItemStyleDefault 4
+#define UIBarButtonItemStylePlain 4
 
 @interface UIBarButtonItem (addition)
 

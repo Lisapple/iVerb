@@ -44,7 +44,7 @@ static Playlist * _currentPlaylist = nil;
 - (NSString *)HTMLFormat
 {
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];
-	NSArray * verbs = [self.verbs sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+	NSArray * verbs = [self.verbs sortedArrayUsingDescriptors:@[sortDescriptor]];
 	
 	NSMutableString * content = [NSMutableString stringWithCapacity:100 * verbs.count];
 	

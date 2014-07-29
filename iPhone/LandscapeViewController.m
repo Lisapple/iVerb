@@ -33,10 +33,25 @@
 
 #pragma mark - View lifecycle
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	
+    /*
 	CGRect frame = self.view.bounds;
 	frame.origin.y -= kTopMargin;
 	frame.size.height += kTopMargin * 2.;
@@ -45,9 +60,10 @@
 	if ([_webView respondsToSelector:@selector(scrollView)]) 
 		_webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
 	else {
-		UIScrollView * scrollView = [_webView.subviews objectAtIndex:0];
+		UIScrollView * scrollView = (_webView.subviews)[0];
 		scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
 	}
+    */
 	
 	Playlist * currentPlaylist = [Playlist currentPlaylist];
 	NSString * source = [currentPlaylist HTMLFormat];
@@ -62,9 +78,9 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (NSUInteger)supportedInterfaceOrientations
 {
-    return (UIDeviceOrientationIsLandscape(interfaceOrientation) || UIDeviceOrientationIsPortrait(interfaceOrientation));
+    return UIInterfaceOrientationMaskAllButUpsideDown;
 }
 
 @end

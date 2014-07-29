@@ -5,7 +5,7 @@ iVerb
 
 [iVerb](http://www.lisacintosh.com/iverb/) for iOS (iPhone and iPad) contains all irregular english verbs, for a total of 348 verbs, with simple past, past participle and definition, plus an help to remind all tenses. 
 
-Compiled with Xcode 4.x and iOS 6.x
+Compiled with Xcode 5.1 for iOS 7
 
 The code source and resources are under MIT licence.
 

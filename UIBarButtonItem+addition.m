@@ -6,7 +6,7 @@
 //  Copyright 2010 Lisacintosh. All rights reserved.
 //
 
-#import "UIBarButtonItem+addition.h"
+//#import "UIBarButtonItem+addition.h"
 
 @implementation UIBarButtonItem (addition)
 
@@ -18,7 +18,7 @@
 		
 		self.enabled = YES;
 		
-		if (style == UIBarButtonItemStyleDefault) {
+		if (style == UIBarButtonItemStylePlain) {
 			CGFloat scale = [UIScreen mainScreen].scale;
 			
 			CGSize size = [title sizeWithFont:[UIFont boldSystemFontOfSize:13.]];
@@ -50,7 +50,7 @@
 
 - (void)setCustomStyle:(UIBarButtonItemStyle)style
 {
-	if (style == UIBarButtonItemStyleDefault) {
+	if (style == UIBarButtonItemStylePlain) {
 		
 		self.style = UIBarButtonItemStylePlain;
 		
@@ -79,7 +79,7 @@
 
 + (UIBarButtonItem *)barButtonItemWithTitle:(NSString *)title target:(id)target action:(SEL)action
 {
-	UIBarButtonItem * button = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleDefault target:target action:action];
+	UIBarButtonItem * button = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:target action:action];
 	return button;
 }
 

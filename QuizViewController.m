@@ -8,7 +8,7 @@
 
 #import "QuizViewController.h"
 
-#import "UIBarButtonItem+addition.h"
+//#import "UIBarButtonItem+addition.h"
 
 @interface QuizViewController ()
 
@@ -47,9 +47,11 @@
 {
     [super viewDidLoad];
 	
-	self.navigationController.delegate = self;
+	//self.navigationController.delegate = self;
 	
-	self.navigationItem.leftBarButtonItem = [UIBarButtonItem barButtonItemWithTitle:@"Cancel" target:self action:@selector(cancelAction:)];
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                          target:self
+                                                                                          action:@selector(cancelAction:)];
 	
 	// @TODO: add a "Details" button on result to show a liste with good and bad responses
 	
@@ -68,28 +70,28 @@
 	[self start];
 	
 	if (!TARGET_IS_IPAD()) {
-	/* Disallow the landscape mode of the application */
-	[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+        /* Disallow the landscape mode of the application */
+        [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 	}
 }
 
 - (IBAction)cancelAction:(id)sender
 {
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:NULL];
 	
 	if (!TARGET_IS_IPAD()) {
-	/* Re-allow the landscape mode of the application */
-	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        /* Re-allow the landscape mode of the application */
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	}
 }
 
 - (IBAction)doneAction:(id)sender
 {
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:NULL];
 	
 	if (!TARGET_IS_IPAD()) {
-	/* Re-allow the landscape mode of the application */
-	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+        /* Re-allow the landscape mode of the application */
+        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	}
 }
 
@@ -102,13 +104,20 @@
 {
 	BOOL animated = (goodResponseCount > 0 || badResponseCount > 0);// Don't animate the first try
 	
-	[self.navigationItem setLeftBarButtonItem:[UIBarButtonItem barButtonItemWithTitle:@"Cancel" target:self action:@selector(cancelAction:)] animated:animated];
-	[self.navigationItem setRightBarButtonItem:[UIBarButtonItem barButtonItemWithTitle:@"Skip" target:self action:@selector(skipAction:)] animated:animated];
+	[self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                            target:self
+                                                                                            action:@selector(cancelAction:)]
+                                     animated:animated];
+	[self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Skip"
+                                                                                style:UIBarButtonItemStylePlain
+                                                                               target:self
+                                                                               action:@selector(skipAction:)]
+                                      animated:animated];
 	
 	goodResponseCount = 0, badResponseCount = 0;
 	
 	currentIndex = 0;
-	Verb * verb = [allVerbs objectAtIndex:0];
+	Verb * verb = allVerbs[0];
 	[self pushVerb:verb form:VerbFormPastSimple animated:animated];
 }
 
@@ -155,7 +164,7 @@
 {
 	currentIndex++;
 	if (currentIndex < allVerbs.count) {// If we have verb to show, push the next verb
-		Verb * verb = [allVerbs objectAtIndex:currentIndex];
+		Verb * verb = allVerbs[currentIndex];
 		
 		VerbForm form = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
 		[self pushVerb:verb form:form animated:YES];
@@ -167,7 +176,7 @@
 
 - (void)pushVerb:(Verb *)verb form:(VerbForm)form animated:(BOOL)animated
 {
-	self.title = [NSString stringWithFormat:@"%d / %ld", currentIndex + 1, (unsigned long)allVerbs.count];
+	self.title = [NSString stringWithFormat:@"%ld / %ld", (unsigned long)currentIndex + 1, (unsigned long)allVerbs.count];
 	
 	_infinitifLabel.text = [@"To " stringByAppendingString:verb.infinitif];
 	_formLabel.text = (form == VerbFormPastSimple)? @"Past Simple Form:" : @"Past Participle Form:";
@@ -175,9 +184,9 @@
 	currentResponse = (form == VerbFormPastSimple)? (verb.past) : (verb.pastParticiple);
 	
 	/* Update the label with the number of remaining letters */
-	_remainingCount.text = [NSString stringWithFormat:@"%ld remaining letters", (unsigned long)currentResponse.length];
+	_remainingCount.text = [NSString stringWithFormat:@"%lu remaining letters", (unsigned long)currentResponse.length];
 	
-	CGSize size = [currentResponse sizeWithFont:[UIFont boldSystemFontOfSize:24.]];
+	CGSize size = [currentResponse sizeWithAttributes:@{ NSFontAttributeName : [UIFont boldSystemFontOfSize:24.] }];
  	
 	/* Fit "_backgroundFieldImageView" from "size.width" + 50px + 2 x 8px */
 	CGRect frame = _backgroundFieldImageView.frame;
@@ -205,14 +214,18 @@
 
 - (void)pushResultAnimated:(BOOL)animated
 {
+    [_textField becomeFirstResponder];
 	[_textField resignFirstResponder];
 	
 	currentResponse = nil;
 	
 	self.title = @"";
 	
-	[self.navigationItem setLeftBarButtonItem:[UIBarButtonItem barButtonItemWithTitle:@"Done" target:self action:@selector(doneAction:)] animated:YES];
-	[self.navigationItem setRightBarButtonItem:[UIBarButtonItem barButtonItemWithTitle:@"Again" target:self action:@selector(start)] animated:YES];
+	[self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                            target:self
+                                                                                            action:@selector(doneAction:)]
+                                     animated:YES];
+	[self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Again" style:UIBarButtonItemStylePlain target:self action:@selector(start)] animated:YES];
 	
 	_goodResponseCountLabel.text = [NSString stringWithFormat:@"%ld", (long)goodResponseCount];
 	_badResponseCountLabel.text = [NSString stringWithFormat:@"%ld", (long)badResponseCount];
@@ -280,15 +293,13 @@
 	oldLenght = _textField.text.length;
 	
 	/* Update the label with the number of remaining letters */
-	_remainingCount.text = [NSString stringWithFormat:@"%d remaining letters", (currentResponse.length - _textField.text.length)];
+	_remainingCount.text = [NSString stringWithFormat:@"%ld remaining letters", (unsigned long)(currentResponse.length - _textField.text.length)];
 }
 
 #pragma mark - UINavigationController Delegate
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)aViewController animated:(BOOL)animated
 {
-	self.navigationItem.backBarButtonItem = [UIBarButtonItem backBarButtonItemWithTitle:@"Back"
-																				  style:UIBarButtonItemStyleDefault];
 }
 
 - (BOOL)shouldAutorotate

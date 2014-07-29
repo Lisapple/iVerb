@@ -16,12 +16,13 @@
 	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 		
 		self.textLabel.textColor = [UIColor darkGrayColor];
-		self.selectionStyle = UITableViewCellSelectionStyleNone;
+		self.selectionStyle = UITableViewCellSelectionStyleGray;
 	}
 	
 	return self;
 }
 
+/*
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
 	[super setSelected:selected animated:animated];
@@ -41,5 +42,6 @@
 						 self.backgroundColor = (highlighted)? [UIColor colorWithWhite:0.9 alpha:1.]: [UIColor whiteColor];
 					 }];
 }
+*/
 
 @end

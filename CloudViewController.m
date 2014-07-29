@@ -14,7 +14,13 @@
 
 #import "CloudView.h"
 
-#import "UIBarButtonItem+addition.h"
+//#import "UIBarButtonItem+addition.h"
+
+@interface CloudViewController ()
+{
+    CADisplayLink * _link;
+}
+@end
 
 @implementation CloudViewController
 
@@ -43,11 +49,13 @@
 	
 	self.title = @"Cloud";
 	
-	self.navigationController.delegate = self;
+	//self.navigationController.delegate = self;
 	
 	if (TARGET_IS_IPAD()) {
 		/* Add a "Done" button on iPad */
-		self.navigationItem.rightBarButtonItem = [UIBarButtonItem barButtonItemWithTitle:@"Done" target:self action:@selector(doneAction:)];
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                               target:self
+                                                                                               action:@selector(doneAction:)];
 	}
 	
 	NSSet * verbsSet = [Playlist allVerbsPlaylist].verbs;
@@ -61,22 +69,22 @@
 	__block float * oldYs = (float *)malloc(3 * sizeof(float));
 	oldYs[0] = oldYs[1] = oldYs[2] = 0.;
 	
-	__block const float height = self.view.frame.size.height - 44. - 29.; // Remove the navigation bar height (44px) and the size of the label at bottom (29px max)
+	const float height = ((TARGET_IS_IPAD()) ? self.view.frame.size.height : [UIScreen mainScreen].bounds.size.height) - (20. + 44.) - 29.; // Remove the navigation bar height (44px) and the size of the label at bottom (29px max)
 	
-	__unsafe_unretained NSArray * colors = [NSArray arrayWithObjects:[UIColor darkGrayColor], [UIColor grayColor], [UIColor lightGrayColor], nil];
+	__unsafe_unretained NSArray * colors = @[[UIColor darkGrayColor], [UIColor grayColor], [UIColor lightGrayColor]];
 	[verbsSet enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
 		
 		NSString * infinitif = ((Verb *)obj).infinitif;
 		
 		UIFont * font = [UIFont boldSystemFontOfSize:sizes[(index % 3)]];
-		CGSize size = [infinitif sizeWithFont:font];
+		CGSize size = [infinitif sizeWithAttributes:@{ NSFontAttributeName : font }];
 		size.width += 8.;
 		
-		float y = (int)((rand() / (float)RAND_MAX) * height) + 44.;
+		float y = (int)((rand() / (float)RAND_MAX) * height) + 20. + 44.;
 		while (ABS(y - oldYs[0]) < 60. || 
 			   ABS(y - oldYs[1]) < 60. ||
 			   ABS(y - oldYs[2]) < 60.) {
-			y = (int)((rand() / (float)RAND_MAX) * height) + 44.;
+			y = (int)((rand() / (float)RAND_MAX) * height) + 20. + 44.;
 		}
 		
 		/* Rotate older "y" values */
@@ -90,10 +98,10 @@
 		
 		label.verb = (Verb *)obj;
 		
-		label.backgroundColor = self.view.backgroundColor;
+		label.backgroundColor = [UIColor clearColor];
 		
-		label.textColor = [colors objectAtIndex:(index % 3)];
-		label.textAlignment = UITextAlignmentCenter;
+		label.textColor = colors[(index % 3)];
+		label.textAlignment = NSTextAlignmentCenter;
 		label.font = font;
 		label.text = infinitif;
 		
@@ -108,6 +116,7 @@
 	
 	((CloudView *)self.view).totalWidth = x - self.view.frame.size.width;
 	
+    /*
 	dispatch_queue_t queue = dispatch_get_main_queue();
 	dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue); //run event handler on the default global queue
 	dispatch_time_t now = dispatch_walltime(DISPATCH_TIME_NOW, 0);
@@ -116,7 +125,10 @@
 		[(CloudView *)self.view update];
 	});
 	dispatch_resume(timer);
-	
+    */
+    
+    _link = [CADisplayLink displayLinkWithTarget:self.view selector:@selector(update)];
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(labelDidSelected:)
 												 name:@"CloudLabelDidSelectedNotification"
@@ -130,7 +142,7 @@
 	if (TARGET_IS_IPAD()) {
 		
 		/* Dismiss the view */
-		[self dismissModalViewControllerAnimated:YES];
+		[self dismissViewControllerAnimated:YES completion:NULL];
 		
 		/* Send a notification to select the verb on webView */
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"SearchTableViewDidSelectCellNotification"
@@ -143,18 +155,32 @@
 	}
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    _link.paused = NO;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    _link.paused = YES;
+    [_link removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+}
+
 /* Action to close the view controller on iPad */
 - (IBAction)doneAction:(id)sender
 {
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 #pragma mark - UINavigationController Delegate
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)aViewController animated:(BOOL)animated
 {
-	self.navigationItem.backBarButtonItem = [UIBarButtonItem backBarButtonItemWithTitle:@"Back"
-																				  style:UIBarButtonItemStyleDefault];
 }
 
 - (void)viewDidUnload

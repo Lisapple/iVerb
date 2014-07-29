@@ -10,32 +10,32 @@
 #import <CoreData/CoreData.h>
 #import <MessageUI/MessageUI.h>
 
+#import "IVTableViewController.h"
+
 #import "Playlist.h"
 
 #import "ActionSheet.h"
 
 @class Verb;
-@interface SearchViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, MFMailComposeViewControllerDelegate, ActionSheetDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate>
+@interface SearchViewController : IVTableViewController <UISearchBarDelegate, MFMailComposeViewControllerDelegate, ActionSheetDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate>
 {
 	NSArray * sortedKeys, * filteredKeys;
 	
 	UIView * titleView;
 	
 	BOOL isSearching;// Search Bar is the First Responder, the keyboard is showing
-	
+	/*
 	UITableViewCell * cellWithDeleteConfirmation;
 	NSInteger rowWithDeleteConfirmation;
-	
+	*/
 	BOOL editing;
 	NSMutableArray * checkedVerbs;
 	
 	UIPopoverController * popoverController;
 }
 
-@property (nonatomic, strong) IBOutlet UITableView * tableView;
-@property (nonatomic, strong) IBOutlet UISearchBar * searchBar;
 @property (nonatomic, strong) IBOutlet UIView * headerView;
-@property (nonatomic, strong) IBOutlet UIToolbar * toolbar;
+//@property (nonatomic, strong) IBOutlet UIToolbar * toolbar;
 
 @property (nonatomic, strong) Playlist * playlist;
 
@@ -46,10 +46,12 @@
 // Private
 - (void)reloadData;
 
+/*
 - (void)removeCell:(id)sender;
 - (void)removeVerb:(Verb *)verb;
 
 - (void)cellsGestureRecognized:(UIGestureRecognizer *)recognizer;
 - (void)cellDidSwipe:(UITableViewCell *)cell;
+*/
 
 @end

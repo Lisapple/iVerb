@@ -34,7 +34,7 @@
 												 error:NULL];
 	
 	if (playlists.count > 0)
-		return [playlists objectAtIndex:0];
+		return playlists[0];
 	
 	return nil;
 }
@@ -50,7 +50,7 @@
 												 error:NULL];
 	
 	if (playlists.count > 0)
-		return [playlists objectAtIndex:0];
+		return playlists[0];
 	
 	return nil;
 }
@@ -66,7 +66,7 @@
 												 error:NULL];
 	
 	if (playlists.count > 0)
-		return [playlists objectAtIndex:0];
+		return playlists[0];
 	
 	return nil;
 }
@@ -82,7 +82,7 @@
 												 error:NULL];
 	
 	if (playlists.count > 0)
-		return [playlists objectAtIndex:0];
+		return playlists[0];
 	
 	return nil;
 }
@@ -100,7 +100,7 @@
 	[request setPredicate:[NSPredicate predicateWithFormat:@"creationDate == NULL"]];
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
-	[request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+	[request setSortDescriptors:@[sortDescriptor]];
 	
 	NSArray * playlists = [context executeFetchRequest:request
 												 error:NULL];
@@ -116,7 +116,7 @@
 	[request setPredicate:[NSPredicate predicateWithFormat:@"creationDate != NULL"]];
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
-	[request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+	[request setSortDescriptors:@[sortDescriptor]];
 	
 	NSArray * playlists = [context executeFetchRequest:request
 												 error:NULL];
@@ -133,25 +133,40 @@
 	request.fetchLimit = 1;
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
-	[request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+	[request setSortDescriptors:@[sortDescriptor]];
 	
 	NSArray * playlists = [context executeFetchRequest:request
 												 error:NULL];
 	
 	if (playlists.count > 0)
-		return [playlists objectAtIndex:0];
+		return playlists[0];
 	
 	return nil;
 }
 
 - (BOOL)canBeModified
 {
-	return ([self.name isEqualToString:@"_ALL_VERBS_"] || [self.name isEqualToString:@"_BASICS_VERBS_"]);
+	return (![self.name isEqualToString:@"_ALL_VERBS_"] && ![self.name isEqualToString:@"_BASICS_VERBS_"]);
+}
+
+- (BOOL)isBasicPlaylist
+{
+	return (self.isDefaultPlaylist && [self.name isEqualToString:@"_BASICS_VERBS_"]);
+}
+
+- (BOOL)isAllVerbsPlaylist
+{
+	return (self.isDefaultPlaylist && [self.name isEqualToString:@"_ALL_VERBS_"]);
 }
 
 - (BOOL)isHistoryPlaylist
 {
-	return ([self.name isEqualToString:@"_HISTORY_"]);
+	return (self.isDefaultPlaylist && [self.name isEqualToString:@"_HISTORY_"]);
+}
+
+- (BOOL)isBookmarksPlaylist
+{
+	return (self.isDefaultPlaylist && [self.name isEqualToString:@"_BOOKMARKS_"]);
 }
 
 - (BOOL)isDefaultPlaylist
@@ -161,7 +176,7 @@
 
 - (BOOL)isUserPlaylist
 {
-	return (self.creationDate != nil);
+	return ![self isDefaultPlaylist];
 }
 
 /*

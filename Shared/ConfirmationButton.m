@@ -23,7 +23,7 @@
 		[self setBackgroundImage:[[UIImage imageNamed:@"confirmation-button"] stretchableImageWithLeftCapWidth:8. topCapHeight:0.]
 						forState:UIControlStateNormal];
 		
-		self.titleLabel.textAlignment = UITextAlignmentCenter;
+		self.titleLabel.textAlignment = NSTextAlignmentCenter;
 		self.titleLabel.font = [UIFont boldSystemFontOfSize:14.];
 		self.titleLabel.textColor = [UIColor whiteColor];
 		//self.titleLabel.shadowColor = [UIColor blackColor];//[UIColor colorWithWhite:0. alpha:0.333];

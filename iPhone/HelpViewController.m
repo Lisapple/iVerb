@@ -8,7 +8,7 @@
 
 #import "HelpViewController.h"
 
-#import "UIBarButtonItem+addition.h"
+//#import "UIBarButtonItem+addition.h"
 
 @implementation HelpViewController
 
@@ -37,22 +37,27 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-	
+    
+    self.navigationController.navigationBar.tintColor = [UIColor purpleColor];
+    
 	self.title = @"Help";
-	self.navigationItem.rightBarButtonItem = [UIBarButtonItem barButtonItemWithTitle:@"Done" target:self action:@selector(doneAction:)];
-	
-	CGRect frame = _webView.frame;
-	frame.origin.y = 44. - kTopMargin;
-	frame.size.height = _webView.frame.size.height + (kTopMargin * 2. - 44.);
-	_webView.frame = frame;
-	
-	if ([_webView respondsToSelector:@selector(scrollView)]) 
-		_webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
-	else {
-		UIScrollView * scrollView = [_webView.subviews objectAtIndex:0];
-		scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
-	}
-	
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                           target:self
+                                                                                           action:@selector(doneAction:)];
+	/*
+     CGRect frame = _webView.frame;
+     frame.origin.y = 44. - kTopMargin;
+     frame.size.height = _webView.frame.size.height + (kTopMargin * 2. - 44.);
+     _webView.frame = frame;
+     
+     if ([_webView respondsToSelector:@selector(scrollView)])
+     _webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
+     else {
+     UIScrollView * scrollView = [_webView.subviews objectAtIndex:0];
+     scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
+     }
+     */
+    
 	_webView.delegate = self;
 	
 	NSString * path = [[NSBundle mainBundle] pathForResource:@"help" ofType:@"html"];
@@ -64,7 +69,7 @@
 
 - (IBAction)doneAction:(id)sender
 {
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 #pragma mark - UIWebView Delegate
@@ -73,11 +78,18 @@
 {
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		/* Open with Safari */
-		[[UIApplication sharedApplication] openURL:request.URL];
-		return NO;
+        if ([[UIApplication sharedApplication] canOpenURL:request.URL] && ![request.URL.scheme isEqualToString:@"file"]) {
+            [[UIApplication sharedApplication] openURL:request.URL];
+            return NO;
+        }
 	}
 	
 	return YES;
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"location.hash = '%@'", _anchor]];
 }
 
 - (void)viewDidUnload

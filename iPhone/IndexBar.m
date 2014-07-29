@@ -36,7 +36,7 @@
 	[_letterViews removeAllObjects];
 	
 	float height = self.frame.size.height;
-	int count = _letters.count;
+	NSUInteger count = _letters.count;
 	
 	float letterHeight = (height / (float)count) * 3. / 4.;
 	float separation = (height / (float)count) * 1. / 4.;
@@ -47,7 +47,7 @@
 		UILabel * label = [[UILabel alloc] initWithFrame:frame];
 		
 		label.backgroundColor = [UIColor clearColor];
-		label.textAlignment = UITextAlignmentCenter;
+		label.textAlignment = NSTextAlignmentCenter;
 		label.font = [UIFont boldSystemFontOfSize:13.];
 		label.textColor = [UIColor darkGrayColor];
 		
@@ -141,7 +141,7 @@
 		[self drawLabels];
 	
 	float height = self.frame.size.height;
-	int count = _letters.count;
+	NSUInteger count = _letters.count;
 	
 	float letterHeight = (height / (float)count) * 3. / 4.;
 	float separation = (height / (float)count) * 1. / 4.;
@@ -161,7 +161,7 @@
 - (void)updateWithSpace:(float)space atIndex:(NSInteger)index
 {
 	float height = self.frame.size.height - space;
-	int count = _letters.count;
+	NSUInteger count = _letters.count;
 	
 	float letterHeight = (height / (float)count) * 3. / 4.;
 	float separation = (height / (float)count) * 1. / 4.;

@@ -37,48 +37,28 @@
 }
 
 body {
-	font-family:"Helvetica";
+	font-family:"Helvetica Neue";
 	font-size:12pt;
 	color:#555555;
 	
 	margin:0px;
-	margin-top:600px;
-	margin-bottom:600px;
-	
-	background-color:#e5e5e5;
 	
 	width:100%;
 }
 
 #content {
-	background-color:#fff;
-	
-	-webkit-box-shadow:#777 0px 0px 5px;
-	box-shadow:#777 0px 0px 5px;
-	
 	padding:10px;
 }
 
-i.section {
-	color:#aaa;
-}
-
-span.section {
-	font-family:"Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-	font-weight:200;
-	
-	color:#aaa;
-}
-
 .verb-form {
-	font-weight:bold;
+	font-weight:normal;
 	font-size:20px;
 	
 	padding:15px;
 }
 
 .verb-definition, .verb-example, .verb-composition, .verb-notes  {
-	font-weight:bold;
+	font-weight:normal;
 	font-size:14px;
 	
 	padding:15px;
@@ -92,26 +72,9 @@ hr {
 	border-top:1px solid #aaa;
 }
 
-a[href="#help"] {
-	position:relative;
-	width:0px;
-	height:0px;
-
-	float:right;
-	top:-42px; /* 34px (size of the image) + 8px margin */
-	right:8px;
-	
-	padding:17px;
-	background:url("help-button.png"); /* Normal definition*/
-	background:url("help-button@2x.png"); /* Retina definition */
-	background-size:34px 34px;
-	
-	-webkit-touch-callout:none; /* Don't show an alert on long press */
-	-webkit-tap-highlight-color:rgba(255,255,255,0.25); /* Don't show selection highlight */
-}
-
-a[href="#help"]:active {
-	opacity:0.6;
+a {
+    color:#808;
+    text-decoration:none;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio:2) {

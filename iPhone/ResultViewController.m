@@ -10,7 +10,7 @@
 
 #import "ManagedObjectContext.h"
 
-#import "UIBarButtonItem+addition.h"
+//#import "UIBarButtonItem+addition.h"
 
 #import "VerbOptionsViewController_Phone.h"
 #import "HelpViewController.h"
@@ -18,7 +18,7 @@
 
 @interface ResultViewController ()
 {
-	id reloadObserver
+	id reloadObserver;
 }
 @end
 
@@ -48,27 +48,27 @@
 	 [rightBarButtonItem release];
 	 */
 	
-	CGRect frame = CGRectMake(0., 0., 28, 24.);
-	UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
-	button.frame = frame;
-	[button setImage:[UIImage imageNamed:@"share-button"] forState:UIControlStateNormal];
-	[button addTarget:self action:@selector(showOptionAction:) forControlEvents:UIControlEventTouchUpInside];
-	
-	UIBarButtonItem * optionButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
-	self.navigationItem.rightBarButtonItem = optionButtonItem;
-	
-	
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                                                           target:self
+                                                                                           action:@selector(showOptionAction:)];
+    
+    /*
 	frame = _webView.frame;
 	frame.origin.y = 44. - kTopMargin;
 	frame.size.height = _webView.frame.size.height + (kTopMargin * 2. - 44.);
 	_webView.frame = frame;
+    */
 	
+    //_webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
+    
+    /*
 	if ([_webView respondsToSelector:@selector(scrollView)])
 		_webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
 	else {
 		UIScrollView * scrollView = [_webView.subviews objectAtIndex:0];
 		scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
 	}
+     */
 	
 	_webView.delegate = self;
 	
@@ -78,6 +78,15 @@
 	[_activityIndicatorView startAnimating];
 	
     [super viewDidLoad];
+    
+    reloadObserver = [[NSNotificationCenter defaultCenter] addObserverForName:@"ResultDidReloadNotification"
+                                                                       object:nil
+                                                                        queue:[NSOperationQueue currentQueue]
+                                                                   usingBlock:^(NSNotification *note) {
+                                                                       NSString * basePath = [[NSBundle mainBundle] bundlePath];
+                                                                       [_webView loadHTMLString:_verb.HTMLFormat
+                                                                                        baseURL:[NSURL fileURLWithPath:basePath]];
+                                                                   }];
 }
 
 - (void)setVerb:(Verb *)verb
@@ -112,10 +121,10 @@
 			dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
 			dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 				VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
-				optionsViewController.verbs = [NSArray arrayWithObject:_verb];
+				optionsViewController.verbs = @[_verb];
 				optionsViewController.modalTransitionStyle = UIModalTransitionStylePartialCurl;
-				optionsViewController.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-				[self presentModalViewController:optionsViewController animated:YES];
+				optionsViewController.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.];
+				[self presentViewController:optionsViewController animated:YES completion:NULL];
 			});
 		}
 			break;
@@ -125,12 +134,7 @@
 			editNoteViewController.verb = _verb;
 			
 			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
-			navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-			navigationController.navigationBar.translucent = YES;
-			
-			navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
-			
-			[self presentModalViewController:navigationController animated:YES];
+			[self presentViewController:navigationController animated:YES completion:NULL];
 		}
 			break;
 		case 2: { // "Listen"
@@ -159,8 +163,9 @@
 			mailCompose.mailComposeDelegate = self;
 			[mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", _verb.infinitif]];
 			[mailCompose setMessageBody:_verb.HTMLFormatInlineCSS isHTML:YES];
-			[self presentModalViewController:mailCompose animated:YES];
+			[self presentViewController:mailCompose animated:YES completion:NULL];
 			
+#if 0
 			/* Trick: When the mail compose view shows up, the BorderMaskWindow receive all events, hide it (by moving it outsite the screen) to let mail compose receive touch events */
 			for (UIWindow * window in [UIApplication sharedApplication].windows) {
 				if ([NSStringFromClass(window.class) isEqualToString:@"BorderMaskWindow"]) {
@@ -169,6 +174,7 @@
 					window.frame = frame;
 				}
 			}
+#endif
 		}
 			break;
 		default: // "Cancel"
@@ -187,8 +193,9 @@
 		[alertView show];
 	}
 	
-	[controller dismissModalViewControllerAnimated:YES];
-	
+	[controller dismissViewControllerAnimated:YES completion:NULL];
+
+#if 0
 	/* Restore the position of the BorderMaskWindow */
 	for (UIWindow * window in [UIApplication sharedApplication].windows) {
 		if ([NSStringFromClass(window.class) isEqualToString:@"BorderMaskWindow"]) {
@@ -197,25 +204,35 @@
 			window.frame = frame;
 		}
 	}
+#endif
 }
 
 #pragma mark - UIWebView Delegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-	if (navigationType == UIWebViewNavigationTypeLinkClicked && [request.URL.fragment isEqualToString:@"help"]) {
-		
-		HelpViewController * helpViewController = [[HelpViewController alloc] init];
-		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
-		
-		navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-		navigationController.navigationBar.translucent = YES;
-		
-		navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
-		
-		[self presentModalViewController:navigationController animated:YES];
-		
-		/* Reload the webView from stratch (not by calling "-[UIWebView reload]") */
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+        if ([request.URL.fragment isEqualToString:@"help-infinitive"] ||
+            [request.URL.fragment isEqualToString:@"help-simple-past"] ||
+            [request.URL.fragment isEqualToString:@"help-past-participle"] ||
+            [request.URL.fragment isEqualToString:@"help-definition"] ||
+            [request.URL.fragment isEqualToString:@"help-example"] ||
+            [request.URL.fragment isEqualToString:@"help-composition"]) {
+            
+            HelpViewController * helpViewController = [[HelpViewController alloc] init];
+            helpViewController.anchor = request.URL.fragment;
+            UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
+            [self presentViewController:navigationController animated:YES completion:NULL];
+            
+        } else if ([request.URL.fragment isEqualToString:@"edit-note"]) {
+            EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
+            editNoteViewController.verb = _verb;
+            
+            UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
+            [self presentViewController:navigationController animated:YES completion:NULL];
+        }
+        
+        /* Reload the webView from stratch (not by calling "-[UIWebView reload]") */
 		double delayInSeconds = 1.;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -224,10 +241,10 @@
 			[_webView loadHTMLString:_verb.HTMLFormat
 							 baseURL:[NSURL fileURLWithPath:basePath]];
 		});
-		
-		return NO;
-	}
-	
+        
+        return NO;
+    }
+    
 	return YES;
 }
 
@@ -275,22 +292,18 @@
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-	
-	reloadObserver = [[NSNotificationCenter defaultCenter] addObserverForName:@"ResultDidReloadNotification"
-													  object:nil
-													   queue:[NSOperationQueue currentQueue]
-												  usingBlock:^(NSNotification *note) {
-													  NSString * basePath = [[NSBundle mainBundle] bundlePath];
-													  [_webView loadHTMLString:_verb.HTMLFormat
-																	   baseURL:[NSURL fileURLWithPath:basePath]];
-												  }];
 }
 
-- (void)viewDidDisapear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-	[super viewDidDisapear:animated];
+	[super viewDidDisappear:animated];
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:reloadObserver];
+	//[[NSNotificationCenter defaultCenter] removeObserver:reloadObserver];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:reloadObserver];
 }
 
 - (void)didReceiveMemoryWarning {

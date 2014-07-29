@@ -10,8 +10,6 @@
 
 #import "ManagedObjectContext.h"
 
-#import "CheckTableViewCell.h"
-
 @implementation VerbOptionsViewController_Phone
 
 @synthesize tableView = _tableView;
@@ -46,7 +44,7 @@
 	
 	/* Update the label at the top of the tableView with "Verb lists to add "Verb":" or "Verb lists to add these {dd} verbs:" */
 	if (_verbs.count == 1) {
-		Verb * verb = [_verbs objectAtIndex:0];
+		Verb * verb = _verbs[0];
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add \"%@\":", [verb.infinitif capitalizedString]];
 	} else if (_verbs.count > 1) {
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %ld verbs:", (unsigned long)_verbs.count];
@@ -69,7 +67,7 @@
 	
 	/* Update the label at the top of the tableView with "Verb lists to add "Verb":" or "Verb lists to add these {dd} verbs:" */
 	if (_verbs.count == 1) {
-		Verb * verb = [_verbs objectAtIndex:0];
+		Verb * verb = _verbs[0];
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add \"%@\":", [verb.infinitif capitalizedString]];
 	} else if (_verbs.count > 1) {
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %ld verbs:", (unsigned long)_verbs.count];
@@ -95,10 +93,10 @@
 - (UITableViewCell *)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	static NSString * cellID = @"cellID";
-	CheckTableViewCell * cell = (CheckTableViewCell *)[aTableView dequeueReusableCellWithIdentifier:cellID];
+	UITableViewCell * cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
 	
 	if (!cell) {
-		cell = [[CheckTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
 	}
 	
 	cell.backgroundColor = [UIColor colorWithWhite:0.15 alpha:1.];
@@ -115,7 +113,7 @@
 		cell.accessoryType = (allBookmarked)? UITableViewCellAccessoryCheckmark: UITableViewCellAccessoryNone;
 		
 	} else {
-		Playlist * playlist = [userPlaylists objectAtIndex:indexPath.row];
+		Playlist * playlist = userPlaylists[indexPath.row];
 		cell.textLabel.text = playlist.name;
 		
 		BOOL containsAllVerbs = YES;
@@ -147,7 +145,7 @@
 			for (Verb * verb in _verbs) { [verb addToPlaylist:[Playlist bookmarksPlaylist]]; }
 		
 	} else {
-		Playlist * playlist = [userPlaylists objectAtIndex:indexPath.row];
+		Playlist * playlist = userPlaylists[indexPath.row];
 		
 		if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
 			for (Verb * verb in _verbs) { [verb removePlaylist:playlist]; }

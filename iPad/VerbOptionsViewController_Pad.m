@@ -24,8 +24,8 @@
 	
 	userPlaylists = [Playlist userPlaylists];
 	
-	self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-	self.tableView.backgroundView.backgroundColor = [UIColor viewFlipsideBackgroundColor];
+	self.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.];
+	self.tableView.backgroundView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.];
 	
 	self.tableView.backgroundView.alpha = 0.;
 	
@@ -53,16 +53,16 @@
 - (UITableViewCell *)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	static NSString * cellID = @"cellID";
-	CheckTableViewCell * cell = (CheckTableViewCell *)[aTableView dequeueReusableCellWithIdentifier:cellID];
+	UITableViewCell * cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
 	
 	if (!cell) {
-		cell = [[CheckTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];// @TODO: create a class with MyTableViewCell and CheckTableViewCell
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];// @TODO: create a class with MyTableViewCell and CheckTableViewCell
 	}
 	
-	cell.backgroundColor = [UIColor colorWithWhite:0.15 alpha:1.];
-	cell.selectionStyle = UITableViewCellSelectionStyleGray;
+	//cell.backgroundColor = [UIColor colorWithWhite:0.15 alpha:1.];
+	//cell.selectionStyle = UITableViewCellSelectionStyleGray;
 	
-	cell.textLabel.textColor = [UIColor whiteColor];
+	//cell.textLabel.textColor = [UIColor whiteColor];
 	
 	if (indexPath.section == 0) {
 		
@@ -73,7 +73,7 @@
 		cell.accessoryType = (allBookmarked)? UITableViewCellAccessoryCheckmark: UITableViewCellAccessoryNone;
 		
 	} else {
-		Playlist * playlist = [userPlaylists objectAtIndex:indexPath.row];
+		Playlist * playlist = userPlaylists[indexPath.row];
 		cell.textLabel.text = playlist.name;
 		
 		BOOL containsAllVerbs = YES;
@@ -105,7 +105,7 @@
 			for (Verb * verb in _verbs) { [verb addToPlaylist:[Playlist bookmarksPlaylist]]; }
 		
 	} else {
-		Playlist * playlist = [userPlaylists objectAtIndex:indexPath.row];
+		Playlist * playlist = userPlaylists[indexPath.row];
 		
 		if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
 			for (Verb * verb in _verbs) { [verb removePlaylist:playlist]; }

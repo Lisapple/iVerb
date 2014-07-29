@@ -83,44 +83,44 @@
 	
 	NSMutableString * content = [NSMutableString stringWithCapacity:1000];
 	
-	/* <span class="section">Infinitif</span><br>
+	/* <a href="#help">Infinitif</span><br>
 	 * <div class="verb-form">%@</div>
-	 * <span class="section">Simple Past</span><br>
+	 * <a href="#help">Simple Past</span><br>
 	 * <div class="verb-form">%@</div>
-	 * <span class="section">Past Participle</span><br>
+	 * <a href="#help">Past Participle</span><br>
 	 * <div class="verb-form">%@</div>
 	 */
 	
 	[content appendFormat:@"\
-	 <span class=\"section\">Infinitif</span><br>\
+	 <a href=\"#help-infinitif\">Infinitif</a><br>\
 	 <div class=\"verb-form\">%@</div>\
-	 <span class=\"section\">Simple Past</span><br>\
+	 <a href=\"#help-simple-past\">Simple Past</a><br>\
 	 <div class=\"verb-form\">%@</div>\
-	 <span class=\"section\">Past Participle</span><br>\
+	 <a href=\"#help-past-participle\">Past Participle</a><br>\
 	 <div class=\"verb-form\">%@</div>", self.infinitif, self.past, self.pastParticiple];
 	
 	if (self.definition) {
-		/* <span class="section">Definition</span><br>
+		/* <a href="#help">Definition</span><br>
 		 * <div class="verb-definition">%@</div>
 		 */
-		[content appendFormat:@"<span class=\"section\">Definition</span><br>\
+		[content appendFormat:@"<a href=\"#help-definition\">Definition</a><br>\
 		 <div class=\"verb-definition\">%@</div>", self.definition];
 	}
 	
 	if (self.example) {
-		/* <span class="section">Example</span><br>
+		/* <a href="#help">Example</span><br>
 		 * <div class="verb-example">%@</div>
 		 */
-		[content appendFormat:@"<span class=\"section\">Example</span><br>\
+		[content appendFormat:@"<a href=\"#help-example\">Example</a><br>\
 		 <div class=\"verb-example\">%@</div>", self.example];
 	}
 	
 	NSArray * components = [self.components componentsSeparatedByString:@"."];
 	if (components.count > 1) {
-		/* <span class="section">Composition</span><br>
+		/* <a href="#help">Composition</span><br>
 		 * <div class="verb-composition">%@</div>
 		 */
-		[content appendFormat:@"<span class=\"section\">Composition</span><br>\
+		[content appendFormat:@"<a href=\"#help-composition\">Composition</a><br>\
 		 <div class=\"verb-composition\">%@</div>", [components componentsJoinedByString:@"&bull;"]];
 	}
 	
@@ -129,7 +129,7 @@
 	NSString * key = [NSString stringWithFormat:@"note_%@", self.infinitif];
 	NSString * note = [userDefaults stringForKey:key];
 	if (note.length > 0) {
-		[content appendFormat:@"<span class=\"section\">Notes</span><br>\
+		[content appendFormat:@"<a href=\"#edit-note\">Notes</a><br>\
 		 <div class=\"verb-notes\">%@</div>", note];
 	}
 	

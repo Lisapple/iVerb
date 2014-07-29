@@ -21,12 +21,12 @@
 		self.selectionStyle = UITableViewCellSelectionStyleNone;
 		
 		CGFloat height = self.bounds.size.height;
-		CGRect rect = CGRectMake(20., (height - 26) / 2 + 2, 200., 26.);
+		CGRect rect = CGRectMake(15., (height - 26) / 2 + 2, 200., 26.);
 		_textField = [[UITextField alloc] initWithFrame:rect];
 		_textField.borderStyle = UITextBorderStyleNone;
 		_textField.placeholder = @"New List";
 		_textField.textColor = [UIColor darkGrayColor];
-		_textField.font = [UIFont boldSystemFontOfSize:17.];
+		_textField.font = [UIFont systemFontOfSize:17.];
 		_textField.returnKeyType = UIReturnKeyDone;
 		_textField.autocorrectionType = UITextAutocorrectionTypeNo;
 		_textField.autocapitalizationType = UITextAutocapitalizationTypeNone;

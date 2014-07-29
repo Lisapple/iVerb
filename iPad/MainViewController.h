@@ -11,6 +11,8 @@
 #import <MessageUI/MessageUI.h>
 #import <AVFoundation/AVFoundation.h>
 
+#import "IVWebView.h"
+
 #import "Verb.h"
 #import "Verb+additions.h"
 
@@ -18,8 +20,8 @@
 
 @interface MainViewController : UIViewController <UIPopoverControllerDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 {
-	IBOutlet UIWebView * webView;
-	IBOutlet UINavigationBar * navigationBar;
+	IBOutlet IVWebView * webView;
+	IBOutlet UINavigationBar * navigationBar, * navigationBar2;
 	
 	IBOutlet UINavigationController * leftNavigationController;
 	IBOutlet UIView * leftContainerView;
