@@ -164,17 +164,6 @@
 			[mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", _verb.infinitif]];
 			[mailCompose setMessageBody:_verb.HTMLFormatInlineCSS isHTML:YES];
 			[self presentViewController:mailCompose animated:YES completion:NULL];
-			
-#if 0
-			/* Trick: When the mail compose view shows up, the BorderMaskWindow receive all events, hide it (by moving it outsite the screen) to let mail compose receive touch events */
-			for (UIWindow * window in [UIApplication sharedApplication].windows) {
-				if ([NSStringFromClass(window.class) isEqualToString:@"BorderMaskWindow"]) {
-					CGRect frame = window.frame;
-					frame.origin.x = 1000.; // Move it to 1000px to the right
-					window.frame = frame;
-				}
-			}
-#endif
 		}
 			break;
 		default: // "Cancel"
@@ -194,17 +183,6 @@
 	}
 	
 	[controller dismissViewControllerAnimated:YES completion:NULL];
-
-#if 0
-	/* Restore the position of the BorderMaskWindow */
-	for (UIWindow * window in [UIApplication sharedApplication].windows) {
-		if ([NSStringFromClass(window.class) isEqualToString:@"BorderMaskWindow"]) {
-			CGRect frame = window.frame;
-			frame.origin.x = 0.;
-			window.frame = frame;
-		}
-	}
-#endif
 }
 
 #pragma mark - UIWebView Delegate

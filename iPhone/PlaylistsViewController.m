@@ -89,7 +89,7 @@
 - (IBAction)moreInfo:(id)sender
 {
 	NSDictionary * infoDictionary = [[NSBundle mainBundle] infoDictionary];
-	NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © 2014", infoDictionary[@"CFBundleShortVersionString"]];
+	NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © 2014, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"]];
 	
 	if (TARGET_IS_IPAD()) {
 		UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:title

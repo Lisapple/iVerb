@@ -12,66 +12,6 @@
 
 #import "LandscapeViewController.h"
 
-@implementation BorderMaskWindow
-
-- (BOOL)isOpaque
-{
-	return NO;
-}
-
-- (void)drawRect:(CGRect)rect
-{
-	[super drawRect:rect];
-	
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	
-	float radius = 26.;
-	float lineWidth = 20.;
-	
-	CGContextMoveToPoint(context, -lineWidth, lineWidth);
-	CGContextAddArcToPoint(context, -lineWidth, -lineWidth, 0., -lineWidth, radius);
-	CGContextAddArcToPoint(context, rect.size.width + lineWidth, -lineWidth, rect.size.width + lineWidth, 0., radius);
-	
-	CGContextAddLineToPoint(context, rect.size.width + lineWidth, rect.size.height + lineWidth);
-	CGContextAddLineToPoint(context, - lineWidth, rect.size.height + lineWidth);
-	CGContextAddLineToPoint(context, -lineWidth, lineWidth);
-	CGContextClosePath(context);
-	
-	CGContextSetLineWidth(context, lineWidth * 2.);
-	
-	[[UIColor blackColor] setStroke];
-	CGContextStrokePath(context);
-}
-
-@end
-
-@implementation UINavigationBar (CustomImage)
-
-/*
- - (void)drawRect:(CGRect)rect
- {
- self.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
- self.translucent = YES;
- }
- */
-
-@end
-
-@implementation UISearchBar (CustomImage)
-
-- (void)drawRect:(CGRect)rect
-{
-	if (self.subviews.count > 1) {
-		[(self.subviews)[0] removeFromSuperview];
-	}
-	
-	self.opaque = NO;
-	self.backgroundColor = [UIColor clearColor];
-}
-
-@end
-
-
 @implementation AppDelegate_Phone
 
 @synthesize window;
@@ -82,26 +22,9 @@
 {
     window.tintColor = [UIColor purpleColor];
     
-    /*
-	CGRect frame = window.frame;
-	frame.size.height -= 20.;
-	frame.origin.y = 20.;
-	borderMaskWindow = [[BorderMaskWindow alloc] initWithFrame:frame];
-	borderMaskWindow.backgroundColor = [UIColor clearColor];
-	borderMaskWindow.windowLevel = UIWindowLevelStatusBar;
-	borderMaskWindow.userInteractionEnabled = NO;
-	[borderMaskWindow makeKeyAndVisible];
-    */
-	
 	PlaylistsViewController * playlistsViewController = [[PlaylistsViewController alloc] init];
 	
 	navigationController = [[UINavigationController alloc] initWithRootViewController:playlistsViewController];
-	//navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-	//navigationController.navigationBar.translucent = YES;
-	
-	//navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
-	
-	//window.backgroundColor = [UIColor blackColor];
 	window.rootViewController = navigationController;
 	
     [window makeKeyAndVisible];
@@ -132,10 +55,6 @@
 	static UIDeviceOrientation oldLandscapeOrientation = UIDeviceOrientationUnknown;
 	UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
 	
-#if 0
-	// @TODO: Test with all device orientation (face up, face down, etc.)
-	borderMaskWindow.hidden = (UIDeviceOrientationIsLandscape(orientation) /*&& !UIDeviceOrientationIsLandscape(oldLandscapeOrientation))*/ || orientation == UIDeviceOrientationPortraitUpsideDown);
-#endif
 	if (UIDeviceOrientationIsLandscape(orientation)) {
 		if (landscapeWindow) {
 			/*  If the "landscapeWindow" is showing and we are into the landscape mode,

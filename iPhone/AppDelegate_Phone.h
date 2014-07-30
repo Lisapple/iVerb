@@ -15,16 +15,12 @@
 
 #import "ManagedObjectContext.h"
 
-@interface BorderMaskWindow : UIWindow
-@end
-
 @interface AppDelegate_Phone : NSObject <UIApplicationDelegate, UITabBarDelegate, ManagedObjectContext>
 {
 	NSManagedObjectModel *managedObjectModel;
     NSManagedObjectContext *managedObjectContext;	    
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
 	
-	BorderMaskWindow * borderMaskWindow;
     UIWindow * window, * landscapeWindow;
 	
 	NSDictionary * dictionary;

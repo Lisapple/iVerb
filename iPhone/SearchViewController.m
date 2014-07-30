@@ -25,6 +25,8 @@
 @interface SearchViewController ()
 {
 	id updateObserver;
+	
+	BOOL showClear, showAddTo, showShare, showRemove;
 }
 
 @end
@@ -97,8 +99,8 @@
 {
     if ([aChar isEqualToString:UITableViewIndexSearch]) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                          atScrollPosition:UITableViewScrollPositionBottom
-                                  animated:NO];
+							  atScrollPosition:UITableViewScrollPositionBottom
+									  animated:NO];
     }
     
 	NSInteger index = 0;
@@ -116,23 +118,27 @@
 
 - (IBAction)emptyHistoryAction:(id)sender
 {
-	if (_playlist.verbs.count > 0) {
-		if (TARGET_IS_IPAD()) {
-			UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:@"Would you really want to empty the history?"
+	if (!showClear) {
+		showClear = YES;
+		
+		if (_playlist.verbs.count > 0) {
+			if (TARGET_IS_IPAD()) {
+				UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:@"Would you really want to empty the history?"
+																		  delegate:self
+																 cancelButtonTitle:@"Cancel"
+															destructiveButtonTitle:@"Empty"
+																 otherButtonTitles:nil];
+				actionSheet.tag = kAddToActionSheet;
+				[actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
+			} else {
+				ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:@"Would you really want to empty the history?"
 																	  delegate:self
 															 cancelButtonTitle:@"Cancel"
 														destructiveButtonTitle:@"Empty"
 															 otherButtonTitles:nil];
-			actionSheet.tag = kAddToActionSheet;
-			[actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
-		} else {
-			ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:@"Would you really want to empty the history?"
-																  delegate:self
-														 cancelButtonTitle:@"Cancel"
-													destructiveButtonTitle:@"Empty"
-														 otherButtonTitles:nil];
-			actionSheet.tag = kAddToActionSheet;
-			[actionSheet showInView:self.view];
+				actionSheet.tag = kAddToActionSheet;
+				[actionSheet showInView:self.view];
+			}
 		}
 	}
 }
@@ -140,8 +146,6 @@
 - (IBAction)toogleEditingAction:(id)sender
 {
 	editing = !editing;
-	
-	//_toolbar.hidden = !editing;
     
     self.navigationController.toolbarHidden = !editing;
     
@@ -174,78 +178,65 @@
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:item
                                                                                            target:self
                                                                                            action:@selector(toogleEditingAction:)];
-#if 0
-	/* Hide the "Remove" button from cell */
-	if (rowWithDeleteConfirmation > -1) {
-		UITableViewCell * oldCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:0]];
-		[[oldCell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
-		rowWithDeleteConfirmation = -1;
-	}
-#endif
-	
 	[self.tableView reloadData];
 }
 
 - (IBAction)addToAction:(id)sender
 {
-	if (checkedVerbs.count > 0) {
-		
-		if (TARGET_IS_IPAD()) {
+	if (!showAddTo && !showShare && !showRemove) {
+		showAddTo = YES;
+		if (checkedVerbs.count > 0) {
 			
-			VerbOptionsViewController_Pad * verbOptionsViewController = [[VerbOptionsViewController_Pad alloc] init];
-			verbOptionsViewController.verbs = checkedVerbs;
-			popoverController = [[UIPopoverController alloc] initWithContentViewController:verbOptionsViewController];
-			popoverController.delegate = self;
-			
-			CGSize contentSize = popoverController.popoverContentSize;
-			contentSize.height = verbOptionsViewController.tableView.contentSize.height;
-			popoverController.popoverContentSize = contentSize;
-			
-			UIButton * button = (UIButton *)sender;
-			CGRect rect = [button convertRect:button.frame toView:self.view];
-			rect.origin.x = 20.;
-			
-			[popoverController presentPopoverFromRect:rect
-											   inView:self.view
-							 permittedArrowDirections:UIPopoverArrowDirectionDown
-											 animated:NO];
-			
-		} else {
-			/* Show an actionSheet to select a playlist (or bookmarks) *OR* show the VerbOptionsViewController_Phone */
-			VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
-			optionsViewController.verbs = checkedVerbs;
-			optionsViewController.modalTransitionStyle = UIModalTransitionStylePartialCurl;
-			//optionsViewController.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.];
-			[self presentViewController:optionsViewController animated:YES completion:NULL];
+			if (TARGET_IS_IPAD()) {
+				
+				VerbOptionsViewController_Pad * verbOptionsViewController = [[VerbOptionsViewController_Pad alloc] init];
+				verbOptionsViewController.verbs = checkedVerbs;
+				popoverController = [[UIPopoverController alloc] initWithContentViewController:verbOptionsViewController];
+				popoverController.delegate = self;
+				
+				CGSize contentSize = popoverController.popoverContentSize;
+				contentSize.height = verbOptionsViewController.tableView.contentSize.height;
+				popoverController.popoverContentSize = contentSize;
+				
+				[popoverController presentPopoverFromBarButtonItem:sender
+										  permittedArrowDirections:UIPopoverArrowDirectionUp
+														  animated:NO];
+				
+			} else {
+				/* Show an actionSheet to select a playlist (or bookmarks) *OR* show the VerbOptionsViewController_Phone */
+				VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
+				optionsViewController.verbs = checkedVerbs;
+				optionsViewController.modalTransitionStyle = UIModalTransitionStylePartialCurl;
+				[self presentViewController:optionsViewController animated:YES completion:NULL];
+			}
 		}
 	}
 }
 
 - (IBAction)shareAction:(id)sender
 {
-	if (checkedVerbs.count > 0) {
-		
-		BOOL canSendMail = [MFMailComposeViewController canSendMail];
-		if (TARGET_IS_IPAD()) {
-			UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+	if (!showAddTo && !showShare && !showRemove) {
+		showShare = YES;
+		if (checkedVerbs.count > 0) {
+			
+			BOOL canSendMail = [MFMailComposeViewController canSendMail];
+			if (TARGET_IS_IPAD()) {
+				UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+																		  delegate:self
+																 cancelButtonTitle:@"Cancel"
+															destructiveButtonTitle:nil
+																 otherButtonTitles:@"Copy to Pasteboard", ((canSendMail)? @"Send by Mail" : nil), nil];
+				actionSheet.tag = kShareActionSheet;
+				[actionSheet showFromBarButtonItem:sender animated:NO];
+			} else {
+				ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:nil
 																	  delegate:self
 															 cancelButtonTitle:@"Cancel"
 														destructiveButtonTitle:nil
 															 otherButtonTitles:@"Copy to Pasteboard", ((canSendMail)? @"Send by Mail" : nil), nil];
-			actionSheet.tag = kShareActionSheet;
-			
-			UIButton * button = (UIButton *)sender;
-			CGRect rect = [button convertRect:button.frame toView:self.view];
-			rect.origin.x = 105.;
-			[actionSheet showFromRect:rect inView:self.view animated:NO];
-		} else {
-			ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:nil
-																  delegate:self
-														 cancelButtonTitle:@"Cancel"
-													destructiveButtonTitle:nil
-														 otherButtonTitles:@"Copy to Pasteboard", ((canSendMail)? @"Send by Mail" : nil), nil];
-			actionSheet.tag = kShareActionSheet;
-			[actionSheet showInView:self.view];
+				actionSheet.tag = kShareActionSheet;
+				[actionSheet showInView:self.view];
+			}
 		}
 	}
 }
@@ -262,53 +253,37 @@
 	}
 	
 	[controller dismissViewControllerAnimated:YES completion:NULL];
-	
-	for (UIWindow * window in [UIApplication sharedApplication].windows)
-		if ([NSStringFromClass(window.class) isEqualToString:@"BorderMaskWindow"]) window.hidden = NO;
 }
 
 - (IBAction)removeAction:(id)sender
 {
-	if (checkedVerbs.count > 0) {
-		if (TARGET_IS_IPAD()) {
-			UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+	if (!showAddTo && !showShare && !showRemove) {
+		showRemove = YES;
+		if (checkedVerbs.count > 0) {
+			if (TARGET_IS_IPAD()) {
+				UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+																		  delegate:self
+																 cancelButtonTitle:@"Cancel"
+															destructiveButtonTitle:[NSString stringWithFormat:@"Remove from %@", _playlist.name]
+																 otherButtonTitles:nil];
+				actionSheet.tag = kRemoveActionSheet;
+				[actionSheet showFromBarButtonItem:sender animated:NO];
+			} else {
+				/* Show an actionSheet to confirm removing */
+				NSString * removeButtonTitle = (_playlist.name.length > 12) ? @"Remove" : [NSString stringWithFormat:@"Remove from \"%@\"", _playlist.name];
+				ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:nil
 																	  delegate:self
 															 cancelButtonTitle:@"Cancel"
-														destructiveButtonTitle:[NSString stringWithFormat:@"Remove from %@", _playlist.name]
+														destructiveButtonTitle:removeButtonTitle
 															 otherButtonTitles:nil];
-			actionSheet.tag = kRemoveActionSheet;
-            
-			UIButton * button = (UIButton *)sender;
-			CGRect rect = [button convertRect:button.frame toView:self.view];
-			rect.origin.x = 225.;
-			
-			[actionSheet showFromRect:rect inView:self.view animated:NO];
-		} else {
-			/* Show an actionSheet to confirm removing */
-            NSString * removeButtonTitle = (_playlist.name.length > 12) ? @"Remove" : [NSString stringWithFormat:@"Remove from \"%@\"", _playlist.name];
-			ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:nil
-																  delegate:self
-														 cancelButtonTitle:@"Cancel"
-													destructiveButtonTitle:removeButtonTitle
-														 otherButtonTitles:nil];
-			actionSheet.tag = kRemoveActionSheet;
-			[actionSheet showInView:self.view];
+				actionSheet.tag = kRemoveActionSheet;
+				[actionSheet showInView:self.view];
+			}
 		}
 	}
 }
 
 #pragma mark - UITableViewDataSource
-
-- (NSArray *)indexTitles
-{
-    NSArray * allTitles = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"W"];
-    NSMutableArray * titles = allTitles.mutableCopy;
-    for (NSString * title in allTitles) {
-        if ([self indexOfObjectBeginingWith:title] == -1)
-            [titles removeObject:titles];
-    }
-    return titles;
-}
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
@@ -332,172 +307,25 @@
 	return newIndex;
 }
 
-#if 0
-- (NSArray *)sectionIndexTitlesForIndexBarTableView:(IndexBarTableView *)aTableView
-{
-	/* Don't show the IndexBar: on iPad, if the playlist is not a ordered list or if searching is occuring */
-	if (!TARGET_IS_IPAD() && !_playlist.canBeModified && !isSearching) {
-		return [NSArray arrayWithObjects:@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"W", nil];
-	}
-	
-	return nil;
-}
-
-- (NSInteger)indexBarTableView:(IndexBarTableView *)aTableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
-{
-	NSInteger newIndex = [self indexOfObjectBeginingWith:title];
-	[aTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:newIndex inSection:0]
-					  atScrollPosition:UITableViewScrollPositionTop
-							  animated:NO];
-	
-	CGPoint offset = aTableView.contentOffset;
-	
-	/* Change the offset depending of the iOS version (iOS4 or iOS5+) */
-	if ([NSIndexSet instancesRespondToSelector:@selector(enumerateRangesUsingBlock:)]) offset.y -= kHeaderHeight - 44.;
-	else offset.y -= 44.;
-	
-	aTableView.contentOffset = offset;
-	
-	return newIndex;
-}
-#endif
-
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section
 {
 	return filteredKeys.count;
 }
-
-/*
- - (void)removeCell:(id)sender
- {
- UITableViewCell * cell = (UITableViewCell *)[sender superview];
- NSIndexPath * indexPath = [self.tableView indexPathForCell:cell];
- 
- [self removeVerb:[filteredKeys objectAtIndex:indexPath.row]];
- 
- [self.tableView beginUpdates];
- 
- [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
- withRowAnimation:UITableViewRowAnimationFade];
- 
- NSArray * verbs = nil;
- if ([_playlist.name isEqualToString:@"_HISTORY_"] && _playlist.isDefaultPlaylist) {
- NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
- verbs = [_playlist.verbs sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
- } else {
- NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];
- verbs = [_playlist.verbs sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
- }
- 
- sortedKeys = [verbs copy];
- filteredKeys = [verbs copy];
- 
- [self.tableView endUpdates];
- 
- rowWithDeleteConfirmation = -1;
- }
- 
- - (void)removeVerb:(Verb *)verb
- {
- [[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
- }
- 
- - (void)cellsGestureRecognized:(UIGestureRecognizer *)recognizer
- {
- [self cellDidSwipe:(UITableViewCell *)recognizer.view];
- }
- 
- - (void)cellDidSwipe:(UITableViewCell *)cell
- {
- if (editing) // Don't show "Remove" button when editing
- return ;
- 
- if (rowWithDeleteConfirmation > -1) {
- UITableViewCell * oldCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:0]];
- [[oldCell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
- rowWithDeleteConfirmation = -1;
- }
- 
- ConfirmationButton * confirmationButton = [[ConfirmationButton alloc] initWithCell:cell];
- confirmationButton.tag = kConfirmationButtonTag;
- confirmationButton.title = @"Remove";
- [confirmationButton addTarget:self
- action:@selector(removeCell:)
- forControlEvents:UIControlEventTouchUpInside];
- 
- confirmationButton.transform = CGAffineTransformMakeScale(0.5, 0.5);
- confirmationButton.alpha = 0.;
- [cell addSubview:confirmationButton];
- 
- [UIView animateWithDuration:0.15
- animations:^{
- confirmationButton.transform = CGAffineTransformIdentity;
- confirmationButton.alpha = 1.;
- }
- completion:^(BOOL finished) {
- }];
- 
- rowWithDeleteConfirmation =  [self.tableView indexPathForCell:cell].row;
- }
- */
 
 - (UITableViewCell *)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	static NSString * cellID = @"cellID";
 	MyTableViewCell * cell = (MyTableViewCell *)[aTableView dequeueReusableCellWithIdentifier:cellID];
 	
-	if (!cell) {
+	if (!cell)
 		cell = [[MyTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
-		/*
-         if (_playlist.isUserPlaylist) {// Don't add editing on default playlists
-         UISwipeGestureRecognizer * recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellsGestureRecognized:)];
-         recognizer.direction = (UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight);
-         [cell addGestureRecognizer:recognizer];
-         }
-         */
-	}
 	
 	Verb * verb = filteredKeys[indexPath.row];
 	cell.textLabel.text = [verb valueForKey:@"Infinitif"];
 	
-	/*
-     if (editing) {
-     UIView * accessoryView = nil;
-     if ([checkedVerbs containsObject:verb]) //  Show the checked image
-     accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"checked"]];
-     else
-     accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"unchecked"]];
-     
-     cell.accessoryView = accessoryView;
-     
-     } else {
-     cell.accessoryView = nil;
-     }
-     */
-	/*
-     if (indexPath.row == rowWithDeleteConfirmation) {
-     ConfirmationButton * confirmationButton = [[ConfirmationButton alloc] initWithCell:cell];
-     confirmationButton.tag = kConfirmationButtonTag;
-     confirmationButton.title = @"Remove";
-     [confirmationButton addTarget:self
-     action:@selector(removeCell:)
-     forControlEvents:UIControlEventTouchUpInside];
-     
-     confirmationButton.transform = CGAffineTransformMakeScale(0.5, 0.5);
-     confirmationButton.alpha = 0.;
-     [cell addSubview:confirmationButton];
-     
-     [UIView animateWithDuration:0.15
-     animations:^{
-     confirmationButton.transform = CGAffineTransformIdentity;
-     confirmationButton.alpha = 1.;
-     }
-     completion:^(BOOL finished) {
-     }];
-     } else {
-     [[cell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
-     }
-     */
+	// Clear checkmarks when after editing
+	if (!editing)
+		cell.accessoryType = UITableViewCellAccessoryNone;
 	
 	return cell;
 }
@@ -522,7 +350,7 @@
 
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	__block Verb * verb = filteredKeys[indexPath.row];
+	Verb * verb = filteredKeys[indexPath.row];
 	if (editing) {
 		
 		UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexPath];
@@ -537,14 +365,6 @@
 		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 		
 	} else {
-		
-        /*
-         if (rowWithDeleteConfirmation > -1) {
-         UITableViewCell * oldCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:0]];
-         [[oldCell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
-         rowWithDeleteConfirmation = -1;
-         }
-         */
         
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
 			
@@ -569,63 +389,14 @@
 	}
 }
 
-#pragma mark - UIScrollView Delegate
-#if 0
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-	if (rowWithDeleteConfirmation > -1) {
-		UITableViewCell * oldCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:rowWithDeleteConfirmation inSection:0]];
-		[[oldCell viewWithTag:kConfirmationButtonTag] removeFromSuperview];
-		rowWithDeleteConfirmation = -1;
-	}
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
-	if (!decelerate) {
-		CGFloat offsetY = scrollView.contentOffset.y;
-		if ((kHeaderHeight - 88.) < offsetY && offsetY < (kHeaderHeight - 44.)) {
-			[scrollView setContentOffset:CGPointMake(0, kHeaderHeight - 88.) animated:YES];
-		}
-	}
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-	CGFloat offsetY = scrollView.contentOffset.y;
-	if ((kHeaderHeight - 88.) < offsetY && offsetY < (kHeaderHeight - 44.)) {
-		[scrollView setContentOffset:CGPointMake(0, kHeaderHeight - 88.) animated:YES];
-	}
-}
-#endif
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
 {
 	if (!isSearching) {
-		
-#if 0
-		self.tableView.tableHeaderView = nil;
-		CGRect frame = _headerView.frame;
-		frame.origin = CGPointMake(0., -(kHeaderHeight - 44.));
-		_headerView.frame = frame;
-		
-		[self.view addSubview:_headerView];
-        
-		[aSearchBar becomeFirstResponder];
-		aSearchBar.delegate = self;
-		
-		[self.navigationController setNavigationBarHidden:YES
-												 animated:YES];
-		
-		[self.tableView setContentOffset:CGPointMake(0., 0.) animated:NO];
-#endif
 		[aSearchBar setShowsCancelButton:YES animated:YES];
-#if 0
-		self.tableView.contentInset = UIEdgeInsetsMake(44., 0., 214. - 44., 0.);
-		self.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(44., 0., 214. - 44., 0.);
-#endif
 		isSearching = YES;
+		
 		//[self.tableView scrollRectToVisible:CGRectMake(0., 0., 1., 1.) animated:NO];
 		[self.tableView reloadSectionIndexTitles];
 		[self.tableView reloadData];
@@ -654,26 +425,14 @@
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)aSearchBar
 {
-#if 0
-	CGRect frame = _headerView.frame;
-	frame.origin = CGPointZero;
-	_headerView.frame = frame;
-	
-	self.tableView.tableHeaderView = _headerView;
-	
-	
-	[self.navigationController setNavigationBarHidden:NO animated:YES];
-	[self.tableView setContentOffset:CGPointMake(0., -44.) animated:NO];
-	
-	[aSearchBar setShowsCancelButton:NO animated:YES];
-	
-	self.tableView.contentInset = UIEdgeInsetsMake(-kHeaderHeight + 88., 0., 0., 0.);
-	self.tableView.scrollIndicatorInsets = UIEdgeInsetsMake(44., 0., 0., 0.);
-	self.tableView.contentOffset = CGPointMake(0., kHeaderHeight - 44.);
-#endif
 	isSearching = NO;
 	[self.tableView reloadSectionIndexTitles];
 	[self.tableView reloadData];
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+{
+	showAddTo = NO;
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -684,6 +443,8 @@
 			[[ManagedObjectContext sharedContext] save:NULL];
 			[self reloadData];
 		}
+		showAddTo = NO;
+		
 	} else if (actionSheet.tag == kShareActionSheet) {
 		
 		switch (buttonIndex) {
@@ -714,15 +475,12 @@
                 [self presentViewController:mailCompose
                                    animated:YES
                                  completion:NULL];
-				
-				/* When the mail compose view shows up, the BorderMaskWindow receive all events, hide it to let mail compose receive touch events */
-				for (UIWindow * window in [UIApplication sharedApplication].windows)
-					if ([NSStringFromClass(window.class) isEqualToString:@"BorderMaskWindow"]) window.hidden = NO;
 			}
 				break;
-                default: // "Cancel"
+			default: // "Cancel"
 				break;
 		}
+		showShare = NO;
 		
 	} else if (actionSheet.tag == kRemoveActionSheet) {
 		
@@ -733,20 +491,9 @@
 			
 			[self reloadData];
 		}
+		showRemove = NO;
 	}
 }
-
-/*
- - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)aViewController animated:(BOOL)animated
- {
- }
- 
- - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
- {
- if (viewController == self) {
- }
- }
- */
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -775,21 +522,6 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:updateObserver];
 }
 
-- (void)didReceiveMemoryWarning {
-	// Releases the view if it doesn't have a superview.
-	[super didReceiveMemoryWarning];
-	
-	// Release any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
-	[super viewDidUnload];
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-	
-	self.tableView = nil;
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	if (TARGET_IS_IPAD())
@@ -806,17 +538,6 @@
 - (NSUInteger)supportedInterfaceOrientations
 {
 	return UIInterfaceOrientationMaskLandscape;
-	//return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationPortrait;
 }
-
-- (void)dealloc
-{
-	self.navigationController.delegate = nil;
-	self.playlist = nil;
-	
-	self.tableView.delegate = nil;
-	self.tableView.dataSource = nil;
-}
-
 
 @end
