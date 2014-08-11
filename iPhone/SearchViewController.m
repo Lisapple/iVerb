@@ -13,7 +13,6 @@
 
 #import "ManagedObjectContext.h"
 
-#import "MyTableViewCell.h"
 #import "ConfirmationButton.h"
 
 #import "IndexBarTableView.h"
@@ -313,10 +312,12 @@
 - (UITableViewCell *)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	static NSString * cellID = @"cellID";
-	MyTableViewCell * cell = (MyTableViewCell *)[aTableView dequeueReusableCellWithIdentifier:cellID];
+	UITableViewCell * cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
 	
-	if (!cell)
-		cell = [[MyTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+	if (!cell) {
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+		cell.textLabel.textColor = [UIColor darkGrayColor];
+	}
 	
 	Verb * verb = filteredKeys[indexPath.row];
 	cell.textLabel.text = [verb valueForKey:@"Infinitif"];

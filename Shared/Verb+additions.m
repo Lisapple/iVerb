@@ -12,10 +12,6 @@
 
 - (NSString *)HTMLFormatInlineCSS
 {
-	if (self.isBookmarked) {
-		// @TODO: add a field "data-bookmark" to show the star to bookmark/unbookmark
-	}
-	
 	NSMutableString * content = [NSMutableString stringWithCapacity:1000];
 	
 	/* <span class="section">Infinitif</span><br>
@@ -77,10 +73,6 @@
 
 - (NSString *)HTMLFormat
 {
-	if (self.isBookmarked) {
-		// @TODO: add a field "data-bookmark" to show the star to bookmark/unbookmark
-	}
-	
 	NSMutableString * content = [NSMutableString stringWithCapacity:1000];
 	
 	/* <a href="#help">Infinitif</span><br>

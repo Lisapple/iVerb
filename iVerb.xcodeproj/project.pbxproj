@@ -49,7 +49,6 @@
 		508784E7170B6BBA00693C3C /* EditNoteViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 508784E5170B6BBA00693C3C /* EditNoteViewController_Phone.xib */; };
 		50A087E2170F5868002D8FA4 /* IndexBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A087DE170F5868002D8FA4 /* IndexBar.m */; };
 		50A087E3170F5868002D8FA4 /* IndexBarTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A087DF170F5868002D8FA4 /* IndexBarTableView.m */; };
-		50AA92D61269C6BB00C4AC3C /* MyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AA92D51269C6BB00C4AC3C /* MyTableViewCell.m */; };
 		50AE533F1649608500FE8879 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50AE53411649608500FE8879 /* Localizable.strings */; };
 		50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AE534616496B9A00FE8879 /* Verb+additions.m */; };
 		50C3A6F4161488E800317F92 /* ManagedObjectContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C3A6F3161488E700317F92 /* ManagedObjectContext.m */; };
@@ -491,7 +490,6 @@
 				2860E32E111B888700E27156 /* AppDelegate_Pad.m in Sources */,
 				500BD3A7123BF35000FC6947 /* SearchViewController.m in Sources */,
 				50CD97E3123CFF0900E31BC8 /* ResultViewController.m in Sources */,
-				50AA92D61269C6BB00C4AC3C /* MyTableViewCell.m in Sources */,
 				501CFFAD1986BB1600F8731D /* IVTableViewController.m in Sources */,
 				504CC82412C7E53E00D9672B /* verbs.xcdatamodel in Sources */,
 				506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */,

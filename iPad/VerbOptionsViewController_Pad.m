@@ -55,16 +55,11 @@
 	UITableViewCell * cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
 	
 	if (!cell) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];// @TODO: create a class with MyTableViewCell and CheckTableViewCell
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
 		cell.textLabel.textColor = [UIColor whiteColor];
 		cell.backgroundColor = [UIColor blackColor];
 		cell.textLabel.highlightedTextColor = [UIColor blackColor];
 	}
-	
-	//cell.backgroundColor = [UIColor colorWithWhite:0.15 alpha:1.];
-	//cell.selectionStyle = UITableViewCellSelectionStyleGray;
-	
-	//cell.textLabel.textColor = [UIColor whiteColor];
 	
 	if (indexPath.section == 0) {
 		

@@ -14,7 +14,6 @@
 
 #import "ManagedObjectContext.h"
 
-#import "MyTableViewCell.h"
 #import "ConfirmationButton.h"
 #import "MoreTableViewCell.h"
 
