@@ -84,7 +84,7 @@
 	 */
 	
 	[content appendFormat:@"\
-	 <a href=\"#help-infinitif\">Infinitif</a><br>\
+	 <a href=\"#help-infinitive\">Infinitif</a><br>\
 	 <div class=\"verb-form\">%@</div>\
 	 <a href=\"#help-simple-past\">Simple Past</a><br>\
 	 <div class=\"verb-form\">%@</div>\

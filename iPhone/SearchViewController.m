@@ -17,7 +17,7 @@
 
 #import "IndexBarTableView.h"
 
-#define kAddToActionSheet 1234
+#define kEmptyActionSheet 1234
 #define kShareActionSheet 2345
 #define kRemoveActionSheet 3456
 
@@ -25,7 +25,7 @@
 {
 	id updateObserver;
 	
-	BOOL showClear, showAddTo, showShare, showRemove;
+	BOOL showEmpty, showAddTo, showShare, showRemove;
 }
 
 @end
@@ -117,8 +117,8 @@
 
 - (IBAction)emptyHistoryAction:(id)sender
 {
-	if (!showClear) {
-		showClear = YES;
+	if (!showEmpty) {
+		showEmpty = YES;
 		
 		if (_playlist.verbs.count > 0) {
 			if (TARGET_IS_IPAD()) {
@@ -127,7 +127,7 @@
 																 cancelButtonTitle:@"Cancel"
 															destructiveButtonTitle:@"Empty"
 																 otherButtonTitles:nil];
-				actionSheet.tag = kAddToActionSheet;
+				actionSheet.tag = kEmptyActionSheet;
 				[actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
 			} else {
 				ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:@"Would you really want to empty the history?"
@@ -135,7 +135,7 @@
 															 cancelButtonTitle:@"Cancel"
 														destructiveButtonTitle:@"Empty"
 															 otherButtonTitles:nil];
-				actionSheet.tag = kAddToActionSheet;
+				actionSheet.tag = kEmptyActionSheet;
 				[actionSheet showInView:self.view];
 			}
 		}
@@ -436,13 +436,13 @@
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-	if (actionSheet.tag == kAddToActionSheet) {
+	if (actionSheet.tag == kEmptyActionSheet) {
 		if (buttonIndex == 0) { // "Empty"
 			[[_playlist mutableSetValueForKey:@"verbs"] removeAllObjects];
 			[[ManagedObjectContext sharedContext] save:NULL];
 			[self reloadData];
 		}
-		showAddTo = NO;
+		showEmpty = NO;
 		
 	} else if (actionSheet.tag == kShareActionSheet) {
 		
