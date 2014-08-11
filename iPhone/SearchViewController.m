@@ -165,8 +165,6 @@
                                                                 action:@selector(shareAction:)],
                                 [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
                                 removeItem ];
-    
-    //[self.navigationController setToolbarItems:toolbarItems animated:YES]; // Doesn't work on iOS 7
     [self.navigationController.toolbar setItems:toolbarItems animated:YES];
 	
 	self.navigationItem.hidesBackButton = editing;

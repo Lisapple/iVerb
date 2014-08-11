@@ -27,6 +27,12 @@
 #define kAlertInfo 1234
 #define kAlertMore 2345
 
+@interface PlaylistsViewController ()
+{
+	NSIndexPath * _indexPathForActionSheet;
+}
+@end
+
 @implementation PlaylistsViewController
 
 - (void)didReceiveMemoryWarning
@@ -454,6 +460,7 @@
 	selectedPlaylist = userPlaylists[indexPath.row];
 	
 	if (TARGET_IS_IPAD()) {
+		_indexPathForActionSheet = indexPath;
 		UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
 																  delegate:self
 														 cancelButtonTitle:@"Cancel"
@@ -581,7 +588,22 @@
 		}
 	} else if (actionSheet.tag == kAlertMore) {
 		switch (buttonIndex) {
-			case 0:// "Delete"
+			case 0: {// "Delete"
+				Playlist * playlist = userPlaylists[_indexPathForActionSheet.row];
+				
+				/* Delete the playlist from Core Data */
+				NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
+				[context deleteObject:playlist];
+				[context save:NULL];
+				
+				/* Reload the TableView */
+				[self.tableView beginUpdates];
+				[self.tableView deleteRowsAtIndexPaths:@[_indexPathForActionSheet]
+								  withRowAnimation:UITableViewRowAnimationFade];
+				userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
+				[self.tableView endUpdates];
+				_indexPathForActionSheet = nil;
+			}
 				break;
 			case 1: {// "Launch the Quiz"
 				QuizViewController * quizViewController = [[QuizViewController alloc] init];

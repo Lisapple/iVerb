@@ -24,14 +24,13 @@
 	
 	userPlaylists = [Playlist userPlaylists];
 	
-	self.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.];
-	self.tableView.backgroundView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.];
-	
-	self.tableView.backgroundView.alpha = 0.;
+	self.view.backgroundColor = [UIColor colorWithWhite:0. alpha:0.85];
 	
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
 	[self.tableView reloadData];
+	
+	self.tableView.tintColor = [UIColor whiteColor];
 }
 
 #pragma mark - UITableViewDataSource
@@ -57,6 +56,9 @@
 	
 	if (!cell) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];// @TODO: create a class with MyTableViewCell and CheckTableViewCell
+		cell.textLabel.textColor = [UIColor whiteColor];
+		cell.backgroundColor = [UIColor blackColor];
+		cell.textLabel.highlightedTextColor = [UIColor blackColor];
 	}
 	
 	//cell.backgroundColor = [UIColor colorWithWhite:0.15 alpha:1.];
