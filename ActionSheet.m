@@ -10,13 +10,6 @@
 
 @implementation _ActionSheetButton
 
-- (id)initWithFrame:(CGRect)frame
-{
-	if ((self = [super initWithFrame:frame])) {
-	}
-	return self;
-}
-
 - (void)drawRect:(CGRect)rect
 {
 	float x = .5, y = .5, width = rect.size.width - 1., height = rect.size.height - 1.;
@@ -188,8 +181,6 @@
 			_titleLabel.numberOfLines = 0;
 			_titleLabel.textColor = [UIColor colorWithWhite:0.6 alpha:1.];
 			_titleLabel.font = [UIFont systemFontOfSize:13.];
-			//titleLabel.shadowOffset = CGSizeMake(0., 1.);
-			//titleLabel.shadowColor = [UIColor colorWithWhite:1. alpha:0.5];
 			[self addSubview:_titleLabel];
 		}
     }
@@ -320,12 +311,6 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    /*
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    [[UIColor redColor] setFill];
-    CGContextFillRect(context, rect);
-    */
-    
     [[UIColor colorWithWhite:0.9 alpha:1.] setFill];
     
     CGFloat height = [_titleLabel sizeThatFits:CGSizeMake(306., INFINITY)].height;

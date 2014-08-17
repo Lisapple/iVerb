@@ -20,7 +20,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
 	
 	userPlaylists = [Playlist userPlaylists];
 	
@@ -49,14 +48,6 @@
 	} else if (_verbs.count > 1) {
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %ld verbs:", (unsigned long)_verbs.count];
 	}
-	
-	/*
-	NSMutableArray * verbPlaylistsCopy = [[[self.verb mutableSetValueForKey:@"playlists"] allObjects] mutableCopy];
-	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
-	[verbPlaylistsCopy sortUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-	
-	verbPlaylists = (NSArray *)verbPlaylistsCopy;
-	*/
 	
 	[self.tableView reloadData];// Re-reload the tableView to update cells
 }
@@ -161,27 +152,6 @@
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	
 	[aTableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-	
-}
-
-- (void)didReceiveMemoryWarning
-{
-	// Releases the view if it doesn't have a superview.
-	[super didReceiveMemoryWarning];
-	
-	// Release any cached data, images, etc that aren't in use.
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 @end

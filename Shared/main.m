@@ -14,9 +14,6 @@
 int main(int argc, char *argv[]) {
     
     @autoreleasepool {
-        //int retVal = UIApplicationMain(argc, argv, nil, nil);
-        //return retVal;
-        
         NSString * className = NSStringFromClass((TARGET_IS_IPAD()) ? AppDelegate_Pad.class : AppDelegate_Phone.class);
         return UIApplicationMain(argc, argv, nil, className);
     }

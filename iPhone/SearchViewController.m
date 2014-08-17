@@ -13,8 +13,6 @@
 
 #import "ManagedObjectContext.h"
 
-#import "ConfirmationButton.h"
-
 #import "IndexBarTableView.h"
 
 #define kEmptyActionSheet 1234
@@ -396,7 +394,6 @@
 		[aSearchBar setShowsCancelButton:YES animated:YES];
 		isSearching = YES;
 		
-		//[self.tableView scrollRectToVisible:CGRectMake(0., 0., 1., 1.) animated:NO];
 		[self.tableView reloadSectionIndexTitles];
 		[self.tableView reloadData];
 	}
@@ -519,14 +516,6 @@
 	[super viewDidDisappear:animated];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:updateObserver];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	if (TARGET_IS_IPAD())
-		return (UIDeviceOrientationIsLandscape(interfaceOrientation) || UIDeviceOrientationIsPortrait(interfaceOrientation));
-	else
-		return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (BOOL)shouldAutorotate

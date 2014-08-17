@@ -8,8 +8,6 @@
 
 #import "QuizViewController.h"
 
-//#import "UIBarButtonItem+addition.h"
-
 @interface QuizViewController ()
 
 - (void)start;
@@ -47,13 +45,11 @@
 {
     [super viewDidLoad];
 	
-	//self.navigationController.delegate = self;
-	
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                           target:self
                                                                                           action:@selector(cancelAction:)];
 	
-	// @TODO: add a "Details" button on result to show a liste with good and bad responses
+	// @TODO: add a "Details" button on result to show a list with good and bad responses
 	
 	self.view.backgroundColor = [UIColor colorWithWhite:0.96 alpha:1.];
 	
@@ -237,11 +233,7 @@
 
 - (void)pushResponse:(ResponseState)response animated:(BOOL)animated
 {
-	if (response == ResponseStateTrue) {
-		_responseImageView.image = [UIImage imageNamed:@"true"];
-	} else {
-		_responseImageView.image = [UIImage imageNamed:@"false"];
-	}
+	_responseImageView.image = [UIImage imageNamed:(response == ResponseStateTrue) ? @"true" : @"false"];
 	
 	_responseLabel.text = currentResponse;
 	
@@ -310,12 +302,6 @@
 - (NSUInteger)supportedInterfaceOrientations
 {
 	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationPortrait;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)dealloc

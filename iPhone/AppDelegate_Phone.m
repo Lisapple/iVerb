@@ -8,8 +8,6 @@
 
 #import "AppDelegate_Phone.h"
 
-//#import "UIBarButtonItem+addition.h"
-
 #import "LandscapeViewController.h"
 
 @implementation AppDelegate_Phone

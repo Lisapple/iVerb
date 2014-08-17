@@ -10,8 +10,6 @@
 
 #import "ManagedObjectContext.h"
 
-//#import "UIBarButtonItem+addition.h"
-
 #import "VerbOptionsViewController_Phone.h"
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
@@ -36,48 +34,19 @@
 
 - (void)viewDidLoad
 {
+	[super viewDidLoad];
+	
 	NSString * infinitif = _verb.infinitif;
 	self.title = [@"To " stringByAppendingString:infinitif];
-	
-	/*
-	 UIBarButtonItem * rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"share-button"]
-	 style:UIBarButtonItemStyleBordered
-	 target:self
-	 action:@selector(showOptionAction:)];
-	 self.navigationItem.rightBarButtonItem = rightBarButtonItem;
-	 [rightBarButtonItem release];
-	 */
-	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                            target:self
                                                                                            action:@selector(showOptionAction:)];
-    
-    /*
-	frame = _webView.frame;
-	frame.origin.y = 44. - kTopMargin;
-	frame.size.height = _webView.frame.size.height + (kTopMargin * 2. - 44.);
-	_webView.frame = frame;
-    */
-	
-    //_webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
-    
-    /*
-	if ([_webView respondsToSelector:@selector(scrollView)])
-		_webView.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
-	else {
-		UIScrollView * scrollView = [_webView.subviews objectAtIndex:0];
-		scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
-	}
-     */
-	
 	_webView.delegate = self;
 	
 	NSString * basePath = [[NSBundle mainBundle] bundlePath];
 	[_webView loadHTMLString:_verb.HTMLFormat
 					 baseURL:[NSURL fileURLWithPath:basePath]];
 	[_activityIndicatorView startAnimating];
-	
-    [super viewDidLoad];
     
     reloadObserver = [[NSNotificationCenter defaultCenter] addObserverForName:@"ResultDidReloadNotification"
                                                                        object:nil
@@ -231,70 +200,14 @@
 	[_activityIndicatorView stopAnimating];
 }
 
-#if 0
-- (void)addVerbToPlaylist
-{
-	UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-															  delegate:self
-													 cancelButtonTitle:nil
-												destructiveButtonTitle:nil
-													 otherButtonTitles:nil];
-	
-	NSArray * playlists = [Playlist userPlaylists];
-	for (NSManagedObject * verbList in playlists) {
-		[actionSheet addButtonWithTitle:[verbList valueForKey:@"name"]];
-	}
-	
-	/* Add the cancel button at the bottom of the actionSheet */
-	[actionSheet addButtonWithTitle:@"Cancel"];
-	actionSheet.cancelButtonIndex = (actionSheet.numberOfButtons - 1);
-	
-	[actionSheet showInView:self.view];
-	[actionSheet release];
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	if (buttonIndex < (actionSheet.numberOfButtons - 1)) {
-		NSArray * playlists = [Playlist userPlaylists];
-		
-		Playlist * playlist = [playlists objectAtIndex:buttonIndex];
-		[verb addToPlaylist:playlist];
-		
-		NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
-		[context save:NULL];
-	}
-}
-#endif
-
-- (void)viewWillAppear:(BOOL)animated
-{
-	[super viewWillAppear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-	
-	//[[NSNotificationCenter defaultCenter] removeObserver:reloadObserver];
-}
-
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:reloadObserver];
 }
 
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
+- (void)viewDidUnload
+{
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 	
 	self.verbString = nil;
 	self.verb = nil;
@@ -307,11 +220,6 @@
 	self.translationLabel = nil;
 	
 	self.bookmarkImageView = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	return (interfaceOrientation == UIDeviceOrientationPortrait);
 }
 
 @end

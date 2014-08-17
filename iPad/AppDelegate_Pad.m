@@ -16,13 +16,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 	MainViewController * mainViewController = [[MainViewController alloc] init];
-    /*
-	CGRect rect = self.window.frame;
-	
-	rect.origin.y += 20.;
-	rect.size.height -= 20.;
-	mainViewController.view.frame = rect;
-     */
 	window.rootViewController = mainViewController;
 	
     [window makeKeyAndVisible];

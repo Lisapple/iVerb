@@ -13,22 +13,12 @@
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
 
-//#import "UIBarButtonItem+addition.h"
-
 #define kPinchOutScale 1. + 1./3.
 #define kPinchInScale 1. - 1./3.
 
 @implementation MainViewController
 
 @synthesize object;
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
 
 #pragma mark - View lifecycle
 
@@ -99,13 +89,6 @@
 		}
 	}
 	[self refreshWebview];
-	
-    /*
-     navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-     navigationBar.translucent = YES;
-     
-     navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
-     */
     
     NSString * title = [NSString stringWithFormat:@"To %@", verb.infinitif];
     UIFont * font = [UIFont boldSystemFontOfSize:20.];
@@ -127,23 +110,6 @@
 	navigationBar.items = @[self.navigationItem];
 	
 	webView.delegate = self;
-	
-    /*
-     frame = webView.frame;
-     frame.origin.y -= kTopMargin;
-     frame.size.height += kTopMargin * 2.;
-     webView.frame = frame;
-     
-     UIScrollView * scrollView = nil;
-     if ([webView respondsToSelector:@selector(scrollView)]) {
-     scrollView = webView.scrollView;
-     } else {
-     scrollView = (webView.subviews)[0];
-     }
-     
-     scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(kTopMargin, 0., kTopMargin, 0.);
-     scrollView.showsHorizontalScrollIndicator = NO;
-     */
     
 	UIPinchGestureRecognizer * gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
 																				   action:@selector(webviewDidZoomIn:)];
@@ -152,11 +118,6 @@
 	
 	PlaylistsViewController * playlistsViewController = [[PlaylistsViewController alloc] init];
 	leftNavigationController = [[UINavigationController alloc] initWithRootViewController:playlistsViewController];
-	
-    /*
-     leftNavigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-     leftNavigationController.navigationBar.translucent = YES;
-     */
 	leftNavigationController.view.frame = leftContainerView.bounds;
 	leftNavigationController.title = @"Search";
 	[leftContainerView addSubview:leftNavigationController.view];
@@ -240,12 +201,6 @@
 			editNoteViewController.verb = verb;
 			
 			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
-            /*
-             navigationController.navigationBar.tintColor = [UIColor colorWithWhite:0.9 alpha:1.];
-             navigationController.navigationBar.translucent = YES;
-             
-             navigationController.navigationBar.layer.masksToBounds = YES;// Remove the drop shadow on iOS6
-             */
 			navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 			[self presentViewController:navigationController animated:YES completion:NULL];
 		}
@@ -347,19 +302,6 @@
         return NO;
     }
     
-	return YES;
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
 	return YES;
 }
 

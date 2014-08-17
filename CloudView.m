@@ -13,17 +13,6 @@
 @synthesize origin = _origin;
 @synthesize verb = _verb;
 
-/*
-- (id)initWithFrame:(CGRect)frame
-{
-	if ((self = [super initWithFrame:frame])) {
-		
-	}
-	
-	return self;
-}
-*/
-
 - (BOOL)canBecomeFirstResponder
 {
 	return YES;
@@ -50,18 +39,6 @@
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"CloudLabelDidSelectedNotification" object:_verb];
 }
-
-/*
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-	NSLog(@"{ %.0f, %.0f } <> { %.0f, %.0f }", point.x, point.y, self.frame.origin.x, self.frame.origin.y);
-	if (CGRectContainsPoint(self.frame, point)) {
-		return self;
-	}
-	
-	return [super hitTest:point withEvent:event];
-}
-*/
 
 @end
 

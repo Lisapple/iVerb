@@ -8,8 +8,6 @@
 
 #import "EditNoteViewController.h"
 
-//#import "UIBarButtonItem+addition.h"
-
 @interface EditNoteViewController ()
 
 - (IBAction)cancelAction:(id)sender;
@@ -84,12 +82,6 @@
 - (NSUInteger)supportedInterfaceOrientations
 {
 	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationPortrait;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end

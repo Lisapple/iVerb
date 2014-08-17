@@ -14,8 +14,6 @@
 
 #import "CloudView.h"
 
-//#import "UIBarButtonItem+addition.h"
-
 @interface CloudViewController ()
 {
     CADisplayLink * _link;
@@ -32,24 +30,13 @@
     return self;
 }
 
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
 	
 	self.title = @"Cloud";
-	
-	//self.navigationController.delegate = self;
 	
 	if (TARGET_IS_IPAD()) {
 		/* Add a "Done" button on iPad */
@@ -87,7 +74,7 @@
 			y = (int)((rand() / (float)RAND_MAX) * height) + 20. + 44.;
 		}
 		
-		/* Rotate older "y" values */
+		/* Switch older "y" values */
 		oldYs[2] = oldYs[1];
 		oldYs[1] = oldYs[0];
 		oldYs[0] = y;
@@ -115,17 +102,6 @@
 	free(oldYs);
 	
 	((CloudView *)self.view).totalWidth = x - self.view.frame.size.width;
-	
-    /*
-	dispatch_queue_t queue = dispatch_get_main_queue();
-	dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue); //run event handler on the default global queue
-	dispatch_time_t now = dispatch_walltime(DISPATCH_TIME_NOW, 0);
-	dispatch_source_set_timer(timer, now, 33.333 * USEC_PER_SEC, 5000ull);// Fire timer one time a second, with 5 ms delay, "in case the system wants to align it with other events to minimize power consumption"
-	dispatch_source_set_event_handler(timer, ^{
-		[(CloudView *)self.view update];
-	});
-	dispatch_resume(timer);
-    */
     
     _link = [CADisplayLink displayLinkWithTarget:self.view selector:@selector(update)];
     
@@ -175,25 +151,6 @@
 - (IBAction)doneAction:(id)sender
 {
 	[self dismissViewControllerAnimated:YES completion:NULL];
-}
-
-#pragma mark - UINavigationController Delegate
-
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)aViewController animated:(BOOL)animated
-{
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 - (BOOL)shouldAutorotate

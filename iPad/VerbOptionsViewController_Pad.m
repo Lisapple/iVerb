@@ -10,8 +10,6 @@
 
 #import "ManagedObjectContext.h"
 
-#import "CheckTableViewCell.h"
-
 @implementation VerbOptionsViewController_Pad
 
 @synthesize tableView = _tableView;
@@ -121,26 +119,6 @@
 	
 	/* Send a notification for PlaylistViewController and SearchViewController to reload tableViews */
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"PlaylistDidUpdatedNotification" object:nil];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	return (UIDeviceOrientationIsPortrait(interfaceOrientation) || UIDeviceOrientationIsLandscape(interfaceOrientation));
 }
 
 - (BOOL)shouldAutorotate
