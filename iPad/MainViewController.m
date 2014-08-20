@@ -90,19 +90,7 @@
 	}
 	[self refreshWebview];
     
-    NSString * title = [NSString stringWithFormat:@"To %@", verb.infinitif];
-    UIFont * font = [UIFont boldSystemFontOfSize:20.];
-	CGSize size = [title sizeWithAttributes:@{ NSFontAttributeName : font }];
-	
-	CGRect rect = CGRectMake(0., 0., size.width, 40.);
-	UILabel * titleLabel = [[UILabel alloc] initWithFrame:rect];
-	titleLabel.backgroundColor = [UIColor clearColor];
-	titleLabel.text = title;
-	titleLabel.font = font;
-	titleLabel.textAlignment = NSTextAlignmentCenter;
-	titleLabel.textColor = [UIColor darkGrayColor];
-	
-	self.navigationItem.titleView = titleLabel;
+    self.title = [NSString stringWithFormat:@"To %@", verb.infinitif];
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                            target:self
                                                                                            action:@selector(showOptionsAction:)];
@@ -142,6 +130,23 @@
 													  [webView loadHTMLString:verb.HTMLFormat
 																	  baseURL:[NSURL fileURLWithPath:basePath]];
 												  }];
+}
+
+- (void)setTitle:(NSString *)title
+{
+	super.title = title;
+	
+	UIFont * font = [UIFont boldSystemFontOfSize:20.];
+	CGSize size = [title sizeWithAttributes:@{ NSFontAttributeName : font }];
+	
+	CGRect rect = CGRectMake(0., 0., size.width, 40.);
+	UILabel * titleLabel = [[UILabel alloc] initWithFrame:rect];
+	titleLabel.backgroundColor = [UIColor clearColor];
+	titleLabel.text = title;
+	titleLabel.font = font;
+	titleLabel.textAlignment = NSTextAlignmentCenter;
+	titleLabel.textColor = [UIColor darkGrayColor];
+	self.navigationItem.titleView = titleLabel;
 }
 
 - (void)refreshWebview
@@ -234,7 +239,7 @@
 			[self presentViewController:mailCompose animated:YES completion:NULL];
 		}
 			break;
-            default: // "Cancel"
+		default: // "Cancel"
 			break;
 	}
 	

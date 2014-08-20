@@ -400,8 +400,10 @@
 		
 	} else {
         
-		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-			
+		if (TARGET_IS_IPAD()) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"SearchTableViewDidSelectCellNotification"
+																object:verb];
+		} else {
 			double delayInSeconds = 0.;
 			if (self.navigationController.navigationBarHidden) {// If the navigation bar is hidden, re-show it (with animation) and wait before pushing the result view controller
 				delayInSeconds = UINavigationControllerHideShowBarDuration;
@@ -409,16 +411,12 @@
 														 animated:YES];
 			}
 			
-			dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-			dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-				ResultViewController * resultViewController = [[ResultViewController alloc] init];
-				resultViewController.verb = verb;
-				[self.navigationController pushViewController:resultViewController animated:YES];
-			});
-			
-		} else {
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"SearchTableViewDidSelectCellNotification"
-																object:verb];
+			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)),
+						   dispatch_get_main_queue(), ^{
+							   ResultViewController * resultViewController = [[ResultViewController alloc] init];
+							   resultViewController.verb = verb;
+							   [self.navigationController pushViewController:resultViewController animated:YES];
+						   });
 		}
 	}
 }

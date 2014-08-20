@@ -301,9 +301,16 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	Verb * verb = allVerbs[indexPath.row];
-	ResultViewController * resultViewController = [[ResultViewController alloc] init];
-	resultViewController.verb = verb;
-	[self.navigationController pushViewController:resultViewController animated:YES];
+	if (TARGET_IS_IPAD()) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"SearchTableViewDidSelectCellNotification"
+															object:verb];
+		[self dismissViewControllerAnimated:YES completion:NULL];
+		
+	} else {
+		ResultViewController * resultViewController = [[ResultViewController alloc] init];
+		resultViewController.verb = verb;
+		[self.navigationController pushViewController:resultViewController animated:YES];
+	}
 }
 
 #pragma mark - UITextField Delegate

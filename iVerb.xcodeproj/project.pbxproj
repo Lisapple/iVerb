@@ -19,6 +19,7 @@
 		5009FC0D19A4C7AA00CFB284 /* true-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5009FC0919A4C7AA00CFB284 /* true-small@2x.png */; };
 		5009FC1019A4C7C200CFB284 /* false-small.png in Resources */ = {isa = PBXBuildFile; fileRef = 5009FC0E19A4C7C200CFB284 /* false-small.png */; };
 		5009FC1119A4C7C200CFB284 /* false-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5009FC0F19A4C7C200CFB284 /* false-small@2x.png */; };
+		5009FC1419A5518900CFB284 /* UINavigationController+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 5009FC1319A5518900CFB284 /* UINavigationController+addition.m */; };
 		500B9F7319A4208100C91E39 /* NSMutableAttributedString+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 500B9F7219A4208100C91E39 /* NSMutableAttributedString+addition.m */; };
 		500BD3A7123BF35000FC6947 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 500BD3A5123BF35000FC6947 /* SearchViewController.m */; };
 		500BD3A8123BF35000FC6947 /* SearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 500BD3A6123BF35000FC6947 /* SearchViewController.xib */; };
@@ -95,6 +96,8 @@
 		5009FC0919A4C7AA00CFB284 /* true-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "true-small@2x.png"; sourceTree = "<group>"; };
 		5009FC0E19A4C7C200CFB284 /* false-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "false-small.png"; sourceTree = "<group>"; };
 		5009FC0F19A4C7C200CFB284 /* false-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "false-small@2x.png"; sourceTree = "<group>"; };
+		5009FC1219A5518900CFB284 /* UINavigationController+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+addition.h"; sourceTree = "<group>"; };
+		5009FC1319A5518900CFB284 /* UINavigationController+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+addition.m"; sourceTree = "<group>"; };
 		500B9F7119A4208100C91E39 /* NSMutableAttributedString+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableAttributedString+addition.h"; sourceTree = "<group>"; };
 		500B9F7219A4208100C91E39 /* NSMutableAttributedString+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableAttributedString+addition.m"; sourceTree = "<group>"; };
 		500BD3A4123BF35000FC6947 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
@@ -331,6 +334,8 @@
 		500B9F7419A4208500C91E39 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
+				5009FC1219A5518900CFB284 /* UINavigationController+addition.h */,
+				5009FC1319A5518900CFB284 /* UINavigationController+addition.m */,
 				500B9F7119A4208100C91E39 /* NSMutableAttributedString+addition.h */,
 				500B9F7219A4208100C91E39 /* NSMutableAttributedString+addition.m */,
 			);
@@ -494,6 +499,7 @@
 				500B9F7319A4208100C91E39 /* NSMutableAttributedString+addition.m in Sources */,
 				50CD97E3123CFF0900E31BC8 /* ResultViewController.m in Sources */,
 				501CFFAD1986BB1600F8731D /* IVTableViewController.m in Sources */,
+				5009FC1419A5518900CFB284 /* UINavigationController+addition.m in Sources */,
 				504CC82412C7E53E00D9672B /* verbs.xcdatamodel in Sources */,
 				506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */,
 				5036F079160CE15700E0BECD /* MainViewController.m in Sources */,

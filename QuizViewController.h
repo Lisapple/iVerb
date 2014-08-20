@@ -41,7 +41,7 @@ typedef enum {
 @property (nonatomic, strong) IBOutlet UIImageView * responseImageView;
 @property (nonatomic, strong) IBOutlet UILabel * responseLabel;
 
-@property (nonatomic, strong) IBOutlet UILabel * goodResponseCountLabel, * badResponseCountLabel;
+//@property (nonatomic, strong) IBOutlet UILabel * goodResponseCountLabel, * badResponseCountLabel;
 
 @property (nonatomic, strong) Playlist * playlist;
 

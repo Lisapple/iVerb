@@ -372,9 +372,10 @@
 				UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:quizViewController];
 				if (TARGET_IS_IPAD()) {
 					navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+					[self.view.window.rootViewController presentViewController:navigationController animated:YES completion:NULL];
+				} else { // iPhone
+					[self presentViewController:navigationController animated:YES completion:NULL];
 				}
-				
-				[self presentViewController:navigationController animated:YES completion:NULL];
 			}
 				break;
                 default:// Cancel

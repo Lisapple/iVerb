@@ -7,16 +7,14 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QuizViewController">
             <connections>
                 <outlet property="backgroundFieldImageView" destination="41" id="197"/>
-                <outlet property="badResponseCountLabel" destination="109" id="203"/>
                 <outlet property="formLabel" destination="9" id="198"/>
-                <outlet property="goodResponseCountLabel" destination="108" id="204"/>
                 <outlet property="infinitifLabel" destination="8" id="199"/>
                 <outlet property="quizView" destination="4" id="200"/>
                 <outlet property="remainingCount" destination="10" id="202"/>
                 <outlet property="responseImageView" destination="72" id="205"/>
                 <outlet property="responseLabel" destination="55" id="206"/>
                 <outlet property="responseView" destination="5" id="207"/>
-                <outlet property="resultView" destination="3" id="208"/>
+                <outlet property="resultTableView" destination="lcb-Cb-bJg" id="9B3-z6-9h6"/>
                 <outlet property="textField" destination="7" id="201"/>
                 <outlet property="view" destination="1" id="209"/>
             </connections>
@@ -27,36 +25,6 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
-            <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-        </view>
-        <view contentMode="scaleToFill" id="3">
-            <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" text="0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="48" id="108">
-                    <rect key="frame" x="20" y="130" width="261" height="160"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="192"/>
-                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="48" id="109">
-                    <rect key="frame" x="20" y="330" width="261" height="160"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="192"/>
-                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <imageView userInteractionEnabled="NO" contentMode="center" image="true.png" id="133">
-                    <rect key="frame" x="289" y="155" width="160" height="160"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="center" image="false.png" id="134">
-                    <rect key="frame" x="289" y="356" width="160" height="160"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                </imageView>
-            </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
         </view>
         <view contentMode="scaleToFill" id="4">
@@ -124,9 +92,18 @@
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
         </view>
+        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="lcb-Cb-bJg">
+            <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="dataSource" destination="-1" id="oaw-81-rh0"/>
+                <outlet property="delegate" destination="-1" id="6Ey-Yd-Rz4"/>
+            </connections>
+        </tableView>
     </objects>
     <resources>
-        <image name="false.png" width="130" height="130"/>
         <image name="true.png" width="130" height="130"/>
     </resources>
 </document>
