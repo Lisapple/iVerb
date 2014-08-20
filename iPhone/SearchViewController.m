@@ -13,7 +13,7 @@
 
 #import "ManagedObjectContext.h"
 
-#import "IndexBarTableView.h"
+#import "NSMutableAttributedString+addition.h"
 
 #define kEmptyActionSheet 1234
 #define kShareActionSheet 2345
@@ -146,20 +146,23 @@
     
     self.navigationController.toolbarHidden = !editing;
     
-    UIBarButtonItem * removeItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove"
-                                                                    style:UIBarButtonItemStylePlain
-                                                                   target:self
-                                                                   action:@selector(removeAction:)];
+    UIBarButtonItem * removeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
+																				 target:self
+																				 action:@selector(removeAction:)];
     removeItem.tintColor = [UIColor redColor];
+	
+	UIBarButtonItem * spaceItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
+																				target:nil action:NULL];
+	spaceItem.width = 20.;
     
-    NSArray * toolbarItems = @[ [[UIBarButtonItem alloc] initWithTitle:@"Add to..."
+    NSArray * toolbarItems = @[ [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+																			  target:self
+																			  action:@selector(shareAction:)],
+								spaceItem,
+								[[UIBarButtonItem alloc] initWithTitle:@"Add to..."
                                                                  style:UIBarButtonItemStylePlain
                                                                 target:self
                                                                 action:@selector(addToAction:)],
-                                [[UIBarButtonItem alloc] initWithTitle:@"Share"
-                                                                 style:UIBarButtonItemStylePlain
-                                                                target:self
-                                                                action:@selector(shareAction:)],
                                 [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
                                 removeItem ];
     [self.navigationController.toolbar setItems:toolbarItems animated:YES];
@@ -179,8 +182,8 @@
 - (IBAction)addToAction:(id)sender
 {
 	if (!showAddTo && !showShare && !showRemove) {
-		showAddTo = YES;
 		if (checkedVerbs.count > 0) {
+			showAddTo = YES;
 			
 			if (TARGET_IS_IPAD()) {
 				
@@ -211,8 +214,8 @@
 - (IBAction)shareAction:(id)sender
 {
 	if (!showAddTo && !showShare && !showRemove) {
-		showShare = YES;
 		if (checkedVerbs.count > 0) {
+			showShare = YES;
 			
 			BOOL canSendMail = [MFMailComposeViewController canSendMail];
 			if (TARGET_IS_IPAD()) {
@@ -253,8 +256,8 @@
 - (IBAction)removeAction:(id)sender
 {
 	if (!showAddTo && !showShare && !showRemove) {
-		showRemove = YES;
 		if (checkedVerbs.count > 0) {
+			showRemove = YES;
 			if (TARGET_IS_IPAD()) {
 				UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
 																		  delegate:self
@@ -279,6 +282,29 @@
 }
 
 #pragma mark - UITableViewDataSource
+
+- (NSAttributedString *)highlightedStringFromString:(NSString *)string withSearch:(NSString *)search fontSize:(CGFloat)fontSize
+{
+	NSMutableAttributedString * attrString = [[NSMutableAttributedString alloc] init];
+	
+	NSDictionary * attributes = @{ NSFontAttributeName : [UIFont systemFontOfSize:fontSize] };
+	NSDictionary * boldAttributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:fontSize] };
+	
+	NSInteger index = 0;
+	NSRange range;
+	while ((range = [string rangeOfString:search
+								  options:NSCaseInsensitiveSearch
+									range:NSMakeRange(index, string.length - index)]).location != NSNotFound) {
+		[attrString appendString:[string substringWithRange:NSMakeRange(index, range.location - index)]
+					  attributes:attributes];
+		[attrString appendString:[string substringWithRange:range]
+					  attributes:boldAttributes];
+		index = range.location + range.length;
+	}
+	[attrString appendString:[string substringWithRange:NSMakeRange(index, string.length - index)]
+				  attributes:attributes];
+	return attrString;
+}
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
@@ -313,12 +339,23 @@
 	UITableViewCell * cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
 	
 	if (!cell) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
 		cell.textLabel.textColor = [UIColor darkGrayColor];
 	}
 	
 	Verb * verb = filteredKeys[indexPath.row];
-	cell.textLabel.text = [verb valueForKey:@"Infinitif"];
+	NSString * search = self.searchDisplayController.searchBar.text;
+	if (isSearching && search.length > 0) {
+		
+		NSString * title = [NSString stringWithFormat:@"%@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
+		cell.textLabel.attributedText = [self highlightedStringFromString:title withSearch:search fontSize:17.];
+		
+		cell.detailTextLabel.attributedText = [self highlightedStringFromString:verb.definition withSearch:search fontSize:12.];
+		
+	} else {
+		cell.textLabel.text = verb.infinitif;
+		cell.detailTextLabel.text = nil;
+	}
 	
 	// Clear checkmarks when after editing
 	if (!editing)
@@ -402,7 +439,11 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
 	if (searchText.length > 0) {
-		NSPredicate * predicate = [NSPredicate predicateWithFormat:@"SELF.infinitif CONTAINS[cd] %@", searchText];
+		NSPredicate * predicate = [NSPredicate predicateWithFormat:@"SELF.infinitif CONTAINS[cd] %@\
+								   OR SELF.past CONTAINS[cd] %@\
+								   OR SELF.pastParticiple CONTAINS[cd] %@\
+								   OR SELF.definition CONTAINS[cd] %@",
+								   searchText, searchText, searchText, searchText];
 		filteredKeys = [sortedKeys filteredArrayUsingPredicate:predicate];
 	} else {
 		filteredKeys = sortedKeys.copy;

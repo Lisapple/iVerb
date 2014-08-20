@@ -7,6 +7,7 @@
 //
 
 #import "QuizViewController.h"
+#import "ResultViewController.h"
 
 @interface QuizViewController ()
 
@@ -19,19 +20,6 @@
 @end
 
 @implementation QuizViewController
-
-@synthesize quizView = _quizView, responseView = _responseView, resultView = _resultView;
-
-@synthesize infinitifLabel = _infinitifLabel, formLabel = _formLabel, remainingCount = _remainingCount;
-@synthesize textField = _textField;
-@synthesize backgroundFieldImageView = _backgroundFieldImageView;
-
-@synthesize responseImageView = _responseImageView;
-@synthesize responseLabel = _responseLabel;
-
-@synthesize goodResponseCountLabel = _goodResponseCountLabel, badResponseCountLabel = _badResponseCountLabel;
-
-@synthesize playlist = _playlist;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -71,6 +59,14 @@
 	}
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+	[super viewDidAppear:animated];
+	
+	[_resultTableView deselectRowAtIndexPath:_resultTableView.indexPathForSelectedRow
+									animated:YES];
+}
+
 - (IBAction)cancelAction:(id)sender
 {
 	[self dismissViewControllerAnimated:YES completion:NULL];
@@ -93,6 +89,9 @@
 
 - (IBAction)skipAction:(id)sender
 {
+	[responses addObject:@""];
+	[responsesCorrect addObject:@NO];
+	
 	[self pushNewVerbAction:sender];
 }
 
@@ -112,15 +111,21 @@
 	
 	goodResponseCount = 0, badResponseCount = 0;
 	
+	responses = [[NSMutableArray alloc] initWithCapacity:allVerbs.count];
+	responsesCorrect = [[NSMutableArray alloc] initWithCapacity:allVerbs.count];
+	forms = [[NSMutableArray alloc] initWithCapacity:allVerbs.count];
+	
 	currentIndex = 0;
 	Verb * verb = allVerbs[0];
-	[self pushVerb:verb form:VerbFormPastSimple animated:animated];
+	srand((unsigned int)time(NULL));
+	VerbForm form = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
+	[self pushVerb:verb form:form animated:animated];
 }
 
 - (void)pushView:(UIView *)view animated:(BOOL)animated
 {
 	/* "Pop" the previous pushed view (if exists) */
-	if (previousPushedView) {
+	if (previousPushedView && previousPushedView != view) {
 		CGRect frame = previousPushedView.frame;
 		frame.origin.x = 0;
 		previousPushedView.frame = frame;
@@ -139,7 +144,8 @@
 	view.frame = frame;
 	
 	/* If "view" have been hidden, just re-show it, else add it to the main view */
-	(view.hidden) ? (view.hidden = NO) : [self.view addSubview:view];
+	if (view.hidden) view.hidden = NO;
+	else [self.view addSubview:view];
 	
 	[UIView animateWithDuration:(animated)? 0.25 : 0.
 					 animations:^{
@@ -148,8 +154,9 @@
 						 view.frame = frame;
 					 }
 					 completion:^(BOOL finished) {
-						 //[previousPushedView removeFromSuperview];
-						 previousPushedView.hidden = YES;
+						 if (previousPushedView != view)
+							 previousPushedView.hidden = YES;
+							 
 						 previousPushedView = view;
 					 }];
 }
@@ -162,6 +169,7 @@
 	if (currentIndex < allVerbs.count) {// If we have verb to show, push the next verb
 		Verb * verb = allVerbs[currentIndex];
 		
+		srand((unsigned int)time(NULL));
 		VerbForm form = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
 		[self pushVerb:verb form:form animated:YES];
 		
@@ -172,7 +180,9 @@
 
 - (void)pushVerb:(Verb *)verb form:(VerbForm)form animated:(BOOL)animated
 {
-	self.title = [NSString stringWithFormat:@"%ld / %ld", (unsigned long)currentIndex + 1, (unsigned long)allVerbs.count];
+	[forms addObject:@(form)];
+	
+	self.title = [NSString stringWithFormat:@"%ld of %ld", (long)currentIndex + 1, (long)allVerbs.count];
 	
 	_infinitifLabel.text = [@"To " stringByAppendingString:verb.infinitif];
 	_formLabel.text = (form == VerbFormPastSimple)? @"Past Simple Form:" : @"Past Participle Form:";
@@ -180,20 +190,20 @@
 	currentResponse = (form == VerbFormPastSimple)? (verb.past) : (verb.pastParticiple);
 	
 	/* Update the label with the number of remaining letters */
-	_remainingCount.text = [NSString stringWithFormat:@"%lu remaining letters", (unsigned long)currentResponse.length];
+	_remainingCount.text = [NSString stringWithFormat:@"%ld remaining letters", (long)currentResponse.length];
 	
 	CGSize size = [currentResponse sizeWithAttributes:@{ NSFontAttributeName : [UIFont boldSystemFontOfSize:24.] }];
  	
 	/* Fit "_backgroundFieldImageView" from "size.width" + 50px + 2 x 8px */
 	CGRect frame = _backgroundFieldImageView.frame;
 	frame.size.width = size.width + 50. + 2 * 8.;
-	frame.origin.x = (int)((self.view.frame.size.width - frame.size.width) / 2.);
+	frame.origin.x = ceilf((self.view.frame.size.width - frame.size.width) / 2.);
 	_backgroundFieldImageView.frame = frame;
 	
 	/* Fit "_textField" from "size.width" + 50px */
 	frame = _textField.frame;
 	frame.size.width = size.width + 50.;
-	frame.origin.x = (int)((self.view.frame.size.width - frame.size.width) / 2.);
+	frame.origin.x = ceilf((self.view.frame.size.width - frame.size.width) / 2.);
 	_textField.frame = frame;
 	
 	_textField.text = @"";
@@ -215,18 +225,22 @@
 	
 	currentResponse = nil;
 	
-	self.title = @"";
+	self.title = [NSString stringWithFormat:@"%ld on %ld", (long)goodResponseCount, (long)allVerbs.count];
 	
-	[self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                            target:self
-                                                                                            action:@selector(doneAction:)]
-                                     animated:YES];
-	[self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Again" style:UIBarButtonItemStylePlain target:self action:@selector(start)] animated:YES];
+	UIBarButtonItem * startItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
+																				target:self
+																				action:@selector(start)];
+	[self.navigationItem setLeftBarButtonItem:startItem animated:YES];
 	
-	_goodResponseCountLabel.text = [NSString stringWithFormat:@"%ld", (long)goodResponseCount];
-	_badResponseCountLabel.text = [NSString stringWithFormat:@"%ld", (long)badResponseCount];
+	UIBarButtonItem * doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+																			   target:self
+																			   action:@selector(doneAction:)];
+	[self.navigationItem setRightBarButtonItem:doneItem animated:YES];
 	
-	[self pushView:_resultView animated:animated];
+	_resultTableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+	[self pushView:_resultTableView animated:animated];
+	[_resultTableView reloadData];
+	_resultTableView.contentInset = UIEdgeInsetsMake(64., 0., 0., 0.);
 }
 
 #pragma mark Response Management
@@ -240,25 +254,81 @@
 	[self pushView:_responseView animated:animated];
 	
 	double delayInSeconds = ((animated)? 0.25 : 0.) + 1.;
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-		[self pushNewVerbAction:nil];
-	});
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)),
+				   dispatch_get_main_queue(), ^{ [self pushNewVerbAction:nil]; });
+}
+
+#pragma mark - UITableView Delegate and DataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+	return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+	return allVerbs.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"CellID"];
+	
+	if (!cell)
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CellID"];
+	
+	NSString * response = responses[indexPath.row];
+	Verb * verb = allVerbs[indexPath.row];
+	NSString * verbString = ([forms[indexPath.row] intValue] == VerbFormPastSimple) ? (verb.past) : (verb.pastParticiple);
+	if (response.length > 0) {
+		BOOL correct = [responsesCorrect[indexPath.row] boolValue];
+		if (correct)
+			cell.textLabel.text = [NSString stringWithFormat:@"%@", response];
+		else
+			cell.textLabel.text = [NSString stringWithFormat:@"%@ (not %@)", verbString, response];
+		
+		cell.imageView.image = [UIImage imageNamed:(correct) ? @"true-small" : @"false-small"];
+		
+	} else {
+		cell.textLabel.text = [NSString stringWithFormat:@"%@ (skipped)", verbString];
+		cell.textLabel.textColor = [UIColor lightGrayColor];
+		cell.imageView.image = nil;
+	}
+	
+	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	Verb * verb = allVerbs[indexPath.row];
+	ResultViewController * resultViewController = [[ResultViewController alloc] init];
+	resultViewController.verb = verb;
+	[self.navigationController pushViewController:resultViewController animated:YES];
 }
 
 #pragma mark - UITextField Delegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-	if ([textField.text isEqualToString:currentResponse]) {
-		goodResponseCount++;
-		[self pushResponse:ResponseStateTrue animated:YES];
+	if (textField.text.length == currentResponse.length) {
+		BOOL goodResponse = [textField.text isEqualToString:currentResponse];
+		if (goodResponse) {
+			goodResponseCount++;
+			[self pushResponse:ResponseStateTrue animated:YES];
+		} else {
+			badResponseCount++;
+			[self pushResponse:ResponseStateFalse animated:YES];
+		}
+		
+		[responses addObject:textField.text];
+		[responsesCorrect addObject:@(goodResponse)];
+		
+		return YES;
 	} else {
-		badResponseCount++;
-		[self pushResponse:ResponseStateFalse animated:YES];
+		_remainingCount.textColor = [UIColor redColor];
 	}
 	
-	return (textField.text.length == currentResponse.length);
+	return NO;
 }
 
 - (void)textFieldDidChange:(NSNotification *)notification
@@ -285,14 +355,12 @@
 	oldLenght = _textField.text.length;
 	
 	/* Update the label with the number of remaining letters */
-	_remainingCount.text = [NSString stringWithFormat:@"%ld remaining letters", (unsigned long)(currentResponse.length - _textField.text.length)];
+	NSInteger rem = currentResponse.length - _textField.text.length;
+	_remainingCount.text = [NSString stringWithFormat:@"%ld remaining letters", (long)rem];
+	_remainingCount.textColor = (rem < 0) ? [UIColor redColor] : [UIColor grayColor];
 }
 
 #pragma mark - UINavigationController Delegate
-
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)aViewController animated:(BOOL)animated
-{
-}
 
 - (BOOL)shouldAutorotate
 {

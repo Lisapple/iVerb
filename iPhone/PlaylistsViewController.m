@@ -104,23 +104,14 @@
 {
 	userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
 	
-	// Reload bookmarks badge
-	[self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]]
-						  withRowAnimation:UITableViewRowAnimationNone];
-	
-	// Reload user playlist section
-	[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:2]
-                  withRowAnimation:UITableViewRowAnimationNone];
+	[self.tableView reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
 	
-	if (userPlaylists.count > 0) {
-		[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:2]
-                      withRowAnimation:UITableViewRowAnimationNone];
-	}
+	[self.tableView reloadData];
 }
 
 - (void)viewDidAppear:(BOOL)animated

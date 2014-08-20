@@ -10,29 +10,29 @@
 
 #import "Playlist.h"
 
-enum _ResponseState {
+typedef enum {
 	ResponseStateTrue,
 	ResponseStateFalse
-	};
-typedef enum _ResponseState ResponseState;
+} ResponseState;
 
-enum _VerbForm {
-	VerbFormPastSimple,
+typedef enum {
+	VerbFormPastSimple = 0,
 	VerbFormPastParticiple
-};
-typedef enum _VerbForm VerbForm;
+} VerbForm;
 
-@interface QuizViewController : UIViewController <UITextFieldDelegate, UINavigationControllerDelegate>
+@interface QuizViewController : UIViewController <UITextFieldDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 {
 	NSArray * allVerbs;
 	NSInteger currentIndex;
 	NSString * currentResponse;
 	NSInteger goodResponseCount, badResponseCount;
+	NSMutableArray * responses, * responsesCorrect, * forms;
 	
 	UIView * previousPushedView;
 }
 
-@property (nonatomic, strong) IBOutlet UIView * quizView, * responseView, * resultView;
+@property (nonatomic, strong) IBOutlet UIView * quizView, * responseView;
+@property (nonatomic, strong) IBOutlet UITableView * resultTableView;
 
 @property (nonatomic, strong) IBOutlet UILabel * infinitifLabel, * formLabel, * remainingCount;
 @property (nonatomic, strong) IBOutlet UITextField * textField;

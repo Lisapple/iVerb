@@ -24,18 +24,12 @@
 	UIView * titleView;
 	
 	BOOL isSearching;// Search Bar is the First Responder, the keyboard is showing
-	/*
-	UITableViewCell * cellWithDeleteConfirmation;
-	NSInteger rowWithDeleteConfirmation;
-	*/
+	
 	BOOL editing;
 	NSMutableArray * checkedVerbs;
 	
 	UIPopoverController * popoverController;
 }
-
-@property (nonatomic, strong) IBOutlet UIView * headerView;
-//@property (nonatomic, strong) IBOutlet UIToolbar * toolbar;
 
 @property (nonatomic, strong) Playlist * playlist;
 
@@ -45,13 +39,5 @@
 
 // Private
 - (void)reloadData;
-
-/*
-- (void)removeCell:(id)sender;
-- (void)removeVerb:(Verb *)verb;
-
-- (void)cellsGestureRecognized:(UIGestureRecognizer *)recognizer;
-- (void)cellDidSwipe:(UITableViewCell *)cell;
-*/
 
 @end
