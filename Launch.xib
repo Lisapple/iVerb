@@ -11,6 +11,10 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="r8b-We-UIc">
+                    <rect key="frame" x="0.0" y="20" width="480" height="460"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                </tableView>
                 <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bkh-9u-JNN">
                     <rect key="frame" x="0.0" y="0.0" width="480" height="44"/>
                     <items>
@@ -27,12 +31,16 @@
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="Gou-Kc-4UN" secondAttribute="trailing" id="5Ao-8k-KBQ"/>
+                <constraint firstItem="r8b-We-UIc" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="IgU-es-RGS"/>
+                <constraint firstItem="r8b-We-UIc" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="cSC-np-tpb"/>
+                <constraint firstAttribute="bottom" secondItem="r8b-We-UIc" secondAttribute="bottom" id="iWU-SS-dxi"/>
                 <constraint firstItem="Gou-Kc-4UN" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="oZj-eY-wv3"/>
+                <constraint firstAttribute="trailing" secondItem="r8b-We-UIc" secondAttribute="trailing" id="taT-zZ-vMF"/>
                 <constraint firstItem="Gou-Kc-4UN" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="zMj-Zh-e5N"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="365" y="419"/>
+            <point key="canvasLocation" x="368" y="413"/>
         </view>
     </objects>
 </document>
