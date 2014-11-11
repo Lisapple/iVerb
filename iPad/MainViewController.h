@@ -35,7 +35,7 @@
 	
 	UIPopoverController * popoverController;
 	
-	AVAudioPlayer * player;
+	AVSpeechSynthesizer * synthesizer;
 }
 
 @property (nonatomic, strong) NSManagedObject * object;

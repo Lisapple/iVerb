@@ -22,7 +22,7 @@
 
 @interface ResultViewController : IVViewController <UIWebViewDelegate, UIActionSheetDelegate, ActionSheetDelegate, MFMailComposeViewControllerDelegate>
 {
-	AVAudioPlayer * player;
+	AVSpeechSynthesizer * synthesizer;
 }
 
 @property (nonatomic, strong) NSString * verbString;
