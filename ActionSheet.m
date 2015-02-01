@@ -109,7 +109,7 @@
 		
         CGSize titleSize = CGSizeZero;
 		if (title.length > 0) {
-            titleSize = [title boundingRectWithSize:CGSizeMake(306., INFINITY)
+            titleSize = [title boundingRectWithSize:CGSizeMake(frame.size.width - 2 * 7., INFINITY)
                                 options:NSStringDrawingUsesLineFragmentOrigin
                              attributes:@{ NSFontAttributeName : [UIFont systemFontOfSize:13.] }
                                 context:NULL].size;
@@ -126,7 +126,7 @@
 		CGFloat y = 20. + 20. + 10.; // 20px from status bar offset + 20px bottom margin + 10px (=> ???)
 		
 		if (cancelButtonTitle && cancelButtonTitle.length > 0) {
-			CGRect rect = CGRectMake(7., newFrame.size.height - y, 306., 44.);
+			CGRect rect = CGRectMake(7., newFrame.size.height - y, frame.size.width - 2 * 7., 44.);
 			_ActionSheetButton * button = [[_ActionSheetButton alloc] initWithFrame:rect];
 			button.frame = rect;
 			button.type = ActionSheetButtonTypeCancel;
@@ -141,7 +141,7 @@
 		y += 10.;
 		
 		for (NSString * aTitle in titles.reverseObjectEnumerator) {
-			CGRect rect = CGRectMake(7., newFrame.size.height - y, 306., 44.);
+			CGRect rect = CGRectMake(7., newFrame.size.height - y, frame.size.width - 2 * 7., 44.);
 			_ActionSheetButton * button = [[_ActionSheetButton alloc] initWithFrame:rect];
 			button.frame = rect;
 			button.type = ActionSheetButtonTypeDefault;
@@ -155,7 +155,7 @@
 		
 		if (destructiveButtonTitle && destructiveButtonTitle.length > 0) {
 			
-			CGRect rect = CGRectMake(7., newFrame.size.height - y, 306., 44.);
+			CGRect rect = CGRectMake(7., newFrame.size.height - y, frame.size.width - 2 * 7., 44.);
 			_ActionSheetButton * button = [[_ActionSheetButton alloc] initWithFrame:rect];
 			button.frame = rect;
 			button.type = ActionSheetButtonTypeDelete;
@@ -173,7 +173,7 @@
             
 			y += 10. + titleSize.height;
 			
-			CGRect rect = CGRectMake(7., newFrame.size.height - y, 306., titleSize.height);
+			CGRect rect = CGRectMake(7., newFrame.size.height - y, frame.size.width - 2 * 7., titleSize.height);
 			_titleLabel = [[UILabel alloc] initWithFrame:rect];
 			_titleLabel.backgroundColor = [UIColor clearColor];
 			_titleLabel.text = title;
@@ -311,19 +311,19 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    [[UIColor colorWithWhite:0.9 alpha:1.] setFill];
-    
-    CGFloat height = [_titleLabel sizeThatFits:CGSizeMake(306., INFINITY)].height;
+    CGFloat height = [_titleLabel sizeThatFits:CGSizeMake(rect.size.width - 2. * 7., INFINITY)].height;
     height += (height > 0.) ? 20. : 0.;
     height += (buttons.count - 1) * 44.;
-    
+	
+	[[UIColor colorWithWhite:0.95 alpha:1.] setFill];
     CGRect frame = CGRectMake(7., 10., rect.size.width - 2. * 7., height);
     [self fillRoundedRect:frame radius:4.];
-    
+	
+	[[UIColor colorWithWhite:1. alpha:1.] setFill];
     frame = CGRectMake(7., rect.size.height - 50., rect.size.width - 2. * 7., 44.);
 	[self fillRoundedRect:frame radius:4.];
     
-    [[UIColor colorWithWhite:0.85 alpha:1.] setFill];
+    [[UIColor colorWithWhite:0.95 alpha:1.] setFill];
     CGFloat y = rect.size.height - 104.;
     NSInteger count = buttons.count - ((_title.length) ? 1 : 2);
     for (int i = 0; i < count; ++i) {

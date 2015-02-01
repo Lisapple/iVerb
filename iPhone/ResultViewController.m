@@ -17,6 +17,7 @@
 @interface ResultViewController ()
 {
 	id reloadObserver;
+    AVSpeechSynthesizer * synthesizer;
 }
 @end
 
@@ -89,11 +90,10 @@
 			double delayInSeconds = 0.5;
 			dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
 			dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-				VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
-				optionsViewController.verbs = @[_verb];
-				optionsViewController.modalTransitionStyle = UIModalTransitionStylePartialCurl;
-				optionsViewController.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.];
-				[self presentViewController:optionsViewController animated:YES completion:NULL];
+                VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
+                optionsViewController.verbs = @[ _verb ];
+                UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
+				[self presentViewController:navigationController animated:YES completion:NULL];
 			});
 		}
 			break;
