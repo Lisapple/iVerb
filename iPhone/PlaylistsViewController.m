@@ -234,7 +234,7 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return indexPath.section == 2;
+    return (indexPath.section == 2);
 }
 
 - (void)tableView:(UITableView *)aTableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -252,6 +252,25 @@
                       withRowAnimation:UITableViewRowAnimationFade];
 	userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
 	[aTableView endUpdates];
+}
+
+- (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 2) {
+        NSMutableArray * actions = @[ [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive
+                                                                         title:@"Delete"
+                                                                       handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+                                                                           [self deletePlaylist:userPlaylists[indexPath.row]]; }] ].mutableCopy;
+        
+        UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
+                                                                              title:@"Quiz"
+                                                                            handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+                                                                                [self launchQuizForPlaylist:userPlaylists[indexPath.row]]; }];
+        rowAction.backgroundColor = [UIColor purpleColor];
+        [actions addObject:rowAction];
+        return actions;
+    }
+    return nil;
 }
 
 - (void)tableView:(UITableView *)aTableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
@@ -347,41 +366,46 @@
 				break;
 		}
 	} else if (actionSheet.tag == kAlertMore) {
+        Playlist * playlist = userPlaylists[_indexPathForActionSheet.row];
 		switch (buttonIndex) {
-			case 0: {// "Delete"
-				Playlist * playlist = userPlaylists[_indexPathForActionSheet.row];
-				
-				/* Delete the playlist from Core Data */
-				NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
-				[context deleteObject:playlist];
-				[context save:NULL];
-				
-				/* Reload the TableView */
-				[self.tableView beginUpdates];
-				[self.tableView deleteRowsAtIndexPaths:@[_indexPathForActionSheet]
-								  withRowAnimation:UITableViewRowAnimationFade];
-				userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
-				[self.tableView endUpdates];
-				_indexPathForActionSheet = nil;
-			}
+			case 0: // "Delete"
+                [self deletePlaylist:playlist];
 				break;
-			case 1: {// "Launch the Quiz"
-				QuizViewController * quizViewController = [[QuizViewController alloc] init];
-				quizViewController.playlist = selectedPlaylist;
-				
-				UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:quizViewController];
-				if (TARGET_IS_IPAD()) {
-					navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-					[self.view.window.rootViewController presentViewController:navigationController animated:YES completion:NULL];
-				} else { // iPhone
-					[self presentViewController:navigationController animated:YES completion:NULL];
-				}
-			}
-				break;
-                default:// Cancel
-				break;
+			case 1: // "Launch the Quiz"
+                [self launchQuizForPlaylist:playlist];
+            default: break; // Cancel
 		}
 	}
+}
+
+- (void)launchQuizForPlaylist:(Playlist *)playlist
+{
+    QuizViewController * quizViewController = [[QuizViewController alloc] init];
+	quizViewController.playlist = playlist;
+	
+	UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:quizViewController];
+	if (TARGET_IS_IPAD()) {
+        navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [self.view.window.rootViewController presentViewController:navigationController animated:YES completion:NULL];
+    } else { // iPhone
+        [self presentViewController:navigationController animated:YES completion:NULL];
+    }
+}
+
+- (void)deletePlaylist:(Playlist *)playlist
+{
+    /* Delete the playlist from Core Data */
+    NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
+    [context deleteObject:playlist];
+    [context save:NULL];
+    
+    /* Reload the TableView */
+    [self.tableView beginUpdates];
+    [self.tableView deleteRowsAtIndexPaths:@[_indexPathForActionSheet]
+                          withRowAnimation:UITableViewRowAnimationFade];
+    userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
+    [self.tableView endUpdates];
+    _indexPathForActionSheet = nil;
 }
 
 - (BOOL)shouldAutorotate
