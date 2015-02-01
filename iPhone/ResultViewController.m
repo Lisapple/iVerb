@@ -108,24 +108,14 @@
 			break;
 		case 2: { // "Listen"
 			
-			NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", _verb.infinitif, _verb.past, _verb.pastParticiple];
-			if ([_verb.infinitif isEqualToString:_verb.past] && [_verb.infinitif isEqualToString:_verb.pastParticiple])
-				string = [NSString stringWithFormat:@"to %@", _verb.infinitif];
-			
-			synthesizer = [[AVSpeechSynthesizer alloc] init];
-			AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
-			utterance.rate = 0.1;
-			[synthesizer speakUtterance:utterance];
-			
-			/*
-			NSURL * fileURL = [[NSBundle mainBundle] URLForResource:_verb.infinitif withExtension:@"mp3" subdirectory:@"Sounds"];
-			NSError * error = nil;
-			player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:&error];
-			if (error) NSDebugLog(@"error: %@", error);
-			
-			[player prepareToPlay];
-			if ([player play]) NSDebugLog(@"Playing...");
-			*/
+            NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", _verb.infinitif, _verb.past, _verb.pastParticiple];
+            if ([_verb.infinitif isEqualToString:_verb.past] && [_verb.infinitif isEqualToString:_verb.pastParticiple])
+                string = [NSString stringWithFormat:@"to %@", _verb.infinitif];
+            
+            synthesizer = [[AVSpeechSynthesizer alloc] init];
+            AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
+            utterance.rate = 0.1;
+            [synthesizer speakUtterance:utterance];
 		}
 			break;
 		case 3: { // "Copy"
