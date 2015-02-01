@@ -20,26 +20,25 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+    
+    self.navigationController.navigationBar.tintColor = [UIColor purpleColor];
+    //self.navigationController.navigationBar.barTintColor = [UIColor colorWithWhite:0.9 alpha:0.];
+    
+    self.title = @"Add to list";
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                                          target:self
+                                                                                          action:@selector(doneAction:)];
+    
+    //self.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.];
+    
 	userPlaylists = [Playlist userPlaylists];
 	
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
-	[self.tableView reloadData];// Reload the tableView to get the size
+	[self.tableView reloadData]; // Reload the tableView to get the size
 	
-	self.tableView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-	self.tableView.tableHeaderView = _headerView;
-	
-	CGFloat tableViewHeight = self.tableView.contentSize.height;
-	if (tableViewHeight > 400.) tableViewHeight = 400.;// Clip to 400px height
-	
-	CGFloat topMargin = self.view.frame.size.height - tableViewHeight;
-	self.tableView.contentInset = UIEdgeInsetsMake(100., 0., 0., 0.);
-	
-	CGRect frame = self.tableView.frame;
-	frame.origin.y = topMargin - 100.;
-	frame.size.height = tableViewHeight + 100.;
-	self.tableView.frame = frame;
+	//self.tableView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+	//self.tableView.tableHeaderView = _headerView;
 	
 	/* Update the label at the top of the tableView with "Verb lists to add "Verb":" or "Verb lists to add these {dd} verbs:" */
 	if (_verbs.count == 1) {
@@ -63,6 +62,11 @@
 	} else if (_verbs.count > 1) {
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %ld verbs:", (unsigned long)_verbs.count];
 	}
+}
+
+- (IBAction)doneAction:(id)sender
+{
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 #pragma mark - UITableViewDataSource
@@ -90,10 +94,10 @@
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
 	}
 	
-	cell.backgroundColor = [UIColor colorWithWhite:0.15 alpha:1.];
+	//cell.backgroundColor = [UIColor colorWithWhite:0.15 alpha:1.];
 	cell.selectionStyle = UITableViewCellSelectionStyleGray;
 	
-	cell.textLabel.textColor = [UIColor whiteColor];
+	//cell.textLabel.textColor = [UIColor whiteColor];
 	
 	if (indexPath.section == 0) {
 		

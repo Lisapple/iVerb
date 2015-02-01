@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "IVViewController.h"
 
 #import "Playlist.h"
 #import "Verb.h"
 
-@interface VerbOptionsViewController_Phone : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface VerbOptionsViewController_Phone : IVViewController <UITableViewDelegate, UITableViewDataSource>
 {
 	NSArray * userPlaylists;
 }
