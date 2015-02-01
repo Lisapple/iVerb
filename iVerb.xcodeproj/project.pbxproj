@@ -32,7 +32,6 @@
 		5036F07A160CE15700E0BECD /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5036F078160CE15700E0BECD /* MainViewController.xib */; };
 		503926D916497EC900E5B24C /* VerbOptionsViewController_Phone.m in Sources */ = {isa = PBXBuildFile; fileRef = 503926D716497EC900E5B24C /* VerbOptionsViewController_Phone.m */; };
 		503926DA16497EC900E5B24C /* VerbOptionsViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 503926D816497EC900E5B24C /* VerbOptionsViewController_Phone.xib */; };
-		503AACA5170F089F009230CD /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 503AACA4170F089F009230CD /* Sounds */; };
 		503AACAB170F1A5B009230CD /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 503AACAA170F1A5B009230CD /* AVFoundation.framework */; };
 		503AACAD170F1B01009230CD /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 503AACAC170F1B01009230CD /* CoreMedia.framework */; };
 		503AACAF170F2268009230CD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 503AACAE170F2268009230CD /* QuartzCore.framework */; };
@@ -110,7 +109,6 @@
 		503926D616497EC900E5B24C /* VerbOptionsViewController_Phone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbOptionsViewController_Phone.h; sourceTree = "<group>"; };
 		503926D716497EC900E5B24C /* VerbOptionsViewController_Phone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VerbOptionsViewController_Phone.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		503926D816497EC900E5B24C /* VerbOptionsViewController_Phone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbOptionsViewController_Phone.xib; sourceTree = "<group>"; };
-		503AACA4170F089F009230CD /* Sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sounds; sourceTree = "<group>"; };
 		503AACAA170F1A5B009230CD /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		503AACAC170F1B01009230CD /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		503AACAE170F2268009230CD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -262,7 +260,6 @@
 				500B9F7419A4208500C91E39 /* Additions */,
 				503854BF19A139C100D69D62 /* HTML Files */,
 				50F314AC1611F9DD00B83030 /* Model */,
-				503AACA4170F089F009230CD /* Sounds */,
 				8D1107310486CEB800E47090 /* iVerb-Info.plist */,
 				50AE53411649608500FE8879 /* Localizable.strings */,
 				9C51A90519D0650B00547659 /* Launch.xib */,
@@ -436,7 +433,6 @@
 				9C51A90619D0650B00547659 /* Launch.xib in Resources */,
 				501BDB7B170B4A3100F7154F /* index.min.css in Resources */,
 				508784E7170B6BBA00693C3C /* EditNoteViewController_Phone.xib in Resources */,
-				503AACA5170F089F009230CD /* Sounds in Resources */,
 				502F5543170F34BE00E7B454 /* EditNoteViewController_Pad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
