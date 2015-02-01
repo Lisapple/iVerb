@@ -21,9 +21,6 @@
 #import "ActionSheet.h"
 
 @interface ResultViewController : IVViewController <UIWebViewDelegate, UIActionSheetDelegate, ActionSheetDelegate, MFMailComposeViewControllerDelegate>
-{
-	AVSpeechSynthesizer * synthesizer;
-}
 
 @property (nonatomic, strong) NSString * verbString;
 @property (nonatomic, strong) Verb * verb;
