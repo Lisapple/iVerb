@@ -18,9 +18,7 @@
 #import "Verb.h"
 #import "Verb+additions.h"
 
-#import "ActionSheet.h"
-
-@interface ResultViewController : IVViewController <UIWebViewDelegate, UIActionSheetDelegate, ActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface ResultViewController : IVViewController <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) NSString * verbString;
 @property (nonatomic, strong) Verb * verb;

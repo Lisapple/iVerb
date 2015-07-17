@@ -13,8 +13,8 @@
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
 
-#define kPinchOutScale 1. + 1./3.
-#define kPinchInScale 1. - 1./3.
+#define kPinchOutScale (4. / 3.) // 1 + 1/3 = 1,333
+#define kPinchInScale  (2. / 3.) // 1 - 1/3 = 0,666
 
 @implementation MainViewController
 
@@ -24,10 +24,9 @@
 
 - (void)webviewDidZoomIn:(UIGestureRecognizer *)recognizer
 {
-	NSDebugLog(@"webviewDidZoomIn");
 	[recognizer.view removeGestureRecognizer:recognizer];
 	
-	Playlist * playlist = [verb.playlists allObjects][0];
+	Playlist * playlist = verb.playlists.anyObject;
 	[webView loadHTMLString:playlist.HTMLFormat
 					baseURL:nil];
 	
@@ -52,7 +51,6 @@
 
 - (void)webviewDidZoomOut:(UIGestureRecognizer *)recognizer
 {
-	NSDebugLog(@"webviewDidZoomOut");
 	[recognizer.view removeGestureRecognizer:recognizer];
 	
 	NSString * basePath = [[NSBundle mainBundle] bundlePath];
@@ -80,12 +78,9 @@
 	
 	verb = [Verb lastUsedVerb];
 	if (!verb) {
-		Playlist * lastUsedPlaylist = [Playlist lastUsedPlaylist];
-		NSArray * verbs = [lastUsedPlaylist.verbs allObjects];
-		if (verbs.count > 0) {
-			verb = verbs[0];
-		} else {
-			verb = [[Playlist allVerbsPlaylist].verbs allObjects][0];
+		verb = [Playlist currentPlaylist].verbs.anyObject;
+		if (!verb) {
+			verb = [Playlist allVerbsPlaylist].verbs.anyObject;
 		}
 	}
 	[self refreshWebview];
@@ -110,10 +105,8 @@
 	leftNavigationController.title = @"Search";
 	[leftContainerView addSubview:leftNavigationController.view];
 	
-	[[NSNotificationCenter defaultCenter] addObserverForName:@"SearchTableViewDidSelectCellNotification"
-													  object:nil
-													   queue:[NSOperationQueue currentQueue]
-												  usingBlock:^(NSNotification *note) {
+	[[NSNotificationCenter defaultCenter] addObserverForName:SearchTableViewDidSelectCellNotification object:nil
+													   queue:nil usingBlock:^(NSNotification *note) {
 													  verb = (Verb *)note.object;
 													  [self refreshWebview];
                                                       
@@ -161,118 +154,98 @@
 
 - (IBAction)showOptionsAction:(id)sender
 {
-	if (!showingOptions && !showingLists) {
+	if (!showingLists) {
+		
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Add to list..." style:UIAlertActionStyleDefault
+														  handler:^(UIAlertAction * __nonnull action) {
+															  double delayInSeconds = .25;
+															  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+															  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+																  VerbOptionsViewController_Pad * verbOptionsViewController = [[VerbOptionsViewController_Pad alloc] init];
+																  verbOptionsViewController.verbs = @[verb];
+																  verbOptionsViewController.modalPresentationStyle = UIModalPresentationPopover;
+
+																  popoverController = verbOptionsViewController.popoverPresentationController;
+																  popoverController.delegate = self;
+																  popoverController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+																  [popoverController.containerView sizeToFit];
+																  popoverController.barButtonItem = self.navigationItem.rightBarButtonItem;
+																  [self presentViewController:verbOptionsViewController animated:NO completion:NULL];
+																  
+																  showingLists = YES;
+															  });
+														  }]];
+		
 		NSString * noteButton = (verb.note.length > 0) ? @"Edit Note" : @"Add Note";
-		NSString * mail = ([MFMailComposeViewController canSendMail]) ? @"Mail" : nil;
-		UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-																  delegate:self
-														 cancelButtonTitle:@"Cancel"
-													destructiveButtonTitle:nil
-														 otherButtonTitles:@"Add to list...", noteButton, @"Listen", @"Copy", mail, nil];
-		[actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
-		showingOptions = YES;
+		[alertController addAction:[UIAlertAction actionWithTitle:noteButton style:UIAlertActionStyleDefault
+														  handler:^(UIAlertAction * __nonnull action) {
+															  /* Show the panel to add/edit note */
+															  EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
+															  editNoteViewController.verb = verb;
+															  
+															  UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
+															  navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+															  [self presentViewController:navigationController animated:YES completion:NULL];
+														  }]];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Listen" style:UIAlertActionStyleDefault
+														  handler:^(UIAlertAction * __nonnull action) {
+															  NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
+															  if ([verb.infinitif isEqualToString:verb.past] && [verb.infinitif isEqualToString:verb.pastParticiple])
+																  string = [NSString stringWithFormat:@"to %@", verb.infinitif];
+															  
+															  synthesizer = [[AVSpeechSynthesizer alloc] init];
+															  AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
+															  utterance.rate = 0.1;
+															  [synthesizer speakUtterance:utterance];
+														  }]];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault
+														  handler:^(UIAlertAction * __nonnull action) {
+															  /* Copy to pasteboard ("Infinitif\nSimple Past\nPP\nDefinition\nNote") */
+															  NSString * note = (verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", verb.note] : @"";
+															  NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", verb.infinitif, verb.past, verb.pastParticiple, verb.definition, note];
+															  
+															  UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
+															  pasteboard.string = body;
+														  }]];
+		
+		if ([MFMailComposeViewController canSendMail]) {
+			[alertController addAction:[UIAlertAction actionWithTitle:@"Mail" style:UIAlertActionStyleDefault
+															  handler:^(UIAlertAction * __nonnull action) {
+																  MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
+																  mailCompose.mailComposeDelegate = self;
+																  [mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", verb.infinitif]];
+																  [mailCompose setMessageBody:verb.HTMLFormatInlineCSS isHTML:YES];
+																  [self presentViewController:mailCompose animated:YES completion:NULL];
+															  }]];
+		}
+		
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+		
+		if (TARGET_IS_IPAD()) {
+			alertController.modalPresentationStyle = UIModalPresentationPopover;
+			UIPopoverPresentationController * popController = alertController.popoverPresentationController;
+			popController.barButtonItem = self.navigationItem.rightBarButtonItem;
+		}
+		[self presentViewController:alertController animated:YES completion:NULL];
 	}
-}
-
-#pragma mark - UIActionSheet Delegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	switch (buttonIndex) {
-		case 0: { // "Add to list..."
-			double delayInSeconds = .25;
-			dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-			dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-				VerbOptionsViewController_Pad * verbOptionsViewController = [[VerbOptionsViewController_Pad alloc] init];
-				verbOptionsViewController.verbs = @[verb];
-				popoverController = [[UIPopoverController alloc] initWithContentViewController:verbOptionsViewController];
-				popoverController.delegate = self;
-				
-				CGSize contentSize = popoverController.popoverContentSize;
-				contentSize.height = verbOptionsViewController.tableView.contentSize.height;
-				popoverController.popoverContentSize = contentSize;
-				
-				[popoverController presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
-										  permittedArrowDirections:UIPopoverArrowDirectionUp
-														  animated:NO];
-				
-				showingLists = YES;
-			});
-		}
-			break;
-		case 1: { // "Add/Edit Note"
-			/* Show the panel to add/edit note */
-			EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
-			editNoteViewController.verb = verb;
-			
-			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
-			navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-			[self presentViewController:navigationController animated:YES completion:NULL];
-		}
-			break;
-		case 2: { // "Listen"
-			
-			NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
-			if ([verb.infinitif isEqualToString:verb.past] && [verb.infinitif isEqualToString:verb.pastParticiple])
-				string = [NSString stringWithFormat:@"to %@", verb.infinitif];
-			
-			synthesizer = [[AVSpeechSynthesizer alloc] init];
-			AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
-			utterance.rate = 0.1;
-			[synthesizer speakUtterance:utterance];
-			
-			/*
-			NSURL * fileURL = [[NSBundle mainBundle] URLForResource:verb.infinitif withExtension:@"mp3" subdirectory:@"Sounds"];
-			NSError * error = nil;
-			player = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:&error];
-			if (error) NSDebugLog(@"error: %@", error);
-			
-			[player prepareToPlay];
-			if ([player play]) NSDebugLog(@"Playing...");
-			*/
-		}
-			break;
-		case 3: { // "Copy"
-			/* Copy to pasteboard ("Infinitif\nSimple Past\nPP\nDefinition\nNote") */
-			NSString * note = (verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", verb.note] : @"";
-			NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", verb.infinitif, verb.past, verb.pastParticiple, verb.definition, note];
-			
-			UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
-			pasteboard.string = body;
-		}
-			break;
-		case 4: { // "Mail"
-			MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
-			mailCompose.mailComposeDelegate = self;
-			[mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", verb.infinitif]];
-			[mailCompose setMessageBody:verb.HTMLFormatInlineCSS isHTML:YES];
-			[self presentViewController:mailCompose animated:YES completion:NULL];
-		}
-			break;
-		default: // "Cancel"
-			break;
-	}
-	
-	showingOptions = NO;
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
 	if (error) {
-		UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"Error when sending mail"
-															 message:error.localizedDescription
-															delegate:nil
-												   cancelButtonTitle:@"OK"
-												   otherButtonTitles:nil];
-		[alertView show];
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error when sending mail"
+																				 message:error.localizedDescription
+																		  preferredStyle:UIAlertControllerStyleAlert];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:NULL]];
+		[self presentViewController:alertController animated:YES completion:NULL];
 	}
 	
 	[controller dismissViewControllerAnimated:YES completion:NULL];
 }
 
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)aPopoverController
+- (void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController
 {
-	showingOptions = NO;
 	showingLists = NO;
 	popoverController = nil;
 }
@@ -282,12 +255,8 @@
 - (BOOL)webView:(UIWebView *)aWebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        if ([request.URL.fragment isEqualToString:@"help-infinitive"] ||
-            [request.URL.fragment isEqualToString:@"help-simple-past"] ||
-            [request.URL.fragment isEqualToString:@"help-past-participle"] ||
-            [request.URL.fragment isEqualToString:@"help-definition"] ||
-            [request.URL.fragment isEqualToString:@"help-example"] ||
-            [request.URL.fragment isEqualToString:@"help-composition"]) {
+        if ([@[ @"help-infinitive", @"help-simple-past", @"help-past-participle",
+				@"help-definition", @"help-example", @"help-composition" ] containsObject:request.URL.fragment]) {
             
             HelpViewController * helpViewController = [[HelpViewController alloc] init];
             helpViewController.anchor = request.URL.fragment;
@@ -331,7 +300,7 @@
 	return YES;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
 	return UIInterfaceOrientationMaskAll;
 }

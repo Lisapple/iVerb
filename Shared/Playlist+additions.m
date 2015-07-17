@@ -41,6 +41,11 @@ static Playlist * _currentPlaylist = nil;
 	}
 }
 
+- (NSString *)localizedName
+{
+	return NSLocalizedString(self.name, nil); // Convert "_ALL_VERBS_", "_BASICS_VERBS_", "_BOOKMARKS_", "_HISTORY_" to correct title, skip user's playlists title
+}
+
 - (NSString *)HTMLFormat
 {
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];

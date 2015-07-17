@@ -9,6 +9,7 @@
 #import "AppDelegate_Phone.h"
 
 #import "LandscapeViewController.h"
+#import "RootNavigationController.h"
 
 @implementation AppDelegate_Phone
 
@@ -22,7 +23,7 @@
     
 	PlaylistsViewController * playlistsViewController = [[PlaylistsViewController alloc] init];
 	
-	navigationController = [[UINavigationController alloc] initWithRootViewController:playlistsViewController];
+	navigationController = [[RootNavigationController alloc] initWithRootViewController:playlistsViewController];
 	window.rootViewController = navigationController;
 	
     [window makeKeyAndVisible];
@@ -34,10 +35,8 @@
 	
 	/* ... to set the count to one (to disable it by calling "-[UIDevice endGeneratingDeviceOrientationNotifications]") */
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(deviceOrientationDidChange:) 
-												 name:UIDeviceOrientationDidChangeNotification
-											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:)
+												 name:UIDeviceOrientationDidChangeNotification object:nil];
 	
 	return YES;
 }
@@ -64,9 +63,7 @@
 			
 			CGAffineTransform transform = CGAffineTransformMakeRotation((orientation == UIDeviceOrientationLandscapeLeft)? M_PI_2 : -M_PI_2);
 			[UIView animateWithDuration:0.5
-							 animations:^{
-								 landscapeWindow.transform = transform;
-							 }];
+							 animations:^{ landscapeWindow.transform = transform; }];
 			
 			if (orientation == UIDeviceOrientationLandscapeLeft) {
 				window.transform = CGAffineTransformMakeRotation(M_PI_2);
@@ -131,7 +128,7 @@
 				landscapeWindow.transform = CGAffineTransformMakeRotation(M_PI_2);
 			} else if (oldLandscapeOrientation == UIDeviceOrientationLandscapeRight) {
 				landscapeWindow.layer.anchorPoint = CGPointMake(1., 1.);
-				CGFloat x = (-screenSize.height / 2. + (-screenSize.height / 2. + 320));
+				CGFloat x = (-screenSize.height / 2. + (-screenSize.height / 2. + 320)); // @FIXME: 320px? The hard-coded width of the iPhone???
 				landscapeWindow.frame = CGRectMake(x, -screenSize.width, screenSize.height, screenSize.width);
 				landscapeWindow.transform = CGAffineTransformMakeRotation(-M_PI_2);
 			}
@@ -139,14 +136,8 @@
 			[UIView animateWithDuration:0.5
 							 animations:^{
 								 window.transform = CGAffineTransformIdentity;
-								 landscapeWindow.layer.transform = CATransform3DIdentity;
-							 }
-							 completion:^(BOOL finished) {
-								 [[UIApplication sharedApplication] setStatusBarHidden:NO
-																		 withAnimation:UIStatusBarAnimationFade];
-								 
-								 landscapeWindow = nil;
-							 }];
+								 landscapeWindow.layer.transform = CATransform3DIdentity; }
+							 completion:^(BOOL finished) { landscapeWindow = nil; }];
 		}
 	}
 }
@@ -178,7 +169,7 @@
 	
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        managedObjectContext = [[NSManagedObjectContext alloc] init];
+        managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         [managedObjectContext setPersistentStoreCoordinator: coordinator];
     }
     return managedObjectContext;
@@ -246,11 +237,9 @@
 /**
  Returns the path to the application's documents directory.
  */
-- (NSString *)applicationDocumentsDirectory {
-	
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? paths[0] : nil;
-    return basePath;
+- (NSString *)applicationDocumentsDirectory
+{
+    return NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
 }
 
 
@@ -260,9 +249,6 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	
-    
 }
-
 
 @end

@@ -16,3 +16,5 @@
 #endif
 
 #define TARGET_IS_IPAD() (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+
+#define SearchTableViewDidSelectCellNotification @"SearchTableViewDidSelectCellNotification"

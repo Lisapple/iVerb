@@ -10,21 +10,19 @@
 #import "ResultViewController.h"
 #import "VerbOptionsViewController_Phone.h"
 #import "VerbOptionsViewController_Pad.h"
+#import "SearchResultsViewController.h"
 
 #import "ManagedObjectContext.h"
-
+#import "Playlist+additions.h"
 #import "NSMutableAttributedString+addition.h"
 
-#define kEmptyActionSheet 1234
-#define kShareActionSheet 2345
-#define kRemoveActionSheet 3456
-
-@interface SearchViewController ()
+@interface SearchViewController () <UISearchControllerDelegate, UISearchResultsUpdating>
 {
-	id updateObserver;
-	
-	BOOL showEmpty, showAddTo, showShare, showRemove;
+	BOOL showingAddToPopover; // Only on iPad
 }
+
+@property (nonatomic, strong) UISearchController * searchController;
+@property (nonatomic, strong) UIPopoverPresentationController * popoverController;
 
 @end
 
@@ -36,10 +34,20 @@
     
 	isSearching = NO;
 	editing = NO;
+	checkedVerbs = [[NSMutableArray alloc] initWithCapacity:10];
 	
     self.clearsSelectionOnViewWillAppear = YES;
 	
-	self.searchDisplayController.searchBar.delegate = self;
+	SearchResultsViewController * searchResultsViewController = [[SearchResultsViewController alloc] init];
+	searchResultsViewController.tableView.delegate = self;
+	searchResultsViewController.tableView.dataSource = self;
+	
+	self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsViewController];
+	self.tableView.tableHeaderView = self.searchController.searchBar;
+	[self.searchController.searchBar sizeToFit];
+	
+	self.searchController.delegate = self;
+	self.searchController.searchResultsUpdater = self;
 	
 	/* Show an "Trash" button to empty */
 	if (_playlist.isHistoryPlaylist) {
@@ -73,12 +81,18 @@
 	}
 }
 
-- (void)reloadData
+- (void)updateToolbar
 {
-	self.title = NSLocalizedString(_playlist.name, nil); // Convert "_ALL_VERBS_", "_BASICS_VERBS_", "_BOOKMARKS_", "_HISTORY_" to correct title, skip user's playlists title
-	
+	BOOL buttonsEnabled = (checkedVerbs.count > 0);
+	for (UIBarButtonItem * buttonItem in self.navigationController.toolbar.items) {
+		buttonItem.enabled = buttonsEnabled;
+	}
+}
+
+- (void)updateData
+{
 	NSArray * verbs = nil;
-	if ([_playlist.name isEqualToString:@"_HISTORY_"] && _playlist.isDefaultPlaylist) {
+	if ([_playlist.name isEqualToString:kPlaylistHistoryName] && _playlist.isDefaultPlaylist) {
 		NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
 		verbs = [_playlist.verbs sortedArrayUsingDescriptors:@[sortDescriptor]];
 	} else {
@@ -88,13 +102,19 @@
 	
 	sortedKeys = [[NSArray alloc] initWithArray:verbs];
 	filteredKeys = [[NSArray alloc] initWithArray:verbs];
-	
+}
+
+- (void)reloadData
+{
+	self.title = _playlist.localizedName;
+	[self updateToolbar];
+	[self updateData];
 	[self.tableView reloadData];
 }
 
-- (NSInteger)indexOfObjectBeginingWith:(NSString *)aChar
+- (NSInteger)indexOfObjectBeginingWith:(NSString *)beginString
 {
-    if ([aChar isEqualToString:UITableViewIndexSearch]) {
+    if ([beginString isEqualToString:UITableViewIndexSearch]) {
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
 							  atScrollPosition:UITableViewScrollPositionBottom
 									  animated:NO];
@@ -103,7 +123,7 @@
 	NSInteger index = 0;
 	for (Verb * verb in filteredKeys) {
 		NSString * stringChar = [verb.infinitif substringWithRange:NSMakeRange(0, 1)];
-		if ([aChar compare:stringChar options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+		if ([beginString compare:stringChar options:NSCaseInsensitiveSearch] == NSOrderedSame) {
 			return index;
 		}
 		index++;
@@ -115,28 +135,23 @@
 
 - (IBAction)emptyHistoryAction:(id)sender
 {
-	if (!showEmpty) {
-		showEmpty = YES;
+	if (_playlist.verbs.count > 0) {
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Would you really want to empty the history?" message:nil
+																		  preferredStyle:UIAlertControllerStyleActionSheet];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Empty" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * __nonnull action) {
+			[[_playlist mutableSetValueForKey:@"verbs"] removeAllObjects];
+			[[ManagedObjectContext sharedContext] save:NULL];
+			[self reloadData];
+		}]];
 		
-		if (_playlist.verbs.count > 0) {
-			if (TARGET_IS_IPAD()) {
-				UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:@"Would you really want to empty the history?"
-																		  delegate:self
-																 cancelButtonTitle:@"Cancel"
-															destructiveButtonTitle:@"Empty"
-																 otherButtonTitles:nil];
-				actionSheet.tag = kEmptyActionSheet;
-				[actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:NO];
-			} else {
-				ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:@"Would you really want to empty the history?"
-																	  delegate:self
-															 cancelButtonTitle:@"Cancel"
-														destructiveButtonTitle:@"Empty"
-															 otherButtonTitles:nil];
-				actionSheet.tag = kEmptyActionSheet;
-				[actionSheet showInView:self.view];
-			}
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+		
+		if (TARGET_IS_IPAD()) {
+			alertController.modalPresentationStyle = UIModalPresentationPopover;
+			UIPopoverPresentationController * popController = alertController.popoverPresentationController;
+			popController.barButtonItem = self.navigationItem.rightBarButtonItem;
 		}
+		[self presentViewController:alertController animated:YES completion:NULL];
 	}
 }
 
@@ -168,86 +183,97 @@
     [self.navigationController.toolbar setItems:toolbarItems animated:YES];
 	
 	self.navigationItem.hidesBackButton = editing;
-    
-	if (editing)
-		checkedVerbs = [[NSMutableArray alloc] initWithCapacity:10];
-    
-    enum UIBarButtonSystemItem item = (editing) ? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit;
+	
+	[checkedVerbs removeAllObjects];
+	[self updateToolbar];
+	
+    UIBarButtonSystemItem item = (editing) ? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit;
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:item
-                                                                                           target:self
-                                                                                           action:@selector(toogleEditingAction:)];
+                                                                                           target:self action:@selector(toogleEditingAction:)];
 	[self.tableView reloadData];
 }
 
 - (IBAction)addToAction:(id)sender
 {
-	if (!showAddTo && !showShare && !showRemove) {
-		if (checkedVerbs.count > 0) {
-			showAddTo = YES;
+	if (!showingAddToPopover && checkedVerbs.count > 0) {
+		if (TARGET_IS_IPAD()) {
+			VerbOptionsViewController_Pad * verbOptionsViewController = [[VerbOptionsViewController_Pad alloc] init];
+			verbOptionsViewController.verbs = checkedVerbs;
+			verbOptionsViewController.modalPresentationStyle = UIModalPresentationPopover;
 			
-			if (TARGET_IS_IPAD()) {
-				
-				VerbOptionsViewController_Pad * verbOptionsViewController = [[VerbOptionsViewController_Pad alloc] init];
-				verbOptionsViewController.verbs = checkedVerbs;
-				popoverController = [[UIPopoverController alloc] initWithContentViewController:verbOptionsViewController];
-				popoverController.delegate = self;
-				
-				CGSize contentSize = popoverController.popoverContentSize;
-				contentSize.height = verbOptionsViewController.tableView.contentSize.height;
-				popoverController.popoverContentSize = contentSize;
-				
-				[popoverController presentPopoverFromBarButtonItem:sender
-										  permittedArrowDirections:UIPopoverArrowDirectionUp
-														  animated:NO];
-				
-			} else {
-				/* Show an actionSheet to select a playlist (or bookmarks) *OR* show the VerbOptionsViewController_Phone */
-				VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
-				optionsViewController.verbs = checkedVerbs;
-				optionsViewController.modalTransitionStyle = UIModalTransitionStylePartialCurl;
-				[self presentViewController:optionsViewController animated:YES completion:NULL];
-			}
+			_popoverController = verbOptionsViewController.popoverPresentationController;
+			_popoverController.delegate = self;
+			[_popoverController.containerView sizeToFit];
+			_popoverController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+			
+			[self presentViewController:verbOptionsViewController animated:NO completion:NULL];
+			showingAddToPopover = YES;
+		
+		} else {
+			/* Show an actionSheet to select a playlist (or bookmarks) *OR* show the VerbOptionsViewController_Phone */
+			VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
+			optionsViewController.verbs = checkedVerbs;
+			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
+			[self presentViewController:navigationController animated:YES completion:NULL];
 		}
 	}
 }
 
 - (IBAction)shareAction:(id)sender
 {
-	if (!showAddTo && !showShare && !showRemove) {
-		if (checkedVerbs.count > 0) {
-			showShare = YES;
+	if (checkedVerbs.count > 0) {
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil
+																		  preferredStyle:UIAlertControllerStyleActionSheet];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Copy to Pasteboard" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
+			/* Copy to pasteboard ("Infinitif\nSimple Past\nPP\n\nDefinition\n\n") */
+			NSString * body = @"";
+			for (Verb * verb in checkedVerbs)
+				body = [body stringByAppendingFormat:@"%@, %@, %@\n%@\n\n", verb.infinitif, verb.past, verb.pastParticiple, verb.definition];
 			
-			BOOL canSendMail = [MFMailComposeViewController canSendMail];
-			if (TARGET_IS_IPAD()) {
-				UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-																		  delegate:self
-																 cancelButtonTitle:@"Cancel"
-															destructiveButtonTitle:nil
-																 otherButtonTitles:@"Copy to Pasteboard", ((canSendMail)? @"Send by Mail" : nil), nil];
-				actionSheet.tag = kShareActionSheet;
-				[actionSheet showFromBarButtonItem:sender animated:NO];
-			} else {
-				ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:nil
-																	  delegate:self
-															 cancelButtonTitle:@"Cancel"
-														destructiveButtonTitle:nil
-															 otherButtonTitles:@"Copy to Pasteboard", ((canSendMail)? @"Send by Mail" : nil), nil];
-				actionSheet.tag = kShareActionSheet;
-				[actionSheet showInView:self.view];
-			}
+			UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
+			pasteboard.string = body;
+		}]];
+		
+		if ([MFMailComposeViewController canSendMail]) {
+			[alertController addAction:[UIAlertAction actionWithTitle:@"Send by Mail" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
+				NSString * body = @"<table border=\"0\" style=\"border:1px solid #ccc;width:100%;text-align:center;border-collapse:collapse;\">";
+				int index = 0;
+				for (Verb * verb in checkedVerbs) {
+					body = [body stringByAppendingFormat:@"<tr%@><td>%@</td><td>%@</td><td>%@</td></tr>",
+							(index++ % 2 == 0)? @" style=\"background-color:#ddd\"" : @"",
+							verb.infinitif, verb.past, verb.pastParticiple];
+				}
+				body = [body stringByAppendingString:@"</table>"];
+				
+				MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
+				mailCompose.mailComposeDelegate = self;
+				[mailCompose setSubject:@"Some irregular verbs from iVerb"];
+				[mailCompose setMessageBody:body isHTML:YES];
+				[self presentViewController:mailCompose
+								   animated:YES
+								 completion:NULL];
+			}]];
 		}
+		
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+		
+		if (TARGET_IS_IPAD()) {
+			alertController.modalPresentationStyle = UIModalPresentationPopover;
+			UIPopoverPresentationController * popController = alertController.popoverPresentationController;
+			popController.barButtonItem = sender;
+		}
+		[self presentViewController:alertController animated:YES completion:NULL];
 	}
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
 	if (error) {
-		UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"Error when sending mail"
-															 message:error.localizedDescription
-															delegate:nil
-												   cancelButtonTitle:@"OK"
-												   otherButtonTitles:nil];
-		[alertView show];
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error when sending mail"
+																				 message:error.localizedDescription
+																		  preferredStyle:UIAlertControllerStyleAlert];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:NULL]];
+		[self presentViewController:alertController animated:YES completion:NULL];
 	}
 	
 	[controller dismissViewControllerAnimated:YES completion:NULL];
@@ -255,29 +281,24 @@
 
 - (IBAction)removeAction:(id)sender
 {
-	if (!showAddTo && !showShare && !showRemove) {
-		if (checkedVerbs.count > 0) {
-			showRemove = YES;
-			if (TARGET_IS_IPAD()) {
-				UIActionSheet * actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-																		  delegate:self
-																 cancelButtonTitle:@"Cancel"
-															destructiveButtonTitle:[NSString stringWithFormat:@"Remove from %@", _playlist.name]
-																 otherButtonTitles:nil];
-				actionSheet.tag = kRemoveActionSheet;
-				[actionSheet showFromBarButtonItem:sender animated:NO];
-			} else {
-				/* Show an actionSheet to confirm removing */
-				NSString * removeButtonTitle = (_playlist.name.length > 12) ? @"Remove" : [NSString stringWithFormat:@"Remove from \"%@\"", _playlist.name];
-				ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:nil
-																	  delegate:self
-															 cancelButtonTitle:@"Cancel"
-														destructiveButtonTitle:removeButtonTitle
-															 otherButtonTitles:nil];
-				actionSheet.tag = kRemoveActionSheet;
-				[actionSheet showInView:self.view];
-			}
+	if (checkedVerbs.count > 0) {
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+		[alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove from %@", _playlist.name]
+															style:UIAlertActionStyleDestructive handler:^(UIAlertAction * __nonnull action) {
+																for (Verb * verb in checkedVerbs) {
+																	[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
+																}
+																[self reloadData];
+															}]];
+		
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+		
+		if (TARGET_IS_IPAD()) {
+			alertController.modalPresentationStyle = UIModalPresentationPopover;
+			UIPopoverPresentationController * popController = alertController.popoverPresentationController;
+			popController.barButtonItem = sender;
 		}
+		[self presentViewController:alertController animated:YES completion:NULL];
 	}
 }
 
@@ -344,7 +365,7 @@
 	}
 	
 	Verb * verb = filteredKeys[indexPath.row];
-	NSString * search = self.searchDisplayController.searchBar.text;
+	NSString * search = self.searchController.searchBar.text;
 	if (isSearching && search.length > 0) {
 		
 		NSString * title = [NSString stringWithFormat:@"%@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
@@ -380,6 +401,11 @@
 {
     Verb * selectedVerb = filteredKeys[indexPath.row];
     [[_playlist mutableSetValueForKey:@"verbs"] removeObject:selectedVerb];
+	
+	[tableView beginUpdates];
+	[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+	[self updateData];
+	[tableView endUpdates];
 }
 
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -388,21 +414,20 @@
 	if (editing) {
 		
 		UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexPath];
-		if ([checkedVerbs containsObject:verb]) { //  Show the checked image
+		if ([checkedVerbs containsObject:verb]) { // Show the checked image
 			[checkedVerbs removeObject:verb];
-			cell.accessoryType = UITableViewCellAccessoryNone;;
+			cell.accessoryType = UITableViewCellAccessoryNone;
 		} else {
 			[checkedVerbs addObject:verb];
 			cell.accessoryType = UITableViewCellAccessoryCheckmark;
 		}
 		
 		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-		
+		[self updateToolbar];
 	} else {
         
 		if (TARGET_IS_IPAD()) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:@"SearchTableViewDidSelectCellNotification"
-																object:verb];
+			[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
 		} else {
 			double delayInSeconds = 0.;
 			if (self.navigationController.navigationBarHidden) {// If the navigation bar is hidden, re-show it (with animation) and wait before pushing the result view controller
@@ -421,6 +446,47 @@
 	}
 }
 
+#pragma makr - UISearchResultsUpdating
+
+- (void)didPresentSearchController:(UISearchController *)searchController
+{
+	isSearching = YES;
+	
+	SearchResultsViewController * searchResultsViewController = (SearchResultsViewController *)searchController.searchResultsController;
+	UIEdgeInsets insets = UIEdgeInsetsMake(self.topLayoutGuide.length + self.navigationController.navigationBar.frame.size.height, 0., 0., 0.);
+	searchResultsViewController.tableView.contentInset = insets;
+	searchResultsViewController.tableView.scrollIndicatorInsets = insets;
+	
+	[self.tableView reloadSectionIndexTitles];
+	[self.tableView reloadData];
+}
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+	NSString *searchText = searchController.searchBar.text;
+	if (searchText.length > 0) {
+		NSPredicate * predicate = [NSPredicate predicateWithFormat:
+								   @"SELF.infinitif CONTAINS[cd] %@ "
+								   @"OR SELF.past CONTAINS[cd] %@ "
+								   @"OR SELF.pastParticiple CONTAINS[cd] %@ "
+								   @"OR SELF.definition CONTAINS[cd] %@",
+								   searchText, searchText, searchText, searchText];
+		filteredKeys = [sortedKeys filteredArrayUsingPredicate:predicate];
+	} else {
+		filteredKeys = sortedKeys.copy;
+	}
+	
+	[((SearchResultsViewController *)self.searchController.searchResultsController).tableView reloadData];
+}
+
+- (void)willDismissSearchController:(nonnull UISearchController *)searchController
+{
+	isSearching = NO;
+	filteredKeys = sortedKeys.copy;
+	[self.tableView reloadSectionIndexTitles];
+	[self.tableView reloadData];
+}
+
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
@@ -437,10 +503,11 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
 	if (searchText.length > 0) {
-		NSPredicate * predicate = [NSPredicate predicateWithFormat:@"SELF.infinitif CONTAINS[cd] %@\
-								   OR SELF.past CONTAINS[cd] %@\
-								   OR SELF.pastParticiple CONTAINS[cd] %@\
-								   OR SELF.definition CONTAINS[cd] %@",
+		NSPredicate * predicate = [NSPredicate predicateWithFormat:
+								   @"SELF.infinitif CONTAINS[cd] %@ "
+								   @"OR SELF.past CONTAINS[cd] %@ "
+								   @"OR SELF.pastParticiple CONTAINS[cd] %@ "
+								   @"OR SELF.definition CONTAINS[cd] %@",
 								   searchText, searchText, searchText, searchText];
 		filteredKeys = [sortedKeys filteredArrayUsingPredicate:predicate];
 	} else {
@@ -465,96 +532,24 @@
 	[self.tableView reloadData];
 }
 
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
+- (void)popoverPresentationControllerDidDismissPopover:(nonnull UIPopoverPresentationController *)popoverPresentationController
 {
-	showAddTo = NO;
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	if (actionSheet.tag == kEmptyActionSheet) {
-		if (buttonIndex == 0) { // "Empty"
-			[[_playlist mutableSetValueForKey:@"verbs"] removeAllObjects];
-			[[ManagedObjectContext sharedContext] save:NULL];
-			[self reloadData];
-		}
-		showEmpty = NO;
-		
-	} else if (actionSheet.tag == kShareActionSheet) {
-		
-		switch (buttonIndex) {
-			case 0: {// "Copy to Pasteboard"
-				/* Copy to pasteboard ("Infinitif\nSimple Past\nPP\n\nDefinition\n\n") */
-				NSString * body = @"";
-				for (Verb * verb in checkedVerbs)
-					body = [body stringByAppendingFormat:@"%@, %@, %@\n%@\n\n", verb.infinitif, verb.past, verb.pastParticiple, verb.definition];
-				
-				UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
-				pasteboard.string = body;
-			}
-				break;
-			case 1: {// "Send by Mail"
-				NSString * body = @"<table border=\"0\" style=\"border:1px solid #ccc;width:100%;text-align:center;border-collapse:collapse;\">";
-				int index = 0;
-				for (Verb * verb in checkedVerbs) {
-					body = [body stringByAppendingFormat:@"<tr%@><td>%@</td><td>%@</td><td>%@</td></tr>",
-							(index++ % 2 == 0)? @" style=\"background-color:#ddd\"" : @"",
-							verb.infinitif, verb.past, verb.pastParticiple];
-				}
-				body = [body stringByAppendingString:@"</table>"];
-				
-				MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
-				mailCompose.mailComposeDelegate = self;
-				[mailCompose setSubject:@"Some irregular verbs from iVerb"];
-				[mailCompose setMessageBody:body isHTML:YES];
-                [self presentViewController:mailCompose
-                                   animated:YES
-                                 completion:NULL];
-			}
-				break;
-			default: // "Cancel"
-				break;
-		}
-		showShare = NO;
-		
-	} else if (actionSheet.tag == kRemoveActionSheet) {
-		
-		if (buttonIndex == 0) { // "Remove from [name]"
-			for (Verb * verb in checkedVerbs) {
-				[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
-			}
-			
-			[self reloadData];
-		}
-		showRemove = NO;
-	}
+	showingAddToPopover = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
 	
-	updateObserver = [[NSNotificationCenter defaultCenter] addObserverForName:@"PlaylistDidUpdatedNotification"
-																	   object:nil
-																		queue:[NSOperationQueue currentQueue]
-																   usingBlock:^(NSNotification *note) {
-																	   if (note.object == _playlist) [self reloadData];
-																   }];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-	
-	NSIndexPath * selectedRows = [self.tableView indexPathForSelectedRow];
-	[self.tableView deselectRowAtIndexPath:selectedRows animated:YES];
+	[[NSNotificationCenter defaultCenter] addObserverForName:@"PlaylistDidUpdatedNotification" object:nil
+													   queue:nil usingBlock:^(NSNotification *note) { if (note.object == _playlist) { [self reloadData]; } }];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:updateObserver];
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (BOOL)shouldAutorotate
@@ -562,7 +557,7 @@
 	return (TARGET_IS_IPAD());
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
 	return UIInterfaceOrientationMaskLandscape;
 }

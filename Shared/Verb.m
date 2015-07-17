@@ -32,18 +32,12 @@
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
 	request.sortDescriptors = @[sortDescriptor];
 	
-	NSArray * verbs = [context executeFetchRequest:request
-												 error:NULL];
-	
-	if (verbs.count > 0)
-		return verbs[0];
-	
-	return nil;
+	return [context executeFetchRequest:request error:NULL].firstObject;
 }
 
 - (BOOL)isBookmarked
 {
-	return [[self mutableSetValueForKeyPath:@"playlists.name"] containsObject:@"_BOOKMARKS_"];
+	return [[self mutableSetValueForKeyPath:@"playlists.name"] containsObject:kPlaylistBookmarksName];
 }
 
 - (BOOL)isBasicVerb
@@ -54,11 +48,7 @@
 
 - (Playlist *)playlist
 {
-	NSSet * playlists = [self mutableSetValueForKey:@"playlists"];
-	if (playlists.count > 0)
-		return [playlists allObjects][0];
-	
-	return nil;
+	return [self mutableSetValueForKey:@"playlists"].anyObject;
 }
 
 - (void)addToPlaylist:(Playlist *)playlist
@@ -68,14 +58,6 @@
 			[[self mutableSetValueForKey:@"playlists"] addObject:playlist];
 			[self.managedObjectContext save:NULL];
 		}
-		
-		/*
-		NSMutableSet * playlistsName = [self mutableSetValueForKeyPath:@"playlists.name"];
-		if (![playlistsName containsObject:playlist.name]) {
-			[self.playlists addObject:playlist];
-			[self.managedObjectContext save:NULL];
-		}
-		*/
 	}
 }
 
@@ -84,14 +66,6 @@
 	if (playlist) {
 		[[self mutableSetValueForKey:@"playlists"] removeObject:playlist];
 		[self.managedObjectContext save:NULL];
-		
-		/*
-		NSMutableSet * playlistsName = [self mutableSetValueForKeyPath:@"playlists.name"];
-		if ([playlistsName containsObject:playlist.name]) {
-			[self.playlists removeObject:playlist];
-			[self.managedObjectContext save:NULL];
-		}
-		 */
 	}
 }
 

@@ -9,6 +9,7 @@
 #import "VerbOptionsViewController_Phone.h"
 
 #import "ManagedObjectContext.h"
+#import "Playlist+additions.h"
 
 @implementation VerbOptionsViewController_Phone
 
@@ -20,32 +21,23 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+	
+	self.title = @"Add to list";
     self.navigationController.navigationBar.tintColor = [UIColor purpleColor];
-    //self.navigationController.navigationBar.barTintColor = [UIColor colorWithWhite:0.9 alpha:0.];
-    
-    self.title = @"Add to list";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                          target:self
-                                                                                          action:@selector(doneAction:)];
-    
-    //self.view.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.];
-    
+                                                                                          target:self action:@selector(doneAction:)];
 	userPlaylists = [Playlist userPlaylists];
 	
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
 	[self.tableView reloadData]; // Reload the tableView to get the size
 	
-	//self.tableView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-	//self.tableView.tableHeaderView = _headerView;
-	
 	/* Update the label at the top of the tableView with "Verb lists to add "Verb":" or "Verb lists to add these {dd} verbs:" */
 	if (_verbs.count == 1) {
-		Verb * verb = _verbs[0];
+		Verb * verb = _verbs.firstObject;
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add \"%@\":", [verb.infinitif capitalizedString]];
 	} else if (_verbs.count > 1) {
-		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %ld verbs:", (unsigned long)_verbs.count];
+		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %lu verbs:", _verbs.count];
 	}
 	
 	[self.tableView reloadData];// Re-reload the tableView to update cells
@@ -57,10 +49,10 @@
 	
 	/* Update the label at the top of the tableView with "Verb lists to add "Verb":" or "Verb lists to add these {dd} verbs:" */
 	if (_verbs.count == 1) {
-		Verb * verb = _verbs[0];
+		Verb * verb = _verbs.firstObject;
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add \"%@\":", [verb.infinitif capitalizedString]];
 	} else if (_verbs.count > 1) {
-		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %ld verbs:", (unsigned long)_verbs.count];
+		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %lu verbs:", _verbs.count];
 	}
 }
 
@@ -74,7 +66,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
 	NSInteger count = userPlaylists.count;
-	return (count > 0)? 2 : 1;
+	return 1 /* Bookmarks */ + (count > 0);
 }
 
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section
@@ -92,16 +84,11 @@
 	
 	if (!cell) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+		cell.selectionStyle = UITableViewCellSelectionStyleGray;
 	}
 	
-	//cell.backgroundColor = [UIColor colorWithWhite:0.15 alpha:1.];
-	cell.selectionStyle = UITableViewCellSelectionStyleGray;
-	
-	//cell.textLabel.textColor = [UIColor whiteColor];
-	
 	if (indexPath.section == 0) {
-		
-		cell.textLabel.text = NSLocalizedString([Playlist bookmarksPlaylist].name, nil);
+		cell.textLabel.text = [Playlist bookmarksPlaylist].localizedName;
 		
 		BOOL allBookmarked = YES;
 		for (Verb * verb in _verbs) { allBookmarked &= verb.isBookmarked; if (!allBookmarked) break; }

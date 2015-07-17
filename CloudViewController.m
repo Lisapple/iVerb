@@ -47,14 +47,13 @@
 	
 	NSSet * verbsSet = [Playlist allVerbsPlaylist].verbs;
 	
-	float * sizes = (float *)malloc(3 * sizeof(float));
+	float * sizes = (float *)malloc(3 * sizeof(float)); // Use dynamic alloc to be used into a block
 	sizes[0] = 24., sizes[1] = 18., sizes[2] = 14.;
 	
 	__block float x = 0.;
 	__block int index = 0;
 	
-	__block float * oldYs = (float *)malloc(3 * sizeof(float));
-	oldYs[0] = oldYs[1] = oldYs[2] = 0.;
+	__block float * oldYs = (float *)calloc(3, sizeof(float));
 	
 	const float height = ((TARGET_IS_IPAD()) ? self.view.frame.size.height : [UIScreen mainScreen].bounds.size.height) - (20. + 44.) - 29.; // Remove the navigation bar height (44px) and the size of the label at bottom (29px max)
 	
@@ -121,8 +120,7 @@
 		[self dismissViewControllerAnimated:YES completion:NULL];
 		
 		/* Send a notification to select the verb on webView */
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SearchTableViewDidSelectCellNotification"
-															object:verb];
+		[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
 	} else {
 		/* Push the result view controller with the selected verb */
 		ResultViewController * resultViewController = [[ResultViewController alloc] init];
@@ -158,7 +156,7 @@
 	return (TARGET_IS_IPAD());
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
 	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationPortrait;
 }

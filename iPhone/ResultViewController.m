@@ -70,85 +70,72 @@
 
 - (IBAction)showOptionAction:(id)sender
 {
+	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Add to list..." style:UIAlertActionStyleDefault
+													  handler:^(UIAlertAction * __nonnull action) {
+														  double delayInSeconds = 0.5;
+														  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+														  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+															  VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
+															  optionsViewController.verbs = @[ _verb ];
+															  UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
+															  [self presentViewController:navigationController animated:YES completion:NULL];
+														  });
+													  }]];
+	
 	NSString * noteButton = (_verb.note.length > 0) ? @"Edit Note" : @"Add Note";
-	NSString * mail = ([MFMailComposeViewController canSendMail]) ? @"Mail" : nil;
-	ActionSheet * actionSheet = [[ActionSheet alloc] initWithTitle:nil
-														  delegate:self
-												 cancelButtonTitle:@"Cancel"
-											destructiveButtonTitle:nil
-												 otherButtonTitles:@"Add to list...", noteButton, @"Listen", @"Copy", mail, nil];
-	actionSheet.delegate = self;
-	[actionSheet showInView:self.view];
-}
-
-#pragma mark - ActionSheet Delegate
-
-- (void)actionSheet:(ActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-	switch (buttonIndex) {
-		case 0: { // "Add to list..."
-			double delayInSeconds = 0.5;
-			dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-			dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
-                optionsViewController.verbs = @[ _verb ];
-                UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
-				[self presentViewController:navigationController animated:YES completion:NULL];
-			});
-		}
-			break;
-		case 1: { // "Add/Edit Note"
-			/* Show the panel to add/edit note */
-			EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
-			editNoteViewController.verb = _verb;
-			
-			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
-			[self presentViewController:navigationController animated:YES completion:NULL];
-		}
-			break;
-		case 2: { // "Listen"
-			
-            NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", _verb.infinitif, _verb.past, _verb.pastParticiple];
-            if ([_verb.infinitif isEqualToString:_verb.past] && [_verb.infinitif isEqualToString:_verb.pastParticiple])
-                string = [NSString stringWithFormat:@"to %@", _verb.infinitif];
-            
-            synthesizer = [[AVSpeechSynthesizer alloc] init];
-            AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
-            utterance.rate = 0.1;
-            [synthesizer speakUtterance:utterance];
-		}
-			break;
-		case 3: { // "Copy"
-			/* Copy to pasteboard ("Infinitif\nSimple Past\nPP\nDefinition\nNote") */
-			NSString * note = (_verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", _verb.note] : @"";
-			NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", _verb.infinitif, _verb.past, _verb.pastParticiple, _verb.definition, note];
-			
-			UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
-			pasteboard.string = body;
-		}
-			break;
-		case 4: { // "Mail"
-			MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
-			mailCompose.mailComposeDelegate = self;
-			[mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", _verb.infinitif]];
-			[mailCompose setMessageBody:_verb.HTMLFormatInlineCSS isHTML:YES];
-			[self presentViewController:mailCompose animated:YES completion:NULL];
-		}
-			break;
-		default: // "Cancel"
-			break;
+	[alertController addAction:[UIAlertAction actionWithTitle:noteButton style:UIAlertActionStyleDefault
+													  handler:^(UIAlertAction * __nonnull action) {
+														  /* Show the panel to add/edit note */
+														  EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
+														  editNoteViewController.verb = _verb;
+														  
+														  UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
+														  [self presentViewController:navigationController animated:YES completion:NULL];
+													  }]];
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Listen" style:UIAlertActionStyleDefault
+													  handler:^(UIAlertAction * __nonnull action) {
+														  NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", _verb.infinitif, _verb.past, _verb.pastParticiple];
+														  if ([_verb.infinitif isEqualToString:_verb.past] && [_verb.infinitif isEqualToString:_verb.pastParticiple])
+															  string = [NSString stringWithFormat:@"to %@", _verb.infinitif];
+														  
+														  synthesizer = [[AVSpeechSynthesizer alloc] init];
+														  AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
+														  utterance.rate = 0.1;
+														  [synthesizer speakUtterance:utterance];
+													  }]];
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault
+													  handler:^(UIAlertAction * __nonnull action) {
+														  /* Copy to pasteboard ("Infinitif\nSimple Past\nPP\nDefinition\nNote") */
+														  NSString * note = (_verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", _verb.note] : @"";
+														  NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", _verb.infinitif, _verb.past, _verb.pastParticiple, _verb.definition, note];
+														  
+														  UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
+														  pasteboard.string = body;
+													  }]];
+	
+	if ([MFMailComposeViewController canSendMail]) {
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Mail" style:UIAlertActionStyleDefault
+														  handler:^(UIAlertAction * __nonnull action) {
+															  MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
+															  mailCompose.mailComposeDelegate = self;
+															  [mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", _verb.infinitif]];
+															  [mailCompose setMessageBody:_verb.HTMLFormatInlineCSS isHTML:YES];
+															  [self presentViewController:mailCompose animated:YES completion:NULL];
+														  }]];
 	}
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+	[self presentViewController:alertController animated:YES completion:NULL];
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
 	if (error) {
-		UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:@"Error when sending mail"
-															 message:error.localizedDescription
-															delegate:nil
-												   cancelButtonTitle:@"OK"
-												   otherButtonTitles:nil];
-		[alertView show];
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error when sending mail"
+																				 message:error.localizedDescription
+																		  preferredStyle:UIAlertControllerStyleActionSheet];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:NULL]];
+		[self presentViewController:alertController animated:YES completion:NULL];
 	}
 	
 	[controller dismissViewControllerAnimated:YES completion:NULL];

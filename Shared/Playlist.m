@@ -9,6 +9,11 @@
 #import "Playlist.h"
 #import "ManagedObjectContext.h"
 
+NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
+NSString * const kPlaylistBasicsVerbsName = @"_BASICS_VERBS_";
+NSString * const kPlaylistBookmarksName = @"_BOOKMARKS_";
+NSString * const kPlaylistHistoryName = @"_HISTORY_";
+
 @implementation Playlist
 
 @dynamic name;
@@ -17,74 +22,44 @@
 
 @dynamic isDefaultPlaylist;
 
-+ (Playlist *)lastUsedPlaylist
-{
-	// @TODO: implements
-	return nil;
-}
-
 + (Playlist *)allVerbsPlaylist
 {
-	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
-	
-	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"name == '_ALL_VERBS_'"]];
-	
-	NSArray * playlists = [context executeFetchRequest:request
-												 error:NULL];
-	
-	if (playlists.count > 0)
-		return playlists[0];
-	
-	return nil;
+	static Playlist * __allVerbsPlaylist = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		__allVerbsPlaylist = [self playlistWithName:kPlaylistAllVerbsName];
+	});
+	return __allVerbsPlaylist;
 }
 
 + (Playlist *)basicVerbsPlaylist
 {
-	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
-	
-	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"name == '_BASICS_VERBS_'"]];
-	
-	NSArray * playlists = [context executeFetchRequest:request
-												 error:NULL];
-	
-	if (playlists.count > 0)
-		return playlists[0];
-	
-	return nil;
+	static Playlist * __basicVerbsPlaylist = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		__basicVerbsPlaylist = [self playlistWithName:kPlaylistBasicsVerbsName];
+	});
+	return __basicVerbsPlaylist;
 }
 
 + (Playlist *)bookmarksPlaylist
 {
-	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
-	
-	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"name == '_BOOKMARKS_'"]];
-	
-	NSArray * playlists = [context executeFetchRequest:request
-												 error:NULL];
-	
-	if (playlists.count > 0)
-		return playlists[0];
-	
-	return nil;
+	static Playlist * __bookmarksPlaylist = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		__bookmarksPlaylist = [self playlistWithName:kPlaylistBookmarksName];
+	});
+	return __bookmarksPlaylist;
 }
 
 + (Playlist *)historyPlaylist
 {
-	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
-	
-	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"name == '_HISTORY_'"]];
-	
-	NSArray * playlists = [context executeFetchRequest:request
-												 error:NULL];
-	
-	if (playlists.count > 0)
-		return playlists[0];
-	
-	return nil;
+	static Playlist * __historyPlaylist = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		__historyPlaylist = [self playlistWithName:kPlaylistHistoryName];
+	});
+	return __historyPlaylist;
 }
 
 + (NSArray *)defaultPlaylist
@@ -101,11 +76,7 @@
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
 	[request setSortDescriptors:@[sortDescriptor]];
-	
-	NSArray * playlists = [context executeFetchRequest:request
-												 error:NULL];
-	
-	return playlists;
+	return [context executeFetchRequest:request error:NULL];
 }
 
 + (NSArray *)userPlaylists
@@ -117,11 +88,7 @@
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
 	[request setSortDescriptors:@[sortDescriptor]];
-	
-	NSArray * playlists = [context executeFetchRequest:request
-												 error:NULL];
-	
-	return playlists;
+	return [context executeFetchRequest:request error:NULL];
 }
 
 + (Playlist *)playlistWithName:(NSString *)name
@@ -133,40 +100,33 @@
 	request.fetchLimit = 1;
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
-	[request setSortDescriptors:@[sortDescriptor]];
-	
-	NSArray * playlists = [context executeFetchRequest:request
-												 error:NULL];
-	
-	if (playlists.count > 0)
-		return playlists[0];
-	
-	return nil;
+	request.sortDescriptors = @[sortDescriptor];
+	return [context executeFetchRequest:request error:NULL].firstObject;
 }
 
 - (BOOL)canBeModified
 {
-	return (![self.name isEqualToString:@"_ALL_VERBS_"] && ![self.name isEqualToString:@"_BASICS_VERBS_"]);
+	return (![self.name isEqualToString:kPlaylistAllVerbsName] && ![self.name isEqualToString:kPlaylistBasicsVerbsName]);
 }
 
 - (BOOL)isBasicPlaylist
 {
-	return (self.isDefaultPlaylist && [self.name isEqualToString:@"_BASICS_VERBS_"]);
+	return (self.isDefaultPlaylist && [self.name isEqualToString:kPlaylistBasicsVerbsName]);
 }
 
 - (BOOL)isAllVerbsPlaylist
 {
-	return (self.isDefaultPlaylist && [self.name isEqualToString:@"_ALL_VERBS_"]);
+	return (self.isDefaultPlaylist && [self.name isEqualToString:kPlaylistAllVerbsName]);
 }
 
 - (BOOL)isHistoryPlaylist
 {
-	return (self.isDefaultPlaylist && [self.name isEqualToString:@"_HISTORY_"]);
+	return (self.isDefaultPlaylist && [self.name isEqualToString:kPlaylistHistoryName]);
 }
 
 - (BOOL)isBookmarksPlaylist
 {
-	return (self.isDefaultPlaylist && [self.name isEqualToString:@"_BOOKMARKS_"]);
+	return (self.isDefaultPlaylist && [self.name isEqualToString:kPlaylistBookmarksName]);
 }
 
 - (BOOL)isDefaultPlaylist
@@ -178,13 +138,6 @@
 {
 	return ![self isDefaultPlaylist];
 }
-
-/*
-- (NSArray *)verbs
-{
-	return [[self mutableSetValueForKey:@"verbs"] allObjects];
-}
-*/
 
 - (void)addVerb:(Verb *)verb
 {

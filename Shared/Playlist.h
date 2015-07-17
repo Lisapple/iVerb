@@ -10,6 +10,11 @@
 
 #import "Verb.h"
 
+extern NSString * const kPlaylistAllVerbsName;
+extern NSString * const kPlaylistBasicsVerbsName;
+extern NSString * const kPlaylistBookmarksName;
+extern NSString * const kPlaylistHistoryName;
+
 @class Verb;
 
 @interface Playlist : NSManagedObject
@@ -20,8 +25,6 @@
 @property (nonatomic, strong) NSSet * verbs;
 
 @property (nonatomic, readonly) BOOL isDefaultPlaylist;
-
-+ (Playlist *)lastUsedPlaylist;
 
 + (Playlist *)allVerbsPlaylist;
 + (Playlist *)basicVerbsPlaylist;

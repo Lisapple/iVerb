@@ -26,7 +26,6 @@
 		501CFFAA1986BB0200F8731D /* IVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 501CFFA91986BB0200F8731D /* IVViewController.m */; };
 		501CFFAD1986BB1600F8731D /* IVTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 501CFFAC1986BB1600F8731D /* IVTableViewController.m */; };
 		501CFFB01986BB9800F8731D /* IVWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501CFFAF1986BB9800F8731D /* IVWebView.m */; };
-		501EA9DF16FE2758000EF97F /* ActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 501EA9DE16FE2758000EF97F /* ActionSheet.m */; };
 		502F5543170F34BE00E7B454 /* EditNoteViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 502F5542170F34BE00E7B454 /* EditNoteViewController_Pad.xib */; };
 		5036F079160CE15700E0BECD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5036F077160CE15700E0BECD /* MainViewController.m */; };
 		5036F07A160CE15700E0BECD /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5036F078160CE15700E0BECD /* MainViewController.xib */; };
@@ -44,8 +43,10 @@
 		505D0FCC16C5922D007B3A90 /* CloudView.m in Sources */ = {isa = PBXBuildFile; fileRef = 505D0FCB16C5922D007B3A90 /* CloudView.m */; };
 		506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 506FE25C148E62280061045E /* PlaylistsViewController.m */; };
 		506FE25F148E62290061045E /* PlaylistsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 506FE25D148E62280061045E /* PlaylistsViewController.xib */; };
+		507F9BE11B38B0CD002B5CF4 /* SearchResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 507F9BE01B38B0CD002B5CF4 /* SearchResultsViewController.m */; };
 		508784E6170B6BBA00693C3C /* EditNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 508784E4170B6BBA00693C3C /* EditNoteViewController.m */; };
 		508784E7170B6BBA00693C3C /* EditNoteViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 508784E5170B6BBA00693C3C /* EditNoteViewController_Phone.xib */; };
+		50AB34C31B39F08B00946929 /* RootNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AB34C21B39F08B00946929 /* RootNavigationController.m */; };
 		50AE533F1649608500FE8879 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50AE53411649608500FE8879 /* Localizable.strings */; };
 		50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AE534616496B9A00FE8879 /* Verb+additions.m */; };
 		50C3A6F4161488E800317F92 /* ManagedObjectContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C3A6F3161488E700317F92 /* ManagedObjectContext.m */; };
@@ -100,8 +101,6 @@
 		501CFFAC1986BB1600F8731D /* IVTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IVTableViewController.m; sourceTree = "<group>"; };
 		501CFFAE1986BB9800F8731D /* IVWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IVWebView.h; sourceTree = "<group>"; };
 		501CFFAF1986BB9800F8731D /* IVWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IVWebView.m; sourceTree = "<group>"; };
-		501EA9DD16FE2758000EF97F /* ActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActionSheet.h; path = ../ActionSheet.h; sourceTree = "<group>"; };
-		501EA9DE16FE2758000EF97F /* ActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActionSheet.m; path = ../ActionSheet.m; sourceTree = "<group>"; };
 		502F5542170F34BE00E7B454 /* EditNoteViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditNoteViewController_Pad.xib; sourceTree = "<group>"; };
 		5036F076160CE15700E0BECD /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		5036F077160CE15700E0BECD /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MainViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -124,9 +123,13 @@
 		506FE25B148E62280061045E /* PlaylistsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistsViewController.h; sourceTree = "<group>"; };
 		506FE25C148E62280061045E /* PlaylistsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PlaylistsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		506FE25D148E62280061045E /* PlaylistsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaylistsViewController.xib; sourceTree = "<group>"; };
+		507F9BDF1B38B0CD002B5CF4 /* SearchResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultsViewController.h; sourceTree = "<group>"; };
+		507F9BE01B38B0CD002B5CF4 /* SearchResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResultsViewController.m; sourceTree = "<group>"; };
 		508784E3170B6BBA00693C3C /* EditNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditNoteViewController.h; sourceTree = "<group>"; };
 		508784E4170B6BBA00693C3C /* EditNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditNoteViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		508784E5170B6BBA00693C3C /* EditNoteViewController_Phone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditNoteViewController_Phone.xib; sourceTree = "<group>"; };
+		50AB34C11B39F08B00946929 /* RootNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootNavigationController.h; sourceTree = "<group>"; };
+		50AB34C21B39F08B00946929 /* RootNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootNavigationController.m; sourceTree = "<group>"; };
 		50AE53401649608500FE8879 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		50AE534516496B9900FE8879 /* Verb+additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Verb+additions.h"; path = "Shared/Verb+additions.h"; sourceTree = "<group>"; };
 		50AE534616496B9A00FE8879 /* Verb+additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Verb+additions.m"; path = "Shared/Verb+additions.m"; sourceTree = "<group>"; };
@@ -194,11 +197,15 @@
 				2860E325111B887F00E27156 /* AppDelegate_Phone.h */,
 				2860E326111B887F00E27156 /* AppDelegate_Phone.m */,
 				2860E327111B887F00E27156 /* MainWindow_Phone.xib */,
+				50AB34C11B39F08B00946929 /* RootNavigationController.h */,
+				50AB34C21B39F08B00946929 /* RootNavigationController.m */,
 				506FE25B148E62280061045E /* PlaylistsViewController.h */,
 				506FE25C148E62280061045E /* PlaylistsViewController.m */,
 				506FE25D148E62280061045E /* PlaylistsViewController.xib */,
 				500BD3A4123BF35000FC6947 /* SearchViewController.h */,
 				500BD3A5123BF35000FC6947 /* SearchViewController.m */,
+				507F9BDF1B38B0CD002B5CF4 /* SearchResultsViewController.h */,
+				507F9BE01B38B0CD002B5CF4 /* SearchResultsViewController.m */,
 				500BD3A6123BF35000FC6947 /* SearchViewController.xib */,
 				50CD97E0123CFF0900E31BC8 /* ResultViewController.h */,
 				50CD97E1123CFF0900E31BC8 /* ResultViewController.m */,
@@ -214,8 +221,6 @@
 				50F314B21612214200B83030 /* LandscapeViewController.xib */,
 				50F314A51611E75E00B83030 /* EditableTableViewCell.h */,
 				50F314A61611E75E00B83030 /* EditableTableViewCell.m */,
-				501EA9DD16FE2758000EF97F /* ActionSheet.h */,
-				501EA9DE16FE2758000EF97F /* ActionSheet.m */,
 			);
 			path = iPhone;
 			sourceTree = "<group>";
@@ -382,7 +387,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 79MVQZ8SAR;
@@ -445,6 +450,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
+				507F9BE11B38B0CD002B5CF4 /* SearchResultsViewController.m in Sources */,
 				2860E328111B887F00E27156 /* AppDelegate_Phone.m in Sources */,
 				2860E32E111B888700E27156 /* AppDelegate_Pad.m in Sources */,
 				500BD3A7123BF35000FC6947 /* SearchViewController.m in Sources */,
@@ -460,6 +466,7 @@
 				50E91C6F16135B65009254F6 /* Playlist.m in Sources */,
 				50E91C7216135B7C009254F6 /* Verb.m in Sources */,
 				50C3A6F4161488E800317F92 /* ManagedObjectContext.m in Sources */,
+				50AB34C31B39F08B00946929 /* RootNavigationController.m in Sources */,
 				50E507F91614B26B00B6915D /* Playlist+additions.m in Sources */,
 				50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */,
 				503926D916497EC900E5B24C /* VerbOptionsViewController_Phone.m in Sources */,
@@ -469,7 +476,6 @@
 				505D0FBC16C55CF3007B3A90 /* HelpViewController.m in Sources */,
 				501CFFAA1986BB0200F8731D /* IVViewController.m in Sources */,
 				505D0FCC16C5922D007B3A90 /* CloudView.m in Sources */,
-				501EA9DF16FE2758000EF97F /* ActionSheet.m in Sources */,
 				508784E6170B6BBA00693C3C /* EditNoteViewController.m in Sources */,
 				501CFFB01986BB9800F8731D /* IVWebView.m in Sources */,
 			);
@@ -496,8 +502,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: maxime leroy (79MVQZ8SAR)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: maxime leroy (79MVQZ8SAR)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -505,7 +509,8 @@
 				GCC_PREFIX_HEADER = iVerb_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iVerb-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;
 				PROVISIONING_PROFILE = "F1CAF02D-A30E-4F9F-A139-5D88ED7397F5";
 				SDKROOT = iphoneos;
@@ -519,14 +524,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: maxime leroy (79MVQZ8SAR)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: maxime leroy (79MVQZ8SAR)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iVerb_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iVerb-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;
 				PROVISIONING_PROFILE = "F1CAF02D-A30E-4F9F-A139-5D88ED7397F5";
 				SDKROOT = iphoneos;
@@ -537,7 +541,9 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -551,6 +557,7 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

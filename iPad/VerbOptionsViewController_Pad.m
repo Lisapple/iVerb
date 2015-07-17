@@ -9,6 +9,7 @@
 #import "VerbOptionsViewController_Pad.h"
 
 #import "ManagedObjectContext.h"
+#import "Playlist+additions.h"
 
 @implementation VerbOptionsViewController_Pad
 
@@ -22,13 +23,9 @@
 	
 	userPlaylists = [Playlist userPlaylists];
 	
-	self.view.backgroundColor = [UIColor colorWithWhite:0. alpha:0.85];
-	
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
 	[self.tableView reloadData];
-	
-	self.tableView.tintColor = [UIColor whiteColor];
 }
 
 #pragma mark - UITableViewDataSource
@@ -36,7 +33,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
 	NSInteger count = userPlaylists.count;
-	return (count > 0)? 2 : 1;
+	return 1 /* Bookmarks */ + (count > 0);
 }
 
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section
@@ -54,14 +51,10 @@
 	
 	if (!cell) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
-		cell.textLabel.textColor = [UIColor whiteColor];
-		cell.backgroundColor = [UIColor blackColor];
-		cell.textLabel.highlightedTextColor = [UIColor blackColor];
 	}
 	
 	if (indexPath.section == 0) {
-		
-		cell.textLabel.text = NSLocalizedString([Playlist bookmarksPlaylist].name, nil);
+		cell.textLabel.text = [Playlist bookmarksPlaylist].localizedName;
 		
 		BOOL allBookmarked = YES;
 		for (Verb * verb in _verbs) { allBookmarked &= verb.isBookmarked; if (!allBookmarked) break; }
@@ -99,6 +92,7 @@
 		else
 			for (Verb * verb in _verbs) { [verb addToPlaylist:[Playlist bookmarksPlaylist]]; }
 		
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"PlaylistDidUpdatedNotification" object:[Playlist bookmarksPlaylist]];
 	} else {
 		Playlist * playlist = userPlaylists[indexPath.row];
 		
@@ -116,9 +110,6 @@
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	
 	[aTableView deselectRowAtIndexPath:indexPath animated:YES];
-	
-	/* Send a notification for PlaylistViewController and SearchViewController to reload tableViews */
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"PlaylistDidUpdatedNotification" object:nil];
 }
 
 - (BOOL)shouldAutorotate
@@ -126,7 +117,7 @@
 	return YES;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
 	return UIInterfaceOrientationMaskAll;
 }

@@ -18,7 +18,7 @@
 
 #import "Playlist+additions.h"
 
-@interface MainViewController : UIViewController <UIPopoverControllerDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface MainViewController : UIViewController <UIPopoverControllerDelegate, UIPopoverPresentationControllerDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 {
 	IBOutlet IVWebView * webView;
 	IBOutlet UINavigationBar * navigationBar, * navigationBar2;
@@ -31,9 +31,9 @@
 	
 	@private
 	CGRect originalWebViewFrame;
-	BOOL showingOptions, showingLists;
+	BOOL showingLists;
 	
-	UIPopoverController * popoverController;
+	UIPopoverPresentationController * popoverController;
 	
 	AVSpeechSynthesizer * synthesizer;
 }

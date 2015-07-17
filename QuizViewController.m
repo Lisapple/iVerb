@@ -116,10 +116,9 @@
 	forms = [[NSMutableArray alloc] initWithCapacity:allVerbs.count];
 	
 	currentIndex = 0;
-	Verb * verb = allVerbs[0];
 	srand((unsigned int)time(NULL));
 	VerbForm form = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
-	[self pushVerb:verb form:form animated:animated];
+	[self pushVerb:allVerbs.firstObject form:form animated:animated];
 }
 
 - (void)pushView:(UIView *)view animated:(BOOL)animated
@@ -302,8 +301,7 @@
 {
 	Verb * verb = allVerbs[indexPath.row];
 	if (TARGET_IS_IPAD()) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SearchTableViewDidSelectCellNotification"
-															object:verb];
+		[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
 		[self dismissViewControllerAnimated:YES completion:NULL];
 		
 	} else {
@@ -374,7 +372,7 @@
 	return (TARGET_IS_IPAD());
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
 	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationPortrait;
 }

@@ -14,10 +14,8 @@
 
 #import "Playlist.h"
 
-#import "ActionSheet.h"
-
 @class Verb;
-@interface SearchViewController : IVTableViewController <UISearchBarDelegate, MFMailComposeViewControllerDelegate, ActionSheetDelegate, UIActionSheetDelegate, UIPopoverControllerDelegate>
+@interface SearchViewController : IVTableViewController <UISearchBarDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate, UIPopoverPresentationControllerDelegate>
 {
 	NSArray * sortedKeys, * filteredKeys;
 	
@@ -27,8 +25,6 @@
 	
 	BOOL editing;
 	NSMutableArray * checkedVerbs;
-	
-	UIPopoverController * popoverController;
 }
 
 @property (nonatomic, strong) Playlist * playlist;

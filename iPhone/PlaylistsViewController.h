@@ -14,9 +14,7 @@
 
 #import "EditableTableViewCell.h"
 
-#import "ActionSheet.h"
-
-@interface PlaylistsViewController : IVTableViewController <UINavigationControllerDelegate, EditableTableViewCellDelegate, ActionSheetDelegate, UIActionSheetDelegate>
+@interface PlaylistsViewController : IVTableViewController <UINavigationControllerDelegate, EditableTableViewCellDelegate>
 {
 	@private
 	NSArray * defaultPlaylists;

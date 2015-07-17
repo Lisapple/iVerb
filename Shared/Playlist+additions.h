@@ -13,6 +13,8 @@
 + (Playlist *)currentPlaylist;
 + (void)setCurrentPlaylist:(Playlist *)playlist;
 
+- (NSString *)localizedName;
+
 - (NSString *)HTMLFormat;
 
 @end
