@@ -19,6 +19,7 @@
 @interface PlaylistsViewController ()
 
 @property (nonatomic, strong) NSIndexPath * indexPathForActionSheet;
+@property (nonatomic, strong) Playlist * selectedPlaylist;
 
 @end
 
@@ -249,17 +250,19 @@
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 2) {
+		_selectedPlaylist = userPlaylists[indexPath.row];
         NSMutableArray * actions = @[ [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive
                                                                          title:@"Delete"
                                                                        handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-                                                                           [self deletePlaylist:userPlaylists[indexPath.row]]; }] ].mutableCopy;
-        
-        UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
-                                                                              title:@"Quiz"
-                                                                            handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
-                                                                                [self launchQuizForPlaylist:userPlaylists[indexPath.row]]; }];
-        rowAction.backgroundColor = [UIColor purpleColor];
-        [actions addObject:rowAction];
+                                                                           [self deletePlaylist:_selectedPlaylist]; }] ].mutableCopy;
+		if (_selectedPlaylist.verbs.count > 0) {
+			UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
+																				  title:@"Quiz"
+																				handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+																					[self launchQuizForPlaylist:_selectedPlaylist]; }];
+			rowAction.backgroundColor = [UIColor purpleColor];
+			[actions addObject:rowAction];
+		}
         return actions;
     }
     return nil;
@@ -267,14 +270,16 @@
 
 - (void)tableView:(UITableView *)aTableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-	selectedPlaylist = userPlaylists[indexPath.row];
+	_selectedPlaylist = userPlaylists[indexPath.row];
 	
 	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil
 																	  preferredStyle:UIAlertControllerStyleActionSheet];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * __nonnull action) {
-		[self deletePlaylist:selectedPlaylist]; }]];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Launch the Quiz" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
-		[self launchQuizForPlaylist:selectedPlaylist]; }]];
+		[self deletePlaylist:_selectedPlaylist]; }]];
+	if (_selectedPlaylist.verbs.count > 0) {
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Launch the Quiz" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
+			[self launchQuizForPlaylist:_selectedPlaylist]; }]];
+	}
 	
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
 	

@@ -22,7 +22,7 @@
 }
 
 @property (nonatomic, strong) UISearchController * searchController;
-@property (nonatomic, strong) UIPopoverPresentationController * popoverController;
+@property (nonatomic, strong) UIPopoverPresentationController * popoverPresentationController;
 
 @end
 
@@ -43,8 +43,8 @@
 	searchResultsViewController.tableView.dataSource = self;
 	
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsViewController];
-	self.tableView.tableHeaderView = self.searchController.searchBar;
 	[self.searchController.searchBar sizeToFit];
+	self.tableView.tableHeaderView = self.searchController.searchBar;
 	
 	self.searchController.delegate = self;
 	self.searchController.searchResultsUpdater = self;
@@ -201,10 +201,10 @@
 			verbOptionsViewController.verbs = checkedVerbs;
 			verbOptionsViewController.modalPresentationStyle = UIModalPresentationPopover;
 			
-			_popoverController = verbOptionsViewController.popoverPresentationController;
-			_popoverController.delegate = self;
-			[_popoverController.containerView sizeToFit];
-			_popoverController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+			_popoverPresentationController = verbOptionsViewController.popoverPresentationController;
+			_popoverPresentationController.delegate = self;
+			[_popoverPresentationController.containerView sizeToFit];
+			_popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
 			
 			[self presentViewController:verbOptionsViewController animated:NO completion:NULL];
 			showingAddToPopover = YES;
@@ -332,8 +332,8 @@
     /* Don't show the IndexBar: on iPad, if the playlist is not a ordered list or if searching is occuring */
 	if (!_playlist.canBeModified && !isSearching) {
 		
-        if (_playlist.isBasicPlaylist) return @[UITableViewIndexSearch, @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"K", @"L", @"M", @"P", @"Q", @"R", @"S", @"T", @"W"];
-        else return @[UITableViewIndexSearch, @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"W"];
+        if (_playlist.isBasicPlaylist) return @[ UITableViewIndexSearch, @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"K", @"L", @"M", @"P", @"Q", @"R", @"S", @"T", @"W" ];
+        else return @[ UITableViewIndexSearch, @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"W" ];
 	}
     return nil;
 }
@@ -367,15 +367,13 @@
 	Verb * verb = filteredKeys[indexPath.row];
 	NSString * search = self.searchController.searchBar.text;
 	if (isSearching && search.length > 0) {
-		
 		NSString * title = [NSString stringWithFormat:@"%@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
 		cell.textLabel.attributedText = [self highlightedStringFromString:title withSearch:search fontSize:17.];
-		
+		cell.detailTextLabel.text = @""; // This line fix a bug on iOS 8 where the attributed detail text don't shows up on first letter searched
 		cell.detailTextLabel.attributedText = [self highlightedStringFromString:verb.definition withSearch:search fontSize:12.];
-		
 	} else {
 		cell.textLabel.text = verb.infinitif;
-		cell.detailTextLabel.text = nil;
+		cell.detailTextLabel.attributedText = nil;
 	}
 	
 	// Clear checkmarks when after editing
@@ -430,8 +428,13 @@
 			[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
 		} else {
 			double delayInSeconds = 0.;
+			if (_searchController.isActive) {
+				_searchController.active = NO;
+				delayInSeconds += 0.15;
+			}
+			
 			if (self.navigationController.navigationBarHidden) {// If the navigation bar is hidden, re-show it (with animation) and wait before pushing the result view controller
-				delayInSeconds = UINavigationControllerHideShowBarDuration;
+				delayInSeconds += UINavigationControllerHideShowBarDuration;
 				[self.navigationController setNavigationBarHidden:NO
 														 animated:YES];
 			}
@@ -483,51 +486,6 @@
 {
 	isSearching = NO;
 	filteredKeys = sortedKeys.copy;
-	[self.tableView reloadSectionIndexTitles];
-	[self.tableView reloadData];
-}
-
-#pragma mark - UISearchBarDelegate
-
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)aSearchBar
-{
-	if (!isSearching) {
-		[aSearchBar setShowsCancelButton:YES animated:YES];
-		isSearching = YES;
-		
-		[self.tableView reloadSectionIndexTitles];
-		[self.tableView reloadData];
-	}
-}
-
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
-{
-	if (searchText.length > 0) {
-		NSPredicate * predicate = [NSPredicate predicateWithFormat:
-								   @"SELF.infinitif CONTAINS[cd] %@ "
-								   @"OR SELF.past CONTAINS[cd] %@ "
-								   @"OR SELF.pastParticiple CONTAINS[cd] %@ "
-								   @"OR SELF.definition CONTAINS[cd] %@",
-								   searchText, searchText, searchText, searchText];
-		filteredKeys = [sortedKeys filteredArrayUsingPredicate:predicate];
-	} else {
-		filteredKeys = sortedKeys.copy;
-	}
-	
-	[self.tableView reloadData];
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)aSearchBar
-{
-	[aSearchBar resignFirstResponder];
-    
-    filteredKeys = sortedKeys.copy;
-    [self.tableView reloadData];
-}
-
-- (void)searchBarTextDidEndEditing:(UISearchBar *)aSearchBar
-{
-	isSearching = NO;
 	[self.tableView reloadSectionIndexTitles];
 	[self.tableView reloadData];
 }

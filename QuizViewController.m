@@ -237,6 +237,7 @@
 	[self.navigationItem setRightBarButtonItem:doneItem animated:YES];
 	
 	_resultTableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+	_resultTableView.frame = self.view.bounds;
 	[self pushView:_resultTableView animated:animated];
 	[_resultTableView reloadData];
 	_resultTableView.contentInset = UIEdgeInsetsMake(64., 0., 0., 0.);
@@ -247,9 +248,9 @@
 - (void)pushResponse:(ResponseState)response animated:(BOOL)animated
 {
 	_responseImageView.image = [UIImage imageNamed:(response == ResponseStateTrue) ? @"true" : @"false"];
-	
 	_responseLabel.text = currentResponse;
 	
+	_responseView.frame = self.view.bounds;
 	[self pushView:_responseView animated:animated];
 	
 	double delayInSeconds = ((animated)? 0.25 : 0.) + 1.;

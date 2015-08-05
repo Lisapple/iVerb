@@ -16,11 +16,9 @@
 
 @interface PlaylistsViewController : IVTableViewController <UINavigationControllerDelegate, EditableTableViewCellDelegate>
 {
-	@private
+@private
 	NSArray * defaultPlaylists;
 	NSArray * userPlaylists;
-	
-	Playlist * selectedPlaylist;
 }
 
 // Private
