@@ -46,6 +46,8 @@
 		507F9BE11B38B0CD002B5CF4 /* SearchResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 507F9BE01B38B0CD002B5CF4 /* SearchResultsViewController.m */; };
 		508784E6170B6BBA00693C3C /* EditNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 508784E4170B6BBA00693C3C /* EditNoteViewController.m */; };
 		508784E7170B6BBA00693C3C /* EditNoteViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 508784E5170B6BBA00693C3C /* EditNoteViewController_Phone.xib */; };
+		508A582C1B9B17FA0029CF57 /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 508A582B1B9B17F90029CF57 /* CoreSpotlight.framework */; };
+		508A582E1B9B19690029CF57 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 508A582D1B9B19690029CF57 /* MobileCoreServices.framework */; };
 		50AB34C31B39F08B00946929 /* RootNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AB34C21B39F08B00946929 /* RootNavigationController.m */; };
 		50AE533F1649608500FE8879 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50AE53411649608500FE8879 /* Localizable.strings */; };
 		50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AE534616496B9A00FE8879 /* Verb+additions.m */; };
@@ -128,6 +130,8 @@
 		508784E3170B6BBA00693C3C /* EditNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditNoteViewController.h; sourceTree = "<group>"; };
 		508784E4170B6BBA00693C3C /* EditNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditNoteViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		508784E5170B6BBA00693C3C /* EditNoteViewController_Phone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditNoteViewController_Phone.xib; sourceTree = "<group>"; };
+		508A582B1B9B17F90029CF57 /* CoreSpotlight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreSpotlight.framework; path = System/Library/Frameworks/CoreSpotlight.framework; sourceTree = SDKROOT; };
+		508A582D1B9B19690029CF57 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		50AB34C11B39F08B00946929 /* RootNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootNavigationController.h; sourceTree = "<group>"; };
 		50AB34C21B39F08B00946929 /* RootNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootNavigationController.m; sourceTree = "<group>"; };
 		50AE53401649608500FE8879 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -169,6 +173,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				508A582E1B9B19690029CF57 /* MobileCoreServices.framework in Frameworks */,
+				508A582C1B9B17FA0029CF57 /* CoreSpotlight.framework in Frameworks */,
 				503AACAD170F1B01009230CD /* CoreMedia.framework in Frameworks */,
 				503AACAB170F1A5B009230CD /* AVFoundation.framework in Frameworks */,
 				501BDB7D170B4D6B00F7154F /* MessageUI.framework in Frameworks */,
@@ -303,6 +309,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				508A582D1B9B19690029CF57 /* MobileCoreServices.framework */,
+				508A582B1B9B17F90029CF57 /* CoreSpotlight.framework */,
 				501BDB7C170B4D6B00F7154F /* MessageUI.framework */,
 				503B0DC312C7E3A00060B502 /* CoreData.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
@@ -391,6 +399,11 @@
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 79MVQZ8SAR;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -512,7 +525,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;
-				PROVISIONING_PROFILE = "F1CAF02D-A30E-4F9F-A139-5D88ED7397F5";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -532,7 +544,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;
-				PROVISIONING_PROFILE = "F1CAF02D-A30E-4F9F-A139-5D88ED7397F5";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

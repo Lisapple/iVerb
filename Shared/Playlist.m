@@ -139,6 +139,16 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 	return ![self isDefaultPlaylist];
 }
 
+- (Verb *)verbWithInfinitif:(NSString *)infinitif
+{
+	infinitif = [infinitif stringByReplacingOccurrencesOfString:@"To " withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, infinitif.length - 1)];
+	[infinitif stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
+	request.fetchLimit = 1;
+	request.predicate = [NSPredicate predicateWithFormat:@"infinitif CONTAINS[cd] %@", infinitif];
+	return [self.managedObjectContext executeFetchRequest:request error:NULL].firstObject;
+}
+
 - (void)addVerb:(Verb *)verb
 {
 	[[self mutableSetValueForKey:@"verbs"] addObject:verb];

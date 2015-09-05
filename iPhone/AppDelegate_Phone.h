@@ -9,11 +9,14 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import <QuartzCore/QuartzCore.h>
+#import <CoreSpotlight/CoreSpotlight.h>
 
 #import "PlaylistsViewController.h"
 #import "SearchViewController.h"
+#import "ResultViewController.h"
 
 #import "ManagedObjectContext.h"
+#import "Playlist+additions.h"
 
 @interface AppDelegate_Phone : NSObject <UIApplicationDelegate, UITabBarDelegate, ManagedObjectContext>
 {

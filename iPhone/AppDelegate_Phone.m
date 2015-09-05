@@ -38,7 +38,37 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:)
 												 name:UIDeviceOrientationDidChangeNotification object:nil];
 	
+	// On iOS 9+, index all verbs with Spotlight
+	[[Playlist allVerbsPlaylist] buildingSpolightIndexWithCompletionHandler:^(NSError * _Nullable error) {
+		if (error) {
+			NSLog(@"error when building Spotlight index: %@", error.localizedDescription);
+		} }];
+	
 	return YES;
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray * _Nullable))restorationHandler
+{
+	if ([userActivity.activityType isEqualToString:CSSearchableItemActionType]) {
+		NSString * infinitif = userActivity.userInfo[CSSearchableItemActivityIdentifier];
+		Verb * verb = [[Playlist allVerbsPlaylist] verbWithInfinitif:infinitif];
+		if (verb) {
+			if (navigationController.presentedViewController)
+				[navigationController dismissViewControllerAnimated:NO completion:nil];
+			[navigationController popToRootViewControllerAnimated:NO];
+			
+			SearchViewController * searchViewController = [[SearchViewController alloc] init];
+			searchViewController.playlist = [Playlist allVerbsPlaylist];
+			[navigationController pushViewController:searchViewController animated:NO];
+			
+			ResultViewController * resultViewController = [[ResultViewController alloc] init];
+			resultViewController.verb = verb;
+			[navigationController pushViewController:resultViewController animated:YES];
+			
+			return YES;
+		}
+	}
+	return NO;
 }
 
 - (void)deviceOrientationDidChange:(NSNotification *)notification

@@ -37,7 +37,7 @@
 		Verb * verb = _verbs.firstObject;
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add \"%@\":", [verb.infinitif capitalizedString]];
 	} else if (_verbs.count > 1) {
-		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %lu verbs:", _verbs.count];
+		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %lu verbs:", (unsigned long)_verbs.count];
 	}
 	
 	[self.tableView reloadData];// Re-reload the tableView to update cells
@@ -52,7 +52,7 @@
 		Verb * verb = _verbs.firstObject;
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add \"%@\":", [verb.infinitif capitalizedString]];
 	} else if (_verbs.count > 1) {
-		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %lu verbs:", _verbs.count];
+		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %lu verbs:", (unsigned long)_verbs.count];
 	}
 }
 

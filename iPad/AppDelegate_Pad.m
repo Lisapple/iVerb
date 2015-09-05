@@ -21,7 +21,26 @@
     [window makeKeyAndVisible];
     window.tintColor = [UIColor purpleColor];
 	
+	// On iOS 9+, index all verbs with Spotlight
+	[[Playlist allVerbsPlaylist] buildingSpolightIndexWithCompletionHandler:^(NSError * _Nullable error) {
+		if (error) {
+			NSLog(@"error when building Spotlight index: %@", error.localizedDescription);
+		} }];
+	
 	return YES;
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray * _Nullable))restorationHandler
+{
+	if ([userActivity.activityType isEqualToString:CSSearchableItemActionType]) {
+		NSString * infinitif = userActivity.userInfo[CSSearchableItemActivityIdentifier];
+		Verb * verb = [[Playlist allVerbsPlaylist] verbWithInfinitif:infinitif];
+		if (verb) {
+			[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
+			return YES;
+		}
+	}
+	return NO;
 }
 
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window

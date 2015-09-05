@@ -44,6 +44,7 @@ extern NSString * const kPlaylistHistoryName;
 - (BOOL)isDefaultPlaylist;
 - (BOOL)isUserPlaylist;
 
+- (Verb *)verbWithInfinitif:(NSString *)infinitif;
 - (void)addVerb:(Verb *)verb;
 - (void)removeVerb:(Verb *)verb;
 

@@ -72,4 +72,22 @@ static Playlist * _currentPlaylist = nil;
 	return [template stringByReplacingOccurrencesOfString:@"{{@}}" withString:content];
 }
 
+- (void)buildingSpolightIndexWithCompletionHandler:(void (^ __nullable)(NSError * __nullable error))completionHandler
+{
+	if (NSClassFromString(@"CSSearchableIndex")) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			NSMutableArray <CSSearchableItem *> * searchableItems = [[NSMutableArray alloc] initWithCapacity:self.verbs.count];
+			for (Verb * verb in self.verbs) {
+				CSSearchableItemAttributeSet * attributeSet = [[CSSearchableItemAttributeSet alloc] initWithItemContentType:(NSString *)kUTTypeItem];
+				attributeSet.title = [@"To " stringByAppendingString:verb.infinitif];
+				attributeSet.contentDescription = [NSString stringWithFormat:@"%@, %@\n%@", verb.past, verb.pastParticiple, verb.definition];
+				attributeSet.keywords = @[ verb.infinitif, [attributeSet.contentDescription componentsSeparatedByString:@" "] ];
+				CSSearchableItem * item = [[CSSearchableItem alloc] initWithUniqueIdentifier:verb.infinitif domainIdentifier:@"verbs" attributeSet:attributeSet];
+				[searchableItems addObject:item];
+			}
+			[[CSSearchableIndex defaultSearchableIndex] indexSearchableItems:searchableItems completionHandler:completionHandler];
+		});
+	}
+}
+
 @end
