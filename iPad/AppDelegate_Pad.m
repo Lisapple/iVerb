@@ -52,9 +52,9 @@
 	
     NSError *error;
     if (managedObjectContext != nil) {
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+        if (managedObjectContext.hasChanges && ![managedObjectContext save:&error]) {
 			// Update to handle the error appropriately.
-			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+			NSLog(@"Unresolved error %@, %@", error, error.userInfo);
 			exit(-1);  // Fail
         }
     }
@@ -73,10 +73,10 @@
         return managedObjectContext;
     }
 	
-    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    NSPersistentStoreCoordinator *coordinator = self.persistentStoreCoordinator;
     if (coordinator != nil) {
         managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-        [managedObjectContext setPersistentStoreCoordinator: coordinator];
+        managedObjectContext.persistentStoreCoordinator = coordinator;
     }
     return managedObjectContext;
 }
@@ -124,12 +124,12 @@
 	NSURL *storeUrl = [NSURL fileURLWithPath:storePath];
 	
 	NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
-    persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
+    persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
 	
 	NSError *error;
 	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
 		// Update to handle the error appropriately.
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
 		exit(-1);  // Fail
     }
 	

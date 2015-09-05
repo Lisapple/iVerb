@@ -10,15 +10,15 @@
 
 #import "Playlist.h"
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, ResponseState) {
 	ResponseStateTrue,
 	ResponseStateFalse
-} ResponseState;
+};
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, VerbForm) {
 	VerbFormPastSimple = 0,
 	VerbFormPastParticiple
-} VerbForm;
+};
 
 @interface QuizViewController : UIViewController <UITextFieldDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 {

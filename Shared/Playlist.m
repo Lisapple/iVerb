@@ -72,10 +72,10 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"creationDate == NULL"]];
+	request.predicate = [NSPredicate predicateWithFormat:@"creationDate == NULL"];
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
-	[request setSortDescriptors:@[sortDescriptor]];
+	request.sortDescriptors = @[ sortDescriptor ];
 	return [context executeFetchRequest:request error:NULL];
 }
 
@@ -84,10 +84,10 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
-	[request setPredicate:[NSPredicate predicateWithFormat:@"creationDate != NULL"]];
+	request.predicate = [NSPredicate predicateWithFormat:@"creationDate != NULL"];
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
-	[request setSortDescriptors:@[sortDescriptor]];
+	request.sortDescriptors = @[ sortDescriptor ];
 	return [context executeFetchRequest:request error:NULL];
 }
 
@@ -136,7 +136,7 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 
 - (BOOL)isUserPlaylist
 {
-	return ![self isDefaultPlaylist];
+	return !self.isDefaultPlaylist;
 }
 
 - (Verb *)verbWithInfinitif:(NSString *)infinitif

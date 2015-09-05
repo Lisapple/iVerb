@@ -58,7 +58,7 @@
 
 - (IBAction)moreInfo:(id)sender
 {
-	NSDictionary * infoDictionary = [[NSBundle mainBundle] infoDictionary];
+	NSDictionary * infoDictionary = [NSBundle mainBundle].infoDictionary;
 	NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © 2015, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"]];
 	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil
 																	  preferredStyle:UIAlertControllerStyleActionSheet];

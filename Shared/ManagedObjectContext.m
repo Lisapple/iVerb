@@ -12,7 +12,7 @@
 
 + (NSManagedObjectContext *)sharedContext
 {
-	id <ManagedObjectContext> app = (id <ManagedObjectContext>)[[UIApplication sharedApplication] delegate];
+	id <ManagedObjectContext> app = (id <ManagedObjectContext>)[UIApplication sharedApplication].delegate;
 	return [app managedObjectContext];
 }
 

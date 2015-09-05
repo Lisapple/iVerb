@@ -47,7 +47,7 @@
 
 @synthesize totalWidth = _totalWidth;
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     if ((self = [super initWithFrame:frame])) {
 		speed = 1.;

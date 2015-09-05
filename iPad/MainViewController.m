@@ -53,7 +53,7 @@
 {
 	[recognizer.view removeGestureRecognizer:recognizer];
 	
-	NSString * basePath = [[NSBundle mainBundle] bundlePath];
+	NSString * basePath = [NSBundle mainBundle].bundlePath;
     [webView loadHTMLString:verb.HTMLFormat
                     baseURL:[NSURL fileURLWithPath:basePath]];
 	
@@ -119,7 +119,7 @@
 													  object:nil
 													   queue:[NSOperationQueue currentQueue]
 												  usingBlock:^(NSNotification *note) {
-													  NSString * basePath = [[NSBundle mainBundle] bundlePath];
+													  NSString * basePath = [NSBundle mainBundle].bundlePath;
 													  [webView loadHTMLString:verb.HTMLFormat
 																	  baseURL:[NSURL fileURLWithPath:basePath]];
 												  }];
@@ -147,7 +147,7 @@
 	NSString * infinitif = [verb valueForKey:@"infinitif"];
 	self.title = [@"To " stringByAppendingString:infinitif];
 	
-	NSString * basePath = [[NSBundle mainBundle] bundlePath];
+	NSString * basePath = [NSBundle mainBundle].bundlePath;
 	[webView loadHTMLString:verb.HTMLFormat
 					baseURL:[NSURL fileURLWithPath:basePath]];
 }
@@ -278,7 +278,7 @@
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 			
-			NSString * basePath = [[NSBundle mainBundle] bundlePath];
+			NSString * basePath = [NSBundle mainBundle].bundlePath;
 			[webView loadHTMLString:verb.HTMLFormat
                             baseURL:[NSURL fileURLWithPath:basePath]];
 		});

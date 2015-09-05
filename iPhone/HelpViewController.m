@@ -29,7 +29,7 @@
 	
 	NSString * path = [[NSBundle mainBundle] pathForResource:@"help" ofType:@"html"];
 	NSString * content = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
-	NSString * basePath = [[NSBundle mainBundle] bundlePath];
+	NSString * basePath = [NSBundle mainBundle].bundlePath;
 	[_webView loadHTMLString:content
 					 baseURL:[NSURL fileURLWithPath:basePath]];
 }

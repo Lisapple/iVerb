@@ -29,7 +29,7 @@
     
     self.navigationItem.titleView = titleLabel;
     
-    [super setTitle:title];
+    super.title = title;
 }
 
 @end

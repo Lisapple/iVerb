@@ -17,7 +17,7 @@
 
 @implementation EditNoteViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
 	NSString * nibName = (TARGET_IS_IPAD())? @"EditNoteViewController_Pad" : @"EditNoteViewController_Phone";
     if ((self = [super initWithNibName:nibName bundle:[NSBundle mainBundle]])) {

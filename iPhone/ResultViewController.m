@@ -44,7 +44,7 @@
                                                                                            action:@selector(showOptionAction:)];
 	_webView.delegate = self;
 	
-	NSString * basePath = [[NSBundle mainBundle] bundlePath];
+	NSString * basePath = [NSBundle mainBundle].bundlePath;
 	[_webView loadHTMLString:_verb.HTMLFormat
 					 baseURL:[NSURL fileURLWithPath:basePath]];
 	[_activityIndicatorView startAnimating];
@@ -53,7 +53,7 @@
                                                                        object:nil
                                                                         queue:[NSOperationQueue currentQueue]
                                                                    usingBlock:^(NSNotification *note) {
-                                                                       NSString * basePath = [[NSBundle mainBundle] bundlePath];
+                                                                       NSString * basePath = [NSBundle mainBundle].bundlePath;
                                                                        [_webView loadHTMLString:_verb.HTMLFormat
                                                                                         baseURL:[NSURL fileURLWithPath:basePath]];
                                                                    }];
@@ -171,7 +171,7 @@
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 			
-			NSString * basePath = [[NSBundle mainBundle] bundlePath];
+			NSString * basePath = [NSBundle mainBundle].bundlePath;
 			[_webView loadHTMLString:_verb.HTMLFormat
 							 baseURL:[NSURL fileURLWithPath:basePath]];
 		});
