@@ -13,12 +13,12 @@
 
 @interface Playlist (additions)
 
-+ (Playlist *)currentPlaylist;
-+ (void)setCurrentPlaylist:(Playlist *)playlist;
++ (nonnull Playlist *)currentPlaylist;
++ (void)setCurrentPlaylist:(nullable Playlist *)playlist;
 
-- (NSString *)localizedName;
+- (nonnull NSString *)localizedName;
 
-- (NSString *)HTMLFormat;
+- (nonnull NSString *)HTMLFormat;
 
 /**
  Index all verbs from the current playlist in Spotlight. Does nothing in iOS 8 and earlier (the completion handler is not even called).

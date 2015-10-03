@@ -37,6 +37,7 @@
     [super viewDidLoad];
 	
 	self.title = @"Cloud";
+	self.view.clipsToBounds = YES;
 	
 	if (TARGET_IS_IPAD()) {
 		/* Add a "Done" button on iPad */
@@ -62,7 +63,7 @@
 		
 		NSString * infinitif = ((Verb *)obj).infinitif;
 		
-		UIFont * font = [UIFont boldSystemFontOfSize:sizes[(index % 3)]];
+		UIFont * font = [UIFont systemFontOfSize:sizes[(index % 3)]];
 		CGSize size = [infinitif sizeWithAttributes:@{ NSFontAttributeName : font }];
 		size.width += 8.;
 		
