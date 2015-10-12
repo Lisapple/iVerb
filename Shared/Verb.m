@@ -7,6 +7,7 @@
 //
 
 #import "Verb.h"
+#import "Playlist.h"
 
 #import "ManagedObjectContext.h"
 
@@ -18,6 +19,7 @@
 @dynamic components;
 @dynamic lastUse;
 @dynamic playlists;
+@dynamic quote;
 
 @dynamic isBookmarked;
 
@@ -27,11 +29,8 @@
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
 	request.predicate = [NSPredicate predicateWithFormat:@"TRUEPREDICATE"];
-	//request.fetchLimit = 1;
-	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
 	request.sortDescriptors = @[sortDescriptor];
-	
 	return [context executeFetchRequest:request error:NULL].firstObject;
 }
 

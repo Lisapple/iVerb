@@ -256,7 +256,7 @@
 {
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         if ([@[ @"help-infinitive", @"help-simple-past", @"help-past-participle",
-				@"help-definition", @"help-example", @"help-composition" ] containsObject:request.URL.fragment]) {
+				@"help-definition", @"help-example", @"help-composition", @"help-quote" ] containsObject:request.URL.fragment]) {
             
             HelpViewController * helpViewController = [[HelpViewController alloc] init];
             helpViewController.anchor = request.URL.fragment;

@@ -10,6 +10,7 @@
 
 #import "LandscapeViewController.h"
 #import "RootNavigationController.h"
+#import "Quote.h"
 
 @implementation AppDelegate_Phone
 
@@ -177,9 +178,8 @@
     NSError *error;
     if (managedObjectContext != nil) {
         if (managedObjectContext.hasChanges && ![managedObjectContext save:&error]) {
-			// Update to handle the error appropriately.
 			NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-			exit(-1);  // Fail
+			exit(-1); // Fail
         } 
     }
 }
@@ -201,6 +201,44 @@
     if (coordinator != nil) {
         managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         managedObjectContext.persistentStoreCoordinator = coordinator;
+		
+		NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
+		request.predicate = [NSPredicate predicateWithFormat:@"SELF.quote == nil"];
+		NSArray * verbs = [managedObjectContext executeFetchRequest:request error:NULL];
+		if (verbs.count > 0) {
+			
+			NSPersistentStoreCoordinator * applicationStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
+			NSURL * applicationStoreURL = [[NSBundle mainBundle] URLForResource:@"verbs" withExtension:@"sqlite"];
+			if ([applicationStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:applicationStoreURL options:@{} error:NULL]) {
+				NSManagedObjectContext * appContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+				appContext.persistentStoreCoordinator = applicationStoreCoordinator;
+				
+				__block NSMutableDictionary <NSString *, NSDictionary <NSString *, NSString *> *> * infinitivesAndQuotes = [[NSMutableDictionary alloc] initWithCapacity:verbs.count];
+				NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Quote"];
+				[[appContext executeFetchRequest:request error:NULL] enumerateObjectsUsingBlock:^(Quote * _Nonnull quote, NSUInteger idx, BOOL * _Nonnull stop) {
+					NSString * infinitif = quote.verb.infinitif;
+					NSMutableDictionary <NSString *, NSString *> * quoteDictionary = [[NSMutableDictionary alloc] initWithCapacity:3];
+					if (quote.infinitif) {
+						quoteDictionary[@"i"] = quote.infinitif; }
+					if (quote.past) {
+						quoteDictionary[@"p"] = quote.past; }
+					if (quote.pastParticiple) {
+						quoteDictionary[@"pp"] = quote.pastParticiple; }
+					infinitivesAndQuotes[infinitif] = quoteDictionary;
+				}];
+				for (Verb * verb in verbs) {
+					if (infinitivesAndQuotes[verb.infinitif].allKeys.count > 0) {
+						NSEntityDescription * entity = [NSEntityDescription entityForName:@"Quote" inManagedObjectContext:verb.managedObjectContext];
+						Quote * quote = (Quote *)[[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:verb.managedObjectContext];
+						quote.infinitif = infinitivesAndQuotes[verb.infinitif][@"i"];
+						quote.past = infinitivesAndQuotes[verb.infinitif][@"p"];
+						quote.pastParticiple = infinitivesAndQuotes[verb.infinitif][@"pp"];
+						[verb setValue:quote forKey:@"quote"];
+					}
+				}
+				[managedObjectContext save:NULL];
+			}
+		}
     }
     return managedObjectContext;
 }
@@ -226,38 +264,30 @@
  */
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
 	
-    if (persistentStoreCoordinator != nil) {
-        return persistentStoreCoordinator;
-    }
+	if (persistentStoreCoordinator != nil) {
+		return persistentStoreCoordinator;
+	}
 	
-	
-	NSString *storePath = [self.applicationDocumentsDirectory stringByAppendingPathComponent:@"verbs.sqlite"];
-	/*
-	 Set up the store.
-	 For the sake of illustration, provide a pre-populated default store.
-	 */
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	// If the expected store doesn't exist, copy the default store.
-	if (![fileManager fileExistsAtPath:storePath]) {
+	NSString *storePath = [[self applicationDocumentsDirectory] stringByAppendingPathComponent:@"verbs.sqlite"];
+	if (![[NSFileManager defaultManager] fileExistsAtPath:storePath]) {
 		NSString *defaultStorePath = [[NSBundle mainBundle] pathForResource:@"verbs" ofType:@"sqlite"];
 		if (defaultStorePath) {
-			[fileManager copyItemAtPath:defaultStorePath toPath:storePath error:NULL];
+			[[NSFileManager defaultManager] copyItemAtPath:defaultStorePath toPath:storePath error:NULL];
 		}
 	}
 	
+	persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
+	
 	NSURL *storeUrl = [NSURL fileURLWithPath:storePath];
-	
-	NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};	
-    persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: self.managedObjectModel];
-	
+	NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES };
 	NSError *error;
 	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
 		// Update to handle the error appropriately.
 		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
 		exit(-1);  // Fail
-    }
+	}
 	
-    return persistentStoreCoordinator;
+	return persistentStoreCoordinator;
 }
 
 

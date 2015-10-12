@@ -151,7 +151,8 @@
             [request.URL.fragment isEqualToString:@"help-past-participle"] ||
             [request.URL.fragment isEqualToString:@"help-definition"] ||
             [request.URL.fragment isEqualToString:@"help-example"] ||
-            [request.URL.fragment isEqualToString:@"help-composition"]) {
+            [request.URL.fragment isEqualToString:@"help-composition"] ||
+			[request.URL.fragment isEqualToString:@"help-quote"]) {
             
             HelpViewController * helpViewController = [[HelpViewController alloc] init];
             helpViewController.anchor = request.URL.fragment;

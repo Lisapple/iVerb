@@ -8,14 +8,12 @@
 
 #import <CoreData/CoreData.h>
 
-#import "Verb.h"
+@class Verb;
 
 extern NSString * const kPlaylistAllVerbsName;
 extern NSString * const kPlaylistBasicsVerbsName;
 extern NSString * const kPlaylistBookmarksName;
 extern NSString * const kPlaylistHistoryName;
-
-@class Verb;
 
 @interface Playlist : NSManagedObject
 

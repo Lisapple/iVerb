@@ -36,13 +36,15 @@
 		503AACAF170F2268009230CD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 503AACAE170F2268009230CD /* QuartzCore.framework */; };
 		503B0DC212C7E0E20060B502 /* verbs.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 503B0DC112C7E0E20060B502 /* verbs.sqlite */; };
 		503B0DC412C7E3A00060B502 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 503B0DC312C7E3A00060B502 /* CoreData.framework */; };
-		504CC82412C7E53E00D9672B /* verbs.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 504CC82312C7E53E00D9672B /* verbs.xcdatamodel */; };
 		505D0FBC16C55CF3007B3A90 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 505D0FBA16C55CF3007B3A90 /* HelpViewController.m */; };
 		505D0FBD16C55CF3007B3A90 /* HelpViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 505D0FBB16C55CF3007B3A90 /* HelpViewController.xib */; };
 		505D0FBF16C55E65007B3A90 /* help.html in Resources */ = {isa = PBXBuildFile; fileRef = 505D0FBE16C55E65007B3A90 /* help.html */; };
 		505D0FCC16C5922D007B3A90 /* CloudView.m in Sources */ = {isa = PBXBuildFile; fileRef = 505D0FCB16C5922D007B3A90 /* CloudView.m */; };
 		506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 506FE25C148E62280061045E /* PlaylistsViewController.m */; };
 		506FE25F148E62290061045E /* PlaylistsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 506FE25D148E62280061045E /* PlaylistsViewController.xib */; };
+		5075F9CF1BC4512600D32FCB /* verbs.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */; settings = {ASSET_TAGS = (); }; };
+		5075F9D01BC457DB00D32FCB /* verbs.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = 5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */; };
+		5075F9D31BC45FB500D32FCB /* Quote.m in Sources */ = {isa = PBXBuildFile; fileRef = 5075F9D21BC45FB500D32FCB /* Quote.m */; settings = {ASSET_TAGS = (); }; };
 		507F9BE11B38B0CD002B5CF4 /* SearchResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 507F9BE01B38B0CD002B5CF4 /* SearchResultsViewController.m */; };
 		508784E6170B6BBA00693C3C /* EditNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 508784E4170B6BBA00693C3C /* EditNoteViewController.m */; };
 		508784E7170B6BBA00693C3C /* EditNoteViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 508784E5170B6BBA00693C3C /* EditNoteViewController_Phone.xib */; };
@@ -115,7 +117,6 @@
 		503AACAE170F2268009230CD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		503B0DC112C7E0E20060B502 /* verbs.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = verbs.sqlite; sourceTree = "<group>"; };
 		503B0DC312C7E3A00060B502 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		504CC82312C7E53E00D9672B /* verbs.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = verbs.xcdatamodel; sourceTree = "<group>"; };
 		505D0FB916C55CF3007B3A90 /* HelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
 		505D0FBA16C55CF3007B3A90 /* HelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = HelpViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		505D0FBB16C55CF3007B3A90 /* HelpViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HelpViewController.xib; sourceTree = "<group>"; };
@@ -125,6 +126,10 @@
 		506FE25B148E62280061045E /* PlaylistsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistsViewController.h; sourceTree = "<group>"; };
 		506FE25C148E62280061045E /* PlaylistsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PlaylistsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		506FE25D148E62280061045E /* PlaylistsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaylistsViewController.xib; sourceTree = "<group>"; };
+		5075F9CD1BC4512500D32FCB /* verbs 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "verbs 2.xcdatamodel"; sourceTree = "<group>"; };
+		5075F9CE1BC4512500D32FCB /* verbs.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = verbs.xcdatamodel; sourceTree = "<group>"; };
+		5075F9D11BC45FB500D32FCB /* Quote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Quote.h; path = Shared/Quote.h; sourceTree = "<group>"; };
+		5075F9D21BC45FB500D32FCB /* Quote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Quote.m; path = Shared/Quote.m; sourceTree = "<group>"; };
 		507F9BDF1B38B0CD002B5CF4 /* SearchResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchResultsViewController.h; sourceTree = "<group>"; };
 		507F9BE01B38B0CD002B5CF4 /* SearchResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchResultsViewController.m; sourceTree = "<group>"; };
 		508784E3170B6BBA00693C3C /* EditNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditNoteViewController.h; sourceTree = "<group>"; };
@@ -356,6 +361,8 @@
 				50E91C7116135B7B009254F6 /* Verb.m */,
 				50AE534516496B9900FE8879 /* Verb+additions.h */,
 				50AE534616496B9A00FE8879 /* Verb+additions.m */,
+				5075F9D11BC45FB500D32FCB /* Quote.h */,
+				5075F9D21BC45FB500D32FCB /* Quote.m */,
 			);
 			name = "Model Class";
 			sourceTree = "<group>";
@@ -364,7 +371,7 @@
 			isa = PBXGroup;
 			children = (
 				503B0DC112C7E0E20060B502 /* verbs.sqlite */,
-				504CC82312C7E53E00D9672B /* verbs.xcdatamodel */,
+				5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -428,6 +435,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5075F9D01BC457DB00D32FCB /* verbs.xcdatamodeld in Resources */,
 				2860E329111B887F00E27156 /* MainWindow_Phone.xib in Resources */,
 				2860E32F111B888700E27156 /* MainWindow_Pad.xib in Resources */,
 				500BD3A8123BF35000FC6947 /* SearchViewController.xib in Resources */,
@@ -471,15 +479,16 @@
 				50CD97E3123CFF0900E31BC8 /* ResultViewController.m in Sources */,
 				501CFFAD1986BB1600F8731D /* IVTableViewController.m in Sources */,
 				5009FC1419A5518900CFB284 /* UINavigationController+addition.m in Sources */,
-				504CC82412C7E53E00D9672B /* verbs.xcdatamodel in Sources */,
 				506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */,
 				5036F079160CE15700E0BECD /* MainViewController.m in Sources */,
 				50F314A71611E75E00B83030 /* EditableTableViewCell.m in Sources */,
 				50F314B31612214200B83030 /* LandscapeViewController.m in Sources */,
+				5075F9CF1BC4512600D32FCB /* verbs.xcdatamodeld in Sources */,
 				50E91C6F16135B65009254F6 /* Playlist.m in Sources */,
 				50E91C7216135B7C009254F6 /* Verb.m in Sources */,
 				50C3A6F4161488E800317F92 /* ManagedObjectContext.m in Sources */,
 				50AB34C31B39F08B00946929 /* RootNavigationController.m in Sources */,
+				5075F9D31BC45FB500D32FCB /* Quote.m in Sources */,
 				50E507F91614B26B00B6915D /* Playlist+additions.m in Sources */,
 				50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */,
 				503926D916497EC900E5B24C /* VerbOptionsViewController_Phone.m in Sources */,
@@ -604,6 +613,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				5075F9CD1BC4512500D32FCB /* verbs 2.xcdatamodel */,
+				5075F9CE1BC4512500D32FCB /* verbs.xcdatamodel */,
+			);
+			currentVersion = 5075F9CD1BC4512500D32FCB /* verbs 2.xcdatamodel */;
+			path = verbs.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
 }

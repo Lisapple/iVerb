@@ -7,6 +7,7 @@
 //
 
 #import "Verb+additions.h"
+#import "Quote.h"
 
 @implementation Verb (additions)
 
@@ -62,6 +63,12 @@
 	if (note.length > 0) {
 		[content appendFormat:@"<span style=\"color:#aaa\">Notes</span><br>\
 		 <div style=\"font-weight:bold;font-size:16px;padding:15px\">%@</div>", note];
+	}
+	
+	if (self.quote.infinitif.length > 0) {
+		[content appendFormat:@"<span style=\"color:#aaa\">Quote</span><br>\
+		 <div style=\"font-weight:bold;font-size:16px;padding:15px;padding-bottom:8\">&laquo; %@ &raquo;</div>\
+		 <div style=\"font-style:italic;font-size:16px;padding:15px;padding-top:0\">%@</div>", self.quote.infinitifDescription, self.quote.infinitifAuthor];
 	}
 	
 	NSString * path = [[NSBundle mainBundle] pathForResource:@"index" ofType:@"html"];
@@ -123,6 +130,20 @@
 	if (note.length > 0) {
 		[content appendFormat:@"<a href=\"#edit-note\">Notes</a><br>\
 		 <div class=\"verb-notes\">%@</div>", note];
+	}
+	
+	if (self.quote.infinitif.length > 0) {
+		
+		// Add some CSS to avoid the quote "« Alea jacta est »" to be become "« Alea jacta est\n »", but instead "« Alea jacta\n est »"
+		NSString * quote = self.quote.infinitifDescription;
+		NSMutableArray * words = [quote componentsSeparatedByString:@" "].mutableCopy;
+		NSString * lastWord = words.lastObject;
+		[words removeLastObject];
+		quote = [[words componentsJoinedByString:@" "] stringByAppendingFormat:@" <span class=\".non-hyphen\">%@ &raquo;</span>", lastWord];
+		
+		[content appendFormat:@"<a href=\"#help-quote\">Quote</a><br>\
+		 <div class=\"verb-notes\" style=\"padding-bottom:8\">&laquo; %@</div>\
+		 <div class=\"verb-notes\" style=\"font-style:italic;padding-top:0\">%@</div>", quote, self.quote.infinitifAuthor];
 	}
 	
 	NSString * path = [[NSBundle mainBundle] pathForResource:@"index" ofType:@"html"];

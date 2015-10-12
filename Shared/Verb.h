@@ -8,9 +8,8 @@
 
 #import <CoreData/CoreData.h>
 
-#import "Playlist.h"
-
 @class Playlist;
+@class Quote;
 
 @interface Verb : NSManagedObject
 
@@ -22,7 +21,8 @@
 
 @property (nonatomic, strong) NSDate * lastUse;
 
-@property (nonatomic, strong) NSSet * playlists;
+@property (nonatomic, strong) NSSet <Playlist *> * playlists;
+@property (nonatomic, strong) Quote * quote;
 
 @property (nonatomic, readonly) BOOL isBookmarked;
 

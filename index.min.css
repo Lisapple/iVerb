@@ -15,7 +15,6 @@
 @media screen and (width:448px) {/* For iPad in portrait, between 321px and 448px (768px - 320px)) */
 	#content {
 		min-height:940px;/* 1024px - 20px (status bar) - 44px (navigation bar) - 2 * 10px (padding) */
-		
 		border-left:1px solid #e5e5e5;
 	}
 }
@@ -23,7 +22,6 @@
 @media screen and (width:704px) {/* For iPad in landscape, larger than 704px (1024px - 320px) */
 	#content {
 		min-height:684px;/* 768px - 20px (status bar) - 44px (navigation bar) - 2 * 10px (padding) */
-		
 		border-left:1px solid #e5e5e5;
 	}
 }
@@ -31,7 +29,6 @@
 @media screen and (width:1024px) {/* For iPad in landscape in fullscreen, larger than 600px */
 	#content {
 		min-height:728px;/* 768px - 20px (status bar) - 2 * 10px (padding) */
-		
 		border-left:1px solid #e5e5e5;
 	}
 }
@@ -39,10 +36,9 @@
 body {
 	font-family:"SanFancisco", "Helvetica Neue";
 	font-size:14px;
-	color:#707070;// #555555;
+	color:#707070;
 	
-	margin:0px;
-	
+	margin:0;
 	width:100%;
 }
 
@@ -64,6 +60,10 @@ body {
 	padding:15px;
 }
 
+.non-hyphen {
+	white-space:pre;
+}
+
 hr {
 	position:relative;
 	bottom:10px;
@@ -77,5 +77,4 @@ a {
     text-decoration:none;
 }
 
-@media only screen and (-webkit-min-device-pixel-ratio:2) {
-}
+@media only screen and (-webkit-min-device-pixel-ratio:2) { }

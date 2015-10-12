@@ -8,6 +8,7 @@
 
 #import "QuizViewController.h"
 #import "ResultViewController.h"
+#import "Quote.h"
 
 @interface QuizViewController ()
 
@@ -184,7 +185,63 @@
 	self.title = [NSString stringWithFormat:@"%ld of %ld", (long)currentIndex + 1, (long)allVerbs.count];
 	
 	_infinitifLabel.text = [@"To " stringByAppendingString:verb.infinitif];
-	_formLabel.text = (form == VerbFormPastSimple)? @"Past Simple Form:" : @"Past Participle Form:";
+	if (form == VerbFormPastSimple) { // past
+		if (verb.quote.pastDescription.length > 0) {
+			NSMutableAttributedString * string = [[NSMutableAttributedString alloc] init];
+			NSMutableParagraphStyle * style = [[NSMutableParagraphStyle alloc] init];
+			style.hyphenationFactor = 0.5;
+			NSDictionary * attributes = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
+										   NSFontAttributeName : [UIFont systemFontOfSize:18.],
+										   NSParagraphStyleAttributeName : style };
+			NSMutableString * placeholder = [[NSMutableString alloc] initWithCapacity:verb.past.length];
+			for (int i = 0; i < verb.past.length; i++) { [placeholder appendString:@"_"]; }
+			// Replace all occurrences (only for the whole word)
+			NSMutableArray * words = [verb.quote.pastDescription componentsSeparatedByString:@" "].mutableCopy;
+			for (NSInteger index = 0; index < words.count; ++index) {
+				NSString * word = [words[index] stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]]; // Remove ",;-" (and so on) to compare occurrence
+				if ([word isEqualToString:verb.past]) {
+					words[index] = [words[index] stringByReplacingOccurrencesOfString:verb.past withString:placeholder]; }
+			}
+			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"« %@ »", [words componentsJoinedByString:@" "]]
+																		   attributes:attributes]];
+			
+			NSDictionary * italics = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
+										NSFontAttributeName : [UIFont italicSystemFontOfSize:18.] };
+			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", verb.quote.pastAuthor]
+																		   attributes:italics]];
+			_formLabel.attributedText = string;
+		} else {
+			_formLabel.text = @"Past Simple Form:";
+		}
+	} else { // past participle
+		if (verb.quote.pastParticipleDescription.length > 0) {
+			NSMutableAttributedString * string = [[NSMutableAttributedString alloc] init];
+			NSMutableParagraphStyle * style = [[NSMutableParagraphStyle alloc] init];
+			style.hyphenationFactor = 0.5;
+			NSDictionary * attributes = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
+										   NSFontAttributeName : [UIFont systemFontOfSize:18.],
+										   NSParagraphStyleAttributeName : style };
+			NSMutableString * placeholder = [[NSMutableString alloc] initWithCapacity:verb.pastParticiple.length];
+			for (int i = 0; i < verb.pastParticiple.length; i++) { [placeholder appendString:@"_"]; }
+			// Replace all occurrences (only for the whole word)
+			NSMutableArray * words = [verb.quote.pastParticipleDescription componentsSeparatedByString:@" "].mutableCopy;
+			for (NSInteger index = 0; index < words.count; ++index) {
+				NSString * word = [words[index] stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]]; // Remove ",;-" (and so on) to compare occurrence
+				if ([word isEqualToString:verb.pastParticiple]) {
+					words[index] = [words[index] stringByReplacingOccurrencesOfString:verb.pastParticiple withString:placeholder]; }
+			}
+			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"« %@ »", [words componentsJoinedByString:@" "]]
+																		   attributes:attributes]];
+			
+			NSDictionary * italics = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
+										NSFontAttributeName : [UIFont italicSystemFontOfSize:18.] };
+			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", verb.quote.pastParticipleAuthor]
+																		   attributes:italics]];
+			_formLabel.attributedText = string;
+		} else {
+			_formLabel.text = @"Past Participle Form:";
+		}
+	}
 	
 	currentResponse = (form == VerbFormPastSimple)? (verb.past) : (verb.pastParticiple);
 	
@@ -288,7 +345,6 @@
 			cell.textLabel.text = [NSString stringWithFormat:@"%@ (not %@)", verbString, response];
 		
 		cell.imageView.image = [UIImage imageNamed:(correct) ? @"true-small" : @"false-small"];
-		
 	} else {
 		cell.textLabel.text = [NSString stringWithFormat:@"%@ (skipped)", verbString];
 		cell.textLabel.textColor = [UIColor lightGrayColor];

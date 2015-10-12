@@ -85,12 +85,8 @@
 - (void)createNewListWithName:(NSString *)name
 {
 	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
-	
-	NSEntityDescription * entity = [NSEntityDescription entityForName:@"Playlist"
-											   inManagedObjectContext:context];
-	
-	NSManagedObject * playlist = [[NSManagedObject alloc] initWithEntity:entity
-										  insertIntoManagedObjectContext:context];
+	NSEntityDescription * entity = [NSEntityDescription entityForName:@"Playlist" inManagedObjectContext:context];
+	NSManagedObject * playlist = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
 	[playlist setValue:name forKey:@"name"];
 	[playlist setValue:[NSDate date] forKey:@"creationDate"];
 	
