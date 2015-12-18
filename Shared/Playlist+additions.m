@@ -82,6 +82,11 @@ static Playlist * _currentPlaylist = nil;
 				attributeSet.title = [@"To " stringByAppendingString:verb.infinitif];
 				attributeSet.contentDescription = [NSString stringWithFormat:@"%@, %@\n%@", verb.past, verb.pastParticiple, verb.definition];
 				attributeSet.keywords = @[ verb.infinitif, [attributeSet.contentDescription componentsSeparatedByString:@" "] ];
+				
+				CGFloat scale = [UIScreen mainScreen].scale;
+				NSString * imageName = (scale > 1) ? [NSString stringWithFormat:@"spotlight@%.0fx", scale] : @"spotlight";
+				attributeSet.thumbnailURL = [[NSBundle mainBundle] URLForResource:imageName withExtension:@"png"];
+				
 				CSSearchableItem * item = [[CSSearchableItem alloc] initWithUniqueIdentifier:verb.infinitif domainIdentifier:@"verbs" attributeSet:attributeSet];
 				[searchableItems addObject:item];
 			}

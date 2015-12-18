@@ -40,11 +40,14 @@
 		505D0FBD16C55CF3007B3A90 /* HelpViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 505D0FBB16C55CF3007B3A90 /* HelpViewController.xib */; };
 		505D0FBF16C55E65007B3A90 /* help.html in Resources */ = {isa = PBXBuildFile; fileRef = 505D0FBE16C55E65007B3A90 /* help.html */; };
 		505D0FCC16C5922D007B3A90 /* CloudView.m in Sources */ = {isa = PBXBuildFile; fileRef = 505D0FCB16C5922D007B3A90 /* CloudView.m */; };
+		506509D51C24AF7700A740B0 /* spotlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 506509D31C24AF7700A740B0 /* spotlight.png */; };
+		506509D61C24AF7700A740B0 /* spotlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 506509D41C24AF7700A740B0 /* spotlight@2x.png */; };
+		506509D81C24B21100A740B0 /* spotlight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 506509D71C24B21100A740B0 /* spotlight@3x.png */; };
 		506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 506FE25C148E62280061045E /* PlaylistsViewController.m */; };
 		506FE25F148E62290061045E /* PlaylistsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 506FE25D148E62280061045E /* PlaylistsViewController.xib */; };
-		5075F9CF1BC4512600D32FCB /* verbs.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */; settings = {ASSET_TAGS = (); }; };
+		5075F9CF1BC4512600D32FCB /* verbs.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */; };
 		5075F9D01BC457DB00D32FCB /* verbs.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = 5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */; };
-		5075F9D31BC45FB500D32FCB /* Quote.m in Sources */ = {isa = PBXBuildFile; fileRef = 5075F9D21BC45FB500D32FCB /* Quote.m */; settings = {ASSET_TAGS = (); }; };
+		5075F9D31BC45FB500D32FCB /* Quote.m in Sources */ = {isa = PBXBuildFile; fileRef = 5075F9D21BC45FB500D32FCB /* Quote.m */; };
 		507F9BE11B38B0CD002B5CF4 /* SearchResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 507F9BE01B38B0CD002B5CF4 /* SearchResultsViewController.m */; };
 		508784E6170B6BBA00693C3C /* EditNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 508784E4170B6BBA00693C3C /* EditNoteViewController.m */; };
 		508784E7170B6BBA00693C3C /* EditNoteViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 508784E5170B6BBA00693C3C /* EditNoteViewController_Phone.xib */; };
@@ -123,6 +126,9 @@
 		505D0FBE16C55E65007B3A90 /* help.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = help.html; sourceTree = "<group>"; };
 		505D0FCA16C5922D007B3A90 /* CloudView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudView.h; sourceTree = "<group>"; };
 		505D0FCB16C5922D007B3A90 /* CloudView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CloudView.m; sourceTree = "<group>"; };
+		506509D31C24AF7700A740B0 /* spotlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spotlight.png; sourceTree = "<group>"; };
+		506509D41C24AF7700A740B0 /* spotlight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spotlight@2x.png"; sourceTree = "<group>"; };
+		506509D71C24B21100A740B0 /* spotlight@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spotlight@3x.png"; sourceTree = "<group>"; };
 		506FE25B148E62280061045E /* PlaylistsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistsViewController.h; sourceTree = "<group>"; };
 		506FE25C148E62280061045E /* PlaylistsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PlaylistsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		506FE25D148E62280061045E /* PlaylistsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaylistsViewController.xib; sourceTree = "<group>"; };
@@ -279,6 +285,9 @@
 				8D1107310486CEB800E47090 /* iVerb-Info.plist */,
 				50AE53411649608500FE8879 /* Localizable.strings */,
 				9C51A90519D0650B00547659 /* Launch.xib */,
+				506509D31C24AF7700A740B0 /* spotlight.png */,
+				506509D41C24AF7700A740B0 /* spotlight@2x.png */,
+				506509D71C24B21100A740B0 /* spotlight@3x.png */,
 			);
 			name = Shared;
 			sourceTree = "<group>";
@@ -447,8 +456,11 @@
 				5036F07A160CE15700E0BECD /* MainViewController.xib in Resources */,
 				50F314B41612214200B83030 /* LandscapeViewController.xib in Resources */,
 				50E507F61614B24600B6915D /* verbs_lists_template.html in Resources */,
+				506509D81C24B21100A740B0 /* spotlight@3x.png in Resources */,
 				50AE533F1649608500FE8879 /* Localizable.strings in Resources */,
 				503926DA16497EC900E5B24C /* VerbOptionsViewController_Phone.xib in Resources */,
+				506509D61C24AF7700A740B0 /* spotlight@2x.png in Resources */,
+				506509D51C24AF7700A740B0 /* spotlight.png in Resources */,
 				5012072F164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib in Resources */,
 				50E31E1D16C150E10007FFBA /* CloudViewController_Phone.xib in Resources */,
 				50E33F9A16C1A9C30091AE21 /* QuizViewController_Phone.xib in Resources */,
