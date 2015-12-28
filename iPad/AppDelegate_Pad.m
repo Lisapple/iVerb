@@ -8,18 +8,20 @@
 
 #import "AppDelegate_Pad.h"
 
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 @implementation AppDelegate_Pad
-
-@synthesize window;
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	MainViewController * mainViewController = [[MainViewController alloc] init];
-	window.rootViewController = mainViewController;
+	[Fabric with:@[ Crashlytics.class ]];
 	
-    [window makeKeyAndVisible];
-    window.tintColor = [UIColor purpleColor];
+	MainViewController * mainViewController = [[MainViewController alloc] init];
+	_window.rootViewController = mainViewController;
+	
+    [_window makeKeyAndVisible];
+    _window.tintColor = [UIColor purpleColor];
 	
 	// On iOS 9+, index all verbs with Spotlight
 	[[Playlist allVerbsPlaylist] buildingSpolightIndexWithCompletionHandler:^(NSError * _Nullable error) {
@@ -30,15 +32,35 @@
 	return YES;
 }
 
+- (void)showVerbWithInfinitif:(NSString *)infinitif
+{
+	Verb * verb = [[Playlist allVerbsPlaylist] verbWithInfinitif:infinitif];
+	if (verb) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
+	}
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
+{
+	if ([url.host isEqualToString:@"verb"]) { // iverb://verb#[infinitif]
+		[self showVerbWithInfinitif:url.fragment];
+	}
+	return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+	if ([url.host isEqualToString:@"verb"]) { // iverb://verb#[infinitif]
+		[self showVerbWithInfinitif:url.fragment];
+	}
+	return YES;
+}
+
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray * _Nullable))restorationHandler
 {
 	if ([userActivity.activityType isEqualToString:CSSearchableItemActionType]) {
 		NSString * infinitif = userActivity.userInfo[CSSearchableItemActivityIdentifier];
-		Verb * verb = [[Playlist allVerbsPlaylist] verbWithInfinitif:infinitif];
-		if (verb) {
-			[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
-			return YES;
-		}
+		[self showVerbWithInfinitif:infinitif];
 	}
 	return NO;
 }

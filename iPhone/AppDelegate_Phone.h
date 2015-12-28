@@ -24,9 +24,7 @@
     NSManagedObjectContext *managedObjectContext;	    
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
 	
-    UIWindow * window, * landscapeWindow;
-	
-	NSDictionary * dictionary;
+    UIWindow * landscapeWindow;
 	
 	@private
 	UINavigationController * navigationController;

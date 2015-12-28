@@ -12,22 +12,23 @@
 #import "RootNavigationController.h"
 #import "Quote.h"
 
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+
 @implementation AppDelegate_Phone
-
-@synthesize window;
-
-@synthesize dictionary;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    window.tintColor = [UIColor purpleColor];
+	[Fabric with:@[ Crashlytics.class ]];
+	
+    _window.tintColor = [UIColor purpleColor];
     
 	PlaylistsViewController * playlistsViewController = [[PlaylistsViewController alloc] init];
 	
 	navigationController = [[RootNavigationController alloc] initWithRootViewController:playlistsViewController];
-	window.rootViewController = navigationController;
+	_window.rootViewController = navigationController;
 	
-    [window makeKeyAndVisible];
+    [_window makeKeyAndVisible];
     
 	/*** Hack: Disable the sending of notifications when the device rotate (enabled by default, should be set to one) to set the count to zero... ***/
 	while ([UIDevice currentDevice].generatesDeviceOrientationNotifications) {
@@ -48,28 +49,47 @@
 	return YES;
 }
 
+- (void)showVerbWithInfinitif:(NSString *)infinitif
+{
+	Verb * verb = [[Playlist allVerbsPlaylist] verbWithInfinitif:infinitif];
+	if (verb) {
+		if (navigationController.presentedViewController)
+			[navigationController dismissViewControllerAnimated:NO completion:nil];
+		[navigationController popToRootViewControllerAnimated:NO];
+		
+		SearchViewController * searchViewController = [[SearchViewController alloc] init];
+		searchViewController.playlist = [Playlist allVerbsPlaylist];
+		[navigationController pushViewController:searchViewController animated:NO];
+		
+		ResultViewController * resultViewController = [[ResultViewController alloc] init];
+		resultViewController.verb = verb;
+		[navigationController pushViewController:resultViewController animated:YES];
+	}
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
+{
+	if ([url.host isEqualToString:@"verb"]) { // iverb://verb#[infinitif]
+		[self showVerbWithInfinitif:url.fragment];
+	}
+	return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+	if ([url.host isEqualToString:@"verb"]) { // iverb://verb#[infinitif]
+		[self showVerbWithInfinitif:url.fragment];
+	}
+	return YES;
+}
+
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray * _Nullable))restorationHandler
 {
 	if ([userActivity.activityType isEqualToString:CSSearchableItemActionType]) {
 		NSString * infinitif = userActivity.userInfo[CSSearchableItemActivityIdentifier];
-		Verb * verb = [[Playlist allVerbsPlaylist] verbWithInfinitif:infinitif];
-		if (verb) {
-			if (navigationController.presentedViewController)
-				[navigationController dismissViewControllerAnimated:NO completion:nil];
-			[navigationController popToRootViewControllerAnimated:NO];
-			
-			SearchViewController * searchViewController = [[SearchViewController alloc] init];
-			searchViewController.playlist = [Playlist allVerbsPlaylist];
-			[navigationController pushViewController:searchViewController animated:NO];
-			
-			ResultViewController * resultViewController = [[ResultViewController alloc] init];
-			resultViewController.verb = verb;
-			[navigationController pushViewController:resultViewController animated:YES];
-			
-			return YES;
-		}
+		[self showVerbWithInfinitif:infinitif];
 	}
-	return NO;
+	return YES;
 }
 
 - (void)deviceOrientationDidChange:(NSNotification *)notification
@@ -97,15 +117,15 @@
 							 animations:^{ landscapeWindow.transform = transform; }];
 			
 			if (orientation == UIDeviceOrientationLandscapeLeft) {
-				window.transform = CGAffineTransformMakeRotation(M_PI_2);
-				window.layer.anchorPoint = CGPointZero;
-				window.frame = CGRectMake(0., 0., screenSize.height, screenSize.width);
+				_window.transform = CGAffineTransformMakeRotation(M_PI_2);
+				_window.layer.anchorPoint = CGPointZero;
+				_window.frame = CGRectMake(0., 0., screenSize.height, screenSize.width);
 			} else {
-				window.transform = CGAffineTransformMakeRotation(-M_PI_2);
-				window.layer.anchorPoint = CGPointMake(1., 0.);
+				_window.transform = CGAffineTransformMakeRotation(-M_PI_2);
+				_window.layer.anchorPoint = CGPointMake(1., 0.);
 				
 				CGFloat x = (-screenSize.height / 2. + (-screenSize.height / 2. + 320));
-				window.frame = CGRectMake(x, 0., screenSize.height, screenSize.width);
+				_window.frame = CGRectMake(x, 0., screenSize.height, screenSize.width);
 			}
 			
 		} else {
@@ -126,8 +146,8 @@
 				landscapeWindow.layer.anchorPoint = CGPointMake(0., 1.);
 				landscapeWindow.frame = CGRectMake(0., -screenSize.width, screenSize.height, screenSize.width);
 				
-				window.layer.anchorPoint = CGPointZero;
-				window.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
+				_window.layer.anchorPoint = CGPointZero;
+				_window.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
 				
 			} else {
 				landscapeWindow.layer.anchorPoint = CGPointMake(1., 1.);
@@ -135,15 +155,15 @@
 				landscapeWindow.frame = CGRectMake(x, -screenSize.width, screenSize.height, screenSize.width);
 				transform = CGAffineTransformMakeRotation(-M_PI_2);
 				
-				window.layer.anchorPoint = CGPointMake(1., 0.);
-				window.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
+				_window.layer.anchorPoint = CGPointMake(1., 0.);
+				_window.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
 			}
 			
             [UIApplication sharedApplication].statusBarHidden = YES;
 			
 			[UIView animateWithDuration:0.5
 							 animations:^{
-								 window.transform = transform;
+								 _window.transform = transform;
 								 landscapeWindow.transform = transform;
 							 }];
 		}
@@ -166,7 +186,7 @@
 			
 			[UIView animateWithDuration:0.5
 							 animations:^{
-								 window.transform = CGAffineTransformIdentity;
+								 _window.transform = CGAffineTransformIdentity;
 								 landscapeWindow.layer.transform = CATransform3DIdentity; }
 							 completion:^(BOOL finished) { landscapeWindow = nil; }];
 		}

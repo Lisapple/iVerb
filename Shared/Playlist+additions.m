@@ -10,7 +10,13 @@
 
 #import "Verb.h"
 
-#define kLastUsedPlaylist @"Last Used Playlist"
+NSString * const LastUsedPlaylistKey = @"Last Used Playlist";
+
+/**
+ A dictionary with all verbs from the current playlist.
+ The format is [infinitif] = "infinitif|past|pastParticiple|definition"
+ */
+NSString * const SharedVerbsKey = @"Shared Verbs";
 
 @implementation Playlist (additions)
 
@@ -20,7 +26,7 @@ static Playlist * _currentPlaylist = nil;
 {
 	if (!_currentPlaylist) {
 		NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-		NSString * name = [userDefaults stringForKey:kLastUsedPlaylist];
+		NSString * name = [userDefaults stringForKey:LastUsedPlaylistKey];
 		_currentPlaylist = [Playlist playlistWithName:name];
 		if (!_currentPlaylist) {
 			_currentPlaylist = [Playlist allVerbsPlaylist];
@@ -37,7 +43,15 @@ static Playlist * _currentPlaylist = nil;
 	NSString * name = _currentPlaylist.name;
 	if (name) {
 		NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-		[userDefaults setObject:name forKey:kLastUsedPlaylist];
+		[userDefaults setObject:name forKey:LastUsedPlaylistKey];
+		
+		NSMutableDictionary * verbs = [[NSMutableDictionary alloc] initWithCapacity:playlist.verbs.count];
+		for (Verb * verb in playlist.verbs) {
+			verbs[verb.infinitif] = [NSString stringWithFormat:@"%@|%@|%@|%@",
+									 verb.infinitif, verb.past, verb.pastParticiple, verb.definition];
+		}
+		NSUserDefaults * sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.lisacintosh.iverb"];
+		[sharedDefaults setObject:verbs forKey:SharedVerbsKey];
 	}
 }
 

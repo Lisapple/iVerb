@@ -7,8 +7,6 @@
     #import <UIKit/UIKit.h>
 #endif
 
-#define kTopMargin 600.
-
 #if TARGET_IPHONE_SIMULATOR
 #define NSDebugLog(format, ...)  NSLog(format, ##__VA_ARGS__)
 #else

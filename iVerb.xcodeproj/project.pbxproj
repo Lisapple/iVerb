@@ -53,6 +53,10 @@
 		508784E7170B6BBA00693C3C /* EditNoteViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 508784E5170B6BBA00693C3C /* EditNoteViewController_Phone.xib */; };
 		508A582C1B9B17FA0029CF57 /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 508A582B1B9B17F90029CF57 /* CoreSpotlight.framework */; };
 		508A582E1B9B19690029CF57 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 508A582D1B9B19690029CF57 /* MobileCoreServices.framework */; };
+		50A68C3F1C261464004A187C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A68C3B1C261464004A187C /* Security.framework */; };
+		50A68C401C261464004A187C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A68C3C1C261464004A187C /* SystemConfiguration.framework */; };
+		50A68C411C261464004A187C /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A68C3D1C261464004A187C /* Fabric.framework */; };
+		50A68C421C261464004A187C /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A68C3E1C261464004A187C /* Crashlytics.framework */; };
 		50AB34C31B39F08B00946929 /* RootNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AB34C21B39F08B00946929 /* RootNavigationController.m */; };
 		50AE533F1649608500FE8879 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50AE53411649608500FE8879 /* Localizable.strings */; };
 		50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AE534616496B9A00FE8879 /* Verb+additions.m */; };
@@ -68,6 +72,10 @@
 		50E33F9A16C1A9C30091AE21 /* QuizViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50E33F9816C1A9C30091AE21 /* QuizViewController_Phone.xib */; };
 		50E507F61614B24600B6915D /* verbs_lists_template.html in Resources */ = {isa = PBXBuildFile; fileRef = 50E507F51614B24600B6915D /* verbs_lists_template.html */; };
 		50E507F91614B26B00B6915D /* Playlist+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E507F81614B26B00B6915D /* Playlist+additions.m */; };
+		50E7A2CC1C3076D400AAAED0 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50E7A2CB1C3076D400AAAED0 /* NotificationCenter.framework */; };
+		50E7A2CF1C3076D400AAAED0 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E7A2CE1C3076D400AAAED0 /* TodayViewController.swift */; };
+		50E7A2D21C3076D400AAAED0 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50E7A2D01C3076D400AAAED0 /* MainInterface.storyboard */; };
+		50E7A2D61C3076D400AAAED0 /* iVerb Widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 50E7A2CA1C3076D400AAAED0 /* iVerb Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		50E91C6F16135B65009254F6 /* Playlist.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E91C6E16135B65009254F6 /* Playlist.m */; };
 		50E91C7216135B7C009254F6 /* Verb.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E91C7116135B7B009254F6 /* Verb.m */; };
 		50F1014D1985610C005D852F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50F1014C1985610C005D852F /* Images.xcassets */; };
@@ -76,6 +84,30 @@
 		50F314B41612214200B83030 /* LandscapeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50F314B21612214200B83030 /* LandscapeViewController.xib */; };
 		9C51A90619D0650B00547659 /* Launch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9C51A90519D0650B00547659 /* Launch.xib */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		50E7A2D41C3076D400AAAED0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 50E7A2C91C3076D400AAAED0;
+			remoteInfo = Widget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		50E7A2DA1C3076D400AAAED0 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				50E7A2D61C3076D400AAAED0 /* iVerb Widget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -143,6 +175,10 @@
 		508784E5170B6BBA00693C3C /* EditNoteViewController_Phone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditNoteViewController_Phone.xib; sourceTree = "<group>"; };
 		508A582B1B9B17F90029CF57 /* CoreSpotlight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreSpotlight.framework; path = System/Library/Frameworks/CoreSpotlight.framework; sourceTree = SDKROOT; };
 		508A582D1B9B19690029CF57 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		50A68C3B1C261464004A187C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		50A68C3C1C261464004A187C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		50A68C3D1C261464004A187C /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		50A68C3E1C261464004A187C /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		50AB34C11B39F08B00946929 /* RootNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootNavigationController.h; sourceTree = "<group>"; };
 		50AB34C21B39F08B00946929 /* RootNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootNavigationController.m; sourceTree = "<group>"; };
 		50AE53401649608500FE8879 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -165,6 +201,13 @@
 		50E507F51614B24600B6915D /* verbs_lists_template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = verbs_lists_template.html; sourceTree = "<group>"; };
 		50E507F71614B26B00B6915D /* Playlist+additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Playlist+additions.h"; path = "Shared/Playlist+additions.h"; sourceTree = "<group>"; };
 		50E507F81614B26B00B6915D /* Playlist+additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Playlist+additions.m"; path = "Shared/Playlist+additions.m"; sourceTree = "<group>"; };
+		50E7A2CA1C3076D400AAAED0 /* iVerb Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "iVerb Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		50E7A2CB1C3076D400AAAED0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		50E7A2CE1C3076D400AAAED0 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
+		50E7A2D11C3076D400AAAED0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		50E7A2D31C3076D400AAAED0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50E7A2DB1C30810500AAAED0 /* iVerb.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = iVerb.entitlements; path = iVerb/iVerb.entitlements; sourceTree = "<group>"; };
+		50E7A2DC1C30812500AAAED0 /* iVerb Widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "iVerb Widget.entitlements"; path = "../iVerb Widget.entitlements"; sourceTree = "<group>"; };
 		50E91C6D16135B65009254F6 /* Playlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Playlist.h; path = Shared/Playlist.h; sourceTree = "<group>"; };
 		50E91C6E16135B65009254F6 /* Playlist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Playlist.m; path = Shared/Playlist.m; sourceTree = "<group>"; };
 		50E91C7016135B7B009254F6 /* Verb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Verb.h; path = Shared/Verb.h; sourceTree = "<group>"; };
@@ -187,13 +230,25 @@
 				508A582E1B9B19690029CF57 /* MobileCoreServices.framework in Frameworks */,
 				508A582C1B9B17FA0029CF57 /* CoreSpotlight.framework in Frameworks */,
 				503AACAD170F1B01009230CD /* CoreMedia.framework in Frameworks */,
+				50A68C3F1C261464004A187C /* Security.framework in Frameworks */,
 				503AACAB170F1A5B009230CD /* AVFoundation.framework in Frameworks */,
 				501BDB7D170B4D6B00F7154F /* MessageUI.framework in Frameworks */,
+				50A68C421C261464004A187C /* Crashlytics.framework in Frameworks */,
 				503B0DC412C7E3A00060B502 /* CoreData.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				50A68C411C261464004A187C /* Fabric.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
+				50A68C401C261464004A187C /* SystemConfiguration.framework in Frameworks */,
 				503AACAF170F2268009230CD /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50E7A2C71C3076D400AAAED0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50E7A2CC1C3076D400AAAED0 /* NotificationCenter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +259,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* iVerb.app */,
+				50E7A2CA1C3076D400AAAED0 /* iVerb Widget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -282,6 +338,7 @@
 				500B9F7419A4208500C91E39 /* Additions */,
 				503854BF19A139C100D69D62 /* HTML Files */,
 				50F314AC1611F9DD00B83030 /* Model */,
+				50E7A2DB1C30810500AAAED0 /* iVerb.entitlements */,
 				8D1107310486CEB800E47090 /* iVerb-Info.plist */,
 				50AE53411649608500FE8879 /* Localizable.strings */,
 				9C51A90519D0650B00547659 /* Launch.xib */,
@@ -300,6 +357,7 @@
 				2860E324111B887F00E27156 /* iPhone */,
 				28EEBF621118D79A00187D67 /* Shared */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				50E7A2CD1C3076D400AAAED0 /* Widget */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -315,7 +373,6 @@
 				501CFFA91986BB0200F8731D /* IVViewController.m */,
 				501CFFAB1986BB1600F8731D /* IVTableViewController.h */,
 				501CFFAC1986BB1600F8731D /* IVTableViewController.m */,
-				50E91C7316135B88009254F6 /* Model Class */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -323,6 +380,10 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50A68C3B1C261464004A187C /* Security.framework */,
+				50A68C3C1C261464004A187C /* SystemConfiguration.framework */,
+				50A68C3D1C261464004A187C /* Fabric.framework */,
+				50A68C3E1C261464004A187C /* Crashlytics.framework */,
 				508A582D1B9B19690029CF57 /* MobileCoreServices.framework */,
 				508A582B1B9B17F90029CF57 /* CoreSpotlight.framework */,
 				501BDB7C170B4D6B00F7154F /* MessageUI.framework */,
@@ -333,6 +394,7 @@
 				503AACAA170F1A5B009230CD /* AVFoundation.framework */,
 				503AACAC170F1B01009230CD /* CoreMedia.framework */,
 				503AACAE170F2268009230CD /* QuartzCore.framework */,
+				50E7A2CB1C3076D400AAAED0 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -359,7 +421,18 @@
 			name = "HTML Files";
 			sourceTree = "<group>";
 		};
-		50E91C7316135B88009254F6 /* Model Class */ = {
+		50E7A2CD1C3076D400AAAED0 /* Widget */ = {
+			isa = PBXGroup;
+			children = (
+				50E7A2CE1C3076D400AAAED0 /* TodayViewController.swift */,
+				50E7A2D01C3076D400AAAED0 /* MainInterface.storyboard */,
+				50E7A2DC1C30812500AAAED0 /* iVerb Widget.entitlements */,
+				50E7A2D31C3076D400AAAED0 /* Info.plist */,
+			);
+			path = Widget;
+			sourceTree = "<group>";
+		};
+		50F314AC1611F9DD00B83030 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				50E91C6D16135B65009254F6 /* Playlist.h */,
@@ -372,13 +445,6 @@
 				50AE534616496B9A00FE8879 /* Verb+additions.m */,
 				5075F9D11BC45FB500D32FCB /* Quote.h */,
 				5075F9D21BC45FB500D32FCB /* Quote.m */,
-			);
-			name = "Model Class";
-			sourceTree = "<group>";
-		};
-		50F314AC1611F9DD00B83030 /* Model */ = {
-			isa = PBXGroup;
-			children = (
 				503B0DC112C7E0E20060B502 /* verbs.sqlite */,
 				5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */,
 			);
@@ -395,15 +461,35 @@
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				50A68C3A1C261439004A187C /* ShellScript */,
+				50E7A2DA1C3076D400AAAED0 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				50E7A2D51C3076D400AAAED0 /* PBXTargetDependency */,
 			);
 			name = iVerb;
 			productName = iVerb;
 			productReference = 1D6058910D05DD3D006BFB54 /* iVerb.app */;
 			productType = "com.apple.product-type.application";
+		};
+		50E7A2C91C3076D400AAAED0 /* iVerb Widget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 50E7A2D91C3076D400AAAED0 /* Build configuration list for PBXNativeTarget "iVerb Widget" */;
+			buildPhases = (
+				50E7A2C61C3076D400AAAED0 /* Sources */,
+				50E7A2C71C3076D400AAAED0 /* Frameworks */,
+				50E7A2C81C3076D400AAAED0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "iVerb Widget";
+			productName = Widget;
+			productReference = 50E7A2CA1C3076D400AAAED0 /* iVerb Widget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -411,13 +497,26 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0700;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = 79MVQZ8SAR;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 0;
+							};
+						};
+					};
+					50E7A2C91C3076D400AAAED0 = {
+						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 79MVQZ8SAR;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
 							};
 						};
 					};
@@ -429,12 +528,14 @@
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				1D6058900D05DD3D006BFB54 /* iVerb */,
+				50E7A2C91C3076D400AAAED0 /* iVerb Widget */,
 			);
 		};
 /* End PBXProject section */
@@ -475,7 +576,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		50E7A2C81C3076D400AAAED0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50E7A2D21C3076D400AAAED0 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		50A68C3A1C261439004A187C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run ff25ea654b1977a1b75790328380c0a34c60cbc8 fa8b9d8838ec0b5f094ae074298a32cf17e1258999ec60df6a22edb65b557ea8\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1D60588E0D05DD3D006BFB54 /* Sources */ = {
@@ -515,7 +640,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		50E7A2C61C3076D400AAAED0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				50E7A2CF1C3076D400AAAED0 /* TodayViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		50E7A2D51C3076D400AAAED0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 50E7A2C91C3076D400AAAED0 /* iVerb Widget */;
+			targetProxy = 50E7A2D41C3076D400AAAED0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		50AE53411649608500FE8879 /* Localizable.strings */ = {
@@ -524,6 +665,14 @@
 				50AE53401649608500FE8879 /* en */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		50E7A2D01C3076D400AAAED0 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				50E7A2D11C3076D400AAAED0 /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -536,8 +685,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_ENTITLEMENTS = iVerb/iVerb.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -545,8 +701,10 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iVerb-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -558,16 +716,108 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_ENTITLEMENTS = iVerb/iVerb.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iVerb_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "iVerb-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		50E7A2D71C3076D400AAAED0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "iVerb Widget.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = Widget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		50E7A2D81C3076D400AAAED0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "iVerb Widget.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = Widget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -575,8 +825,12 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -591,8 +845,12 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -611,6 +869,15 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		50E7A2D91C3076D400AAAED0 /* Build configuration list for PBXNativeTarget "iVerb Widget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				50E7A2D71C3076D400AAAED0 /* Debug */,
+				50E7A2D81C3076D400AAAED0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
