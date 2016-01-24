@@ -333,8 +333,7 @@
 
 - (void)launchQuizForPlaylist:(Playlist *)playlist
 {
-    QuizViewController * quizViewController = [[QuizViewController alloc] init];
-	quizViewController.playlist = playlist;
+    QuizViewController * quizViewController = [[QuizViewController alloc] initWithPlaylist:playlist];
 	
 	UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:quizViewController];
 	if (TARGET_IS_IPAD()) {
@@ -347,6 +346,9 @@
 
 - (void)deletePlaylist:(Playlist *)playlist
 {
+	NSIndexPath * indexPath = [NSIndexPath indexPathForRow:[[Playlist userPlaylists] indexOfObject:playlist]
+												 inSection:2];
+	
     /* Delete the playlist from Core Data */
     NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
     [context deleteObject:playlist];
@@ -354,11 +356,10 @@
     
     /* Reload the TableView */
     [self.tableView beginUpdates];
-    [self.tableView deleteRowsAtIndexPaths:@[_indexPathForActionSheet]
+    [self.tableView deleteRowsAtIndexPaths:@[ indexPath ]
                           withRowAnimation:UITableViewRowAnimationFade];
-    userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
+    userPlaylists = [Playlist userPlaylists].copy;
     [self.tableView endUpdates];
-    _indexPathForActionSheet = nil;
 }
 
 - (BOOL)shouldAutorotate

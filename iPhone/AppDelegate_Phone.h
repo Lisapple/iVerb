@@ -27,7 +27,7 @@
     UIWindow * landscapeWindow;
 	
 	@private
-	UINavigationController * navigationController;
+	UINavigationController * _navigationController;
 	
 	/*
 	IBOutlet PlaylistsViewController * playlistsViewController;

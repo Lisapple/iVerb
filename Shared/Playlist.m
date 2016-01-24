@@ -19,6 +19,7 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 @dynamic name;
 @dynamic creationDate;
 @dynamic verbs;
+@dynamic quizResults;
 
 @dynamic isDefaultPlaylist;
 

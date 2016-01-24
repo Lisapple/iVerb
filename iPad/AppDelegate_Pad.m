@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate_Pad.h"
+#import "QuizViewController.h"
 
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
@@ -15,7 +16,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+#if !TARGET_IPHONE_SIMULATOR
 	[Fabric with:@[ Crashlytics.class ]];
+#endif
 	
 	MainViewController * mainViewController = [[MainViewController alloc] init];
 	_window.rootViewController = mainViewController;
@@ -40,20 +43,51 @@
 	}
 }
 
-- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
+- (void)showQuizForPlaylist:(Playlist *)playlist firstVerbWithInfinitif:(NSString *)infinitif tense:(NSString *)tense
+{
+	Verb * verb = [playlist verbWithInfinitif:infinitif];
+	if (verb) {
+		[_window.rootViewController dismissViewControllerAnimated:NO completion:nil];
+		
+		VerbForm form = ([tense isEqualToString:@"past-participle"]) ? VerbFormPastParticiple : VerbFormPastSimple;
+		QuizViewController * controller = [[QuizViewController alloc] initWithPlaylist:playlist firstVerb:verb verbForm:form];
+		
+		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+		navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+		[_window.rootViewController presentViewController:navigationController animated:NO completion:nil];
+	}
+}
+
+- (BOOL)openDeeplinkURL:(NSURL *)url
 {
 	if ([url.host isEqualToString:@"verb"]) { // iverb://verb#[infinitif]
 		[self showVerbWithInfinitif:url.fragment];
+		return YES;
+		
+	} else { // iverb://quiz/[playlist name]/[infinitif]#[past/past-participle]
+		NSString * urlString = url.absoluteString;
+		NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"iverb://quiz\\/([^\\/]+)\\/([^#]+)#(.+)$"
+																				options:NSRegularExpressionCaseInsensitive
+																				  error:nil];
+		if ([regex matchesInString:urlString options:0 range:NSMakeRange(0, urlString.length)]) {
+			NSString * playlistName = [regex stringByReplacingMatchesInString:urlString options:0 range:NSMakeRange(0, urlString.length) withTemplate:@"$1"];
+			NSString * infinitif = [regex stringByReplacingMatchesInString:urlString options:0 range:NSMakeRange(0, urlString.length) withTemplate:@"$2"];
+			NSString * tense = [regex stringByReplacingMatchesInString:urlString options:0 range:NSMakeRange(0, urlString.length) withTemplate:@"$3"];
+			[self showQuizForPlaylist:[Playlist playlistWithName:playlistName] firstVerbWithInfinitif:infinitif tense:tense];
+			return YES;
+		}
 	}
-	return YES;
+	return NO;
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
+{
+	return [self openDeeplinkURL:url];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-	if ([url.host isEqualToString:@"verb"]) { // iverb://verb#[infinitif]
-		[self showVerbWithInfinitif:url.fragment];
-	}
-	return YES;
+	return [self openDeeplinkURL:url];
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray * _Nullable))restorationHandler
@@ -82,13 +116,8 @@
     }
 }
 
-#pragma mark -
-#pragma mark Core Data stack
+#pragma mark - Core Data stack
 
-/**
- Returns the managed object context for the application.
- If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
- */
 - (NSManagedObjectContext *) managedObjectContext {
 	
     if (managedObjectContext != nil) {
@@ -103,11 +132,6 @@
     return managedObjectContext;
 }
 
-
-/**
- Returns the managed object model for the application.
- If the model doesn't already exist, it is created by merging all of the models found in the application bundle.
- */
 - (NSManagedObjectModel *)managedObjectModel {
 	
     if (managedObjectModel != nil) {
@@ -117,11 +141,6 @@
     return managedObjectModel;
 }
 
-
-/**
- Returns the persistent store coordinator for the application.
- If the coordinator doesn't already exist, it is created and the application's store added to it.
- */
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
 	
     if (persistentStoreCoordinator != nil) {
@@ -151,21 +170,11 @@
 }
 
 
-#pragma mark -
-#pragma mark Application's documents directory
+#pragma mark - Application's documents directory
 
-/**
- Returns the path to the application's documents directory.
- */
 - (NSString *)applicationDocumentsDirectory
 {
     return NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
 }
-
-
-#pragma mark -
-#pragma mark Memory management
-
-
 
 @end

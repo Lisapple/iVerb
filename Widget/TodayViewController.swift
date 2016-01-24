@@ -11,7 +11,15 @@ import NotificationCenter
 
 class TodayViewController: UIViewController, NCWidgetProviding {
 	
+	private let kLastUsedPlaylistKey = "Last Used Playlist";
+	private let kSharedVerbsKey = "Shared Verbs";
+	
+	private var lastUpdated: NSDate?
 	private var infinitif: String?
+	private var tense: String?
+	private var lastUsedPlaylist: String?
+	private var isQuizMode = false
+	
 	@IBOutlet var label: UILabel?
 	
     override func viewDidLoad() {
@@ -26,29 +34,67 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 	
 	func viewDidSelected(gesture: UIGestureRecognizer) {
 		if (self.infinitif != nil) {
-			self.extensionContext?.openURL(NSURL(string: "iverb://verb#\(self.infinitif!)")!, completionHandler: nil)
+			if (self.isQuizMode && self.lastUsedPlaylist != nil && self.tense != nil) {
+				self.lastUpdated = nil
+				self.extensionContext?.openURL(NSURL(string: "iverb://quiz/\(self.lastUsedPlaylist!)/\(self.infinitif!)#\(self.tense!)")!, completionHandler: nil)
+			} else {
+				self.extensionContext?.openURL(NSURL(string: "iverb://verb#\(self.infinitif!)")!, completionHandler: nil)
+			}
 		}
 	}
 	
     func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)) {
 		
+		if (lastUpdated != nil && lastUpdated!.timeIntervalSinceNow < 10 * 60) {
+			completionHandler(NCUpdateResult.NoData)
+		}
+		
 		srand(UInt32(time(nil)))
+		let v = rand()
+		self.isQuizMode = ((v % 2) == 1)
 		
 		let sharedDefaults = NSUserDefaults(suiteName: "group.lisacintosh.iverb")
-		let dict = sharedDefaults?.dictionaryForKey("Shared Verbs")
+		let dict = sharedDefaults?.dictionaryForKey(kSharedVerbsKey)
 		let index = dict?.startIndex.advancedBy(Int(rand() % Int32(dict!.keys.count)))
 		let (key, value) = dict![index!]
 		self.infinitif = key
 		let comps = (value as! String).componentsSeparatedByString("|")
 		
-		let attrString = NSMutableAttributedString(string: comps.last!)
+		var string = "To \(comps[0]), \(comps[1]), \(comps[2])\n"
+		
+		if (self.isQuizMode) {
+			let playlistName = sharedDefaults?.stringForKey(kLastUsedPlaylistKey)
+			// Ignore non-user playlist that starts and ends with "__"
+			self.lastUsedPlaylist = (playlistName != nil && !playlistName!.hasPrefix("_") && !playlistName!.hasSuffix("_")) ? playlistName : nil
+			
+			if (self.lastUsedPlaylist != nil) {
+				let index = Int(rand() % 2)
+				self.tense = [ "past", "past-participle" ][index]
+				string = "To \(comps[0]), "
+				
+				if (self.tense == "past") {
+					let placeholder = [String](count: comps[1].lengthOfBytesUsingEncoding(NSUTF8StringEncoding), repeatedValue: "_").joinWithSeparator("")
+					string += "\(placeholder), "
+				} else {
+					string += "\(comps[1]), "
+				}
+				
+				if (self.tense == "past-participle") {
+					string += [String](count: comps[2].lengthOfBytesUsingEncoding(NSUTF8StringEncoding), repeatedValue: "_").joinWithSeparator("")
+				} else {
+					string += "\(comps[2])"
+				}
+				string += "\n"
+			}
+		}
 		
 		let attributes = [ NSForegroundColorAttributeName : UIColor.whiteColor() ]
-		let string = "To \(comps[0]), \(comps[1]), \(comps[2])\n"
+		let attrString = NSMutableAttributedString(string: comps.last!)
 		attrString.insertAttributedString(NSAttributedString(string: string, attributes: attributes), atIndex: 0)
-		
 		label?.attributedText = attrString
-
+		
+		lastUpdated = NSDate()
+		
         completionHandler(NCUpdateResult.NewData)
     }
 	

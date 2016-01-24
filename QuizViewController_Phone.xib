@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QuizViewController">
@@ -15,7 +15,6 @@
                 <outlet property="responseImageView" destination="21" id="60"/>
                 <outlet property="responseLabel" destination="121" id="122"/>
                 <outlet property="responseView" destination="20" id="61"/>
-                <outlet property="resultTableView" destination="EOb-NE-tXs" id="G3a-xK-JPA"/>
                 <outlet property="textField" destination="4" id="62"/>
                 <outlet property="view" destination="115" id="116"/>
             </connections>
@@ -24,7 +23,6 @@
         <view contentMode="scaleToFill" id="115">
             <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
             <autoresizingMask key="autoresizingMask"/>
-            <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <nil key="simulatedStatusBarMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
@@ -35,7 +33,6 @@
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="127">
                     <rect key="frame" x="39" y="140" width="242" height="45"/>
-                    <animations/>
                     <constraints>
                         <constraint firstAttribute="width" constant="242" id="CcR-fc-cwC"/>
                         <constraint firstAttribute="height" constant="45" id="RWY-GP-C1A"/>
@@ -43,7 +40,6 @@
                 </imageView>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="misunderstood" adjustsFontSizeToFit="NO" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                     <rect key="frame" x="47" y="148" width="226" height="30"/>
-                    <animations/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="q3s-u8-Ufd"/>
                         <constraint firstAttribute="width" constant="226" id="ylA-cO-9Wn"/>
@@ -53,27 +49,23 @@
                 </textField>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="To verb" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12">
                     <rect key="frame" x="119" y="72" width="82" height="30"/>
-                    <animations/>
                     <fontDescription key="fontDescription" type="system" pointSize="25"/>
                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="asked form" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                     <rect key="frame" x="8" y="110" width="304" height="22"/>
-                    <animations/>
                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="remaining letters" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="123">
                     <rect key="frame" x="92" y="193" width="136" height="22"/>
-                    <animations/>
                     <fontDescription key="fontDescription" type="italicSystem" pointSize="18"/>
                     <color key="textColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="15" secondAttribute="trailing" constant="8" id="2jG-na-I6f"/>
@@ -97,7 +89,6 @@
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="center" image="true.png" translatesAutoresizingMaskIntoConstraints="NO" id="21">
                     <rect key="frame" x="80" y="52" width="160" height="160"/>
-                    <animations/>
                     <constraints>
                         <constraint firstAttribute="width" constant="160" id="aYp-DU-xHq"/>
                         <constraint firstAttribute="height" constant="160" id="g5f-Tt-Rw7"/>
@@ -105,7 +96,6 @@
                 </imageView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Response:" textAlignment="right" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="120">
                     <rect key="frame" x="37" y="229" width="105" height="22"/>
-                    <animations/>
                     <constraints>
                         <constraint firstAttribute="width" constant="105" id="0te-UT-a9F"/>
                     </constraints>
@@ -115,13 +105,11 @@
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="121">
                     <rect key="frame" x="146" y="229" width="48" height="22"/>
-                    <animations/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="21" firstAttribute="top" secondItem="20" secondAttribute="top" constant="52" id="1uP-te-69R"/>
@@ -134,18 +122,6 @@
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
         </view>
-        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="EOb-NE-tXs">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <animations/>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-            <nil key="simulatedStatusBarMetrics"/>
-            <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
-            <connections>
-                <outlet property="dataSource" destination="-1" id="UA8-7K-L3L"/>
-                <outlet property="delegate" destination="-1" id="Ael-wx-Vfb"/>
-            </connections>
-        </tableView>
     </objects>
     <resources>
         <image name="true.png" width="130" height="130"/>

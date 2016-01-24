@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QuizViewController">
@@ -15,7 +15,6 @@
                 <outlet property="responseImageView" destination="72" id="205"/>
                 <outlet property="responseLabel" destination="55" id="206"/>
                 <outlet property="responseView" destination="5" id="207"/>
-                <outlet property="resultTableView" destination="lcb-Cb-bJg" id="9B3-z6-9h6"/>
                 <outlet property="textField" destination="7" id="201"/>
                 <outlet property="view" destination="1" id="209"/>
             </connections>
@@ -24,7 +23,6 @@
         <view contentMode="scaleToFill" id="1">
             <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
             <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -35,7 +33,6 @@
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="41">
                     <rect key="frame" x="149" y="169" width="242" height="45"/>
-                    <animations/>
                     <constraints>
                         <constraint firstAttribute="height" constant="45" id="Sna-ao-j0a"/>
                         <constraint firstAttribute="width" constant="242" id="cLo-vb-u22"/>
@@ -43,7 +40,6 @@
                 </imageView>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="misunderstood" adjustsFontSizeToFit="NO" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                     <rect key="frame" x="157" y="177" width="226" height="30"/>
-                    <animations/>
                     <constraints>
                         <constraint firstAttribute="width" constant="226" id="4y4-5m-opQ"/>
                         <constraint firstAttribute="height" constant="30" id="q4Y-Dy-FeN"/>
@@ -53,27 +49,23 @@
                 </textField>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="To verb" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8">
                     <rect key="frame" x="226" y="101" width="88" height="30"/>
-                    <animations/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="asked form" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9">
                     <rect key="frame" x="20" y="139" width="500" height="22"/>
-                    <animations/>
                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="remaining letters" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="10">
                     <rect key="frame" x="202" y="222" width="136" height="22"/>
-                    <animations/>
                     <fontDescription key="fontDescription" type="italicSystem" pointSize="18"/>
                     <color key="textColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="8" firstAttribute="centerX" secondItem="4" secondAttribute="centerX" id="5pJ-q7-0jJ"/>
@@ -97,40 +89,24 @@
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="center" fixedFrame="YES" image="true.png" translatesAutoresizingMaskIntoConstraints="NO" id="72">
                     <rect key="frame" x="190" y="141" width="160" height="160"/>
-                    <animations/>
                 </imageView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="Response:" textAlignment="right" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="54">
                     <rect key="frame" x="147" y="309" width="105" height="22"/>
-                    <animations/>
                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="55">
                     <rect key="frame" x="256" y="310" width="138" height="21"/>
-                    <animations/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <animations/>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <nil key="simulatedStatusBarMetrics"/>
             <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
         </view>
-        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="lcb-Cb-bJg">
-            <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-            <animations/>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-            <nil key="simulatedStatusBarMetrics"/>
-            <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <connections>
-                <outlet property="dataSource" destination="-1" id="oaw-81-rh0"/>
-                <outlet property="delegate" destination="-1" id="6Ey-Yd-Rz4"/>
-            </connections>
-        </tableView>
     </objects>
     <resources>
         <image name="true.png" width="130" height="130"/>

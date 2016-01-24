@@ -8,9 +8,14 @@
 
 #import "QuizViewController.h"
 #import "ResultViewController.h"
+#import "QuizResultsViewController.h"
+
 #import "Quote.h"
+#import "QuizResult.h"
 
 @interface QuizViewController ()
+
+@property (nonatomic, strong) Playlist * playlist;
 
 - (void)start;
 
@@ -22,12 +27,31 @@
 
 @implementation QuizViewController
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithPlaylist:(Playlist *)playlist
+{
+	if ((self = [self initWithPlaylist:playlist firstVerb:nil verbForm:0])) { }
+	return self;
+}
+
+- (instancetype)initWithPlaylist:(Playlist *)playlist firstVerb:(Verb *)verb verbForm:(VerbForm)verbForm
 {
 	NSString * nibName = (TARGET_IS_IPAD())? @"QuizViewController_Pad" : @"QuizViewController_Phone";
-    if ((self = [super initWithNibName:nibName bundle:[NSBundle mainBundle]])) {
-    }
-    return self;
+	if ((self = [super initWithNibName:nibName bundle:[NSBundle mainBundle]])) {
+		_playlist = playlist;
+	}
+	return self;
+}
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:VerbFormPastSimple])) { }
+	return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:VerbFormPastSimple])) { }
+	return self;
 }
 
 - (void)viewDidLoad
@@ -60,14 +84,6 @@
 	}
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-	[super viewDidAppear:animated];
-	
-	[_resultTableView deselectRowAtIndexPath:_resultTableView.indexPathForSelectedRow
-									animated:YES];
-}
-
 - (IBAction)cancelAction:(id)sender
 {
 	[self dismissViewControllerAnimated:YES completion:NULL];
@@ -98,7 +114,7 @@
 
 - (void)start
 {
-	BOOL animated = (goodResponseCount > 0 || badResponseCount > 0);// Don't animate the first try
+	BOOL animated = (goodResponseCount + badResponseCount); // Don't animate the first try
 	
 	[self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                             target:self
@@ -173,7 +189,7 @@
 		VerbForm form = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
 		[self pushVerb:verb form:form animated:YES];
 		
-	} else {// Else, show results
+	} else { // Else, show results
 		[self pushResultAnimated:YES];
 	}
 }
@@ -279,25 +295,22 @@
     [_textField becomeFirstResponder];
 	[_textField resignFirstResponder];
 	
-	currentResponse = nil;
+	if (goodResponseCount + badResponseCount > 0) {
+		NSManagedObjectContext * context = _playlist.managedObjectContext;
+		NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass(QuizResult.class)
+												   inManagedObjectContext:context];
+		QuizResult * result = [[QuizResult alloc] initWithEntity:entity
+									insertIntoManagedObjectContext:context];
+		result.playlist = _playlist;
+		result.date = [NSDate date];
+		result.rightResponses = @(goodResponseCount);
+		result.wrongResponses = @(badResponseCount);
+		[context save:NULL];
+	}
 	
-	self.title = [NSString stringWithFormat:@"%ld on %ld", (long)goodResponseCount, (long)allVerbs.count];
-	
-	UIBarButtonItem * startItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
-																				target:self
-																				action:@selector(start)];
-	[self.navigationItem setLeftBarButtonItem:startItem animated:YES];
-	
-	UIBarButtonItem * doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-																			   target:self
-																			   action:@selector(doneAction:)];
-	[self.navigationItem setRightBarButtonItem:doneItem animated:YES];
-	
-	_resultTableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-	_resultTableView.frame = self.view.bounds;
-	[self pushView:_resultTableView animated:animated];
-	[_resultTableView reloadData];
-	_resultTableView.contentInset = UIEdgeInsetsMake(64., 0., 0., 0.);
+	QuizResultsViewController * controller = [[QuizResultsViewController alloc] initWithStyle:UITableViewStyleGrouped];
+	controller.playlist = _playlist;
+	[self.navigationController pushViewController:controller animated:animated];
 }
 
 #pragma mark Response Management
@@ -336,9 +349,9 @@
 	
 	NSString * response = responses[indexPath.row];
 	Verb * verb = allVerbs[indexPath.row];
-	NSString * verbString = ([forms[indexPath.row] intValue] == VerbFormPastSimple) ? (verb.past) : (verb.pastParticiple);
+	NSString * verbString = (forms[indexPath.row].unsignedIntegerValue == VerbFormPastSimple) ? (verb.past) : (verb.pastParticiple);
 	if (response.length > 0) {
-		BOOL correct = [responsesCorrect[indexPath.row] boolValue];
+		BOOL correct = responsesCorrect[indexPath.row].boolValue;
 		if (correct)
 			cell.textLabel.text = [NSString stringWithFormat:@"%@", response];
 		else
@@ -439,7 +452,6 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	self.navigationController.delegate = nil;
-	
 }
 
 @end

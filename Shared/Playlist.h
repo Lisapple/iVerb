@@ -9,6 +9,7 @@
 #import <CoreData/CoreData.h>
 
 @class Verb;
+@class QuizResult;
 
 extern NSString * const kPlaylistAllVerbsName;
 extern NSString * const kPlaylistBasicsVerbsName;
@@ -20,7 +21,8 @@ extern NSString * const kPlaylistHistoryName;
 @property (nonatomic, strong) NSString * name;
 @property (nonatomic, strong) NSDate * creationDate;
 
-@property (nonatomic, strong) NSSet * verbs;
+@property (nonatomic, strong) NSSet <Verb *> * verbs;
+@property (nonatomic, strong) NSSet <QuizResult *> * quizResults;
 
 @property (nonatomic, readonly) BOOL isDefaultPlaylist;
 

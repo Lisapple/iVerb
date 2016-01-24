@@ -52,6 +52,7 @@ static Playlist * _currentPlaylist = nil;
 		}
 		NSUserDefaults * sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.lisacintosh.iverb"];
 		[sharedDefaults setObject:verbs forKey:SharedVerbsKey];
+		[sharedDefaults setObject:name forKey:LastUsedPlaylistKey];
 	}
 }
 
