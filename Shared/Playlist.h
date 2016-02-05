@@ -16,7 +16,7 @@ extern NSString * const kPlaylistBasicsVerbsName;
 extern NSString * const kPlaylistBookmarksName;
 extern NSString * const kPlaylistHistoryName;
 
-@interface Playlist : NSManagedObject
+@interface Playlist : NSManagedObject // @TODO: Rename to "Verblist"
 
 @property (nonatomic, strong) NSString * name;
 @property (nonatomic, strong) NSDate * creationDate;

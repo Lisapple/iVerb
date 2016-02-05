@@ -9,9 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface LandscapeViewController : UIViewController
-{
-}
 
-@property (nonatomic, strong) IBOutlet UIWebView * webView;
+@property (nonatomic, assign) IBOutlet UIWebView * webView;
 
 @end

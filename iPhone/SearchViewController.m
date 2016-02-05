@@ -23,6 +23,7 @@
 
 @property (nonatomic, strong) UISearchController * searchController;
 @property (nonatomic, strong) UIPopoverPresentationController * popoverPresentationController;
+@property (nonatomic, strong) UIView * statusBarBackgroundView;
 
 @end
 
@@ -44,17 +45,24 @@
 	
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsViewController];
 	[self.searchController.searchBar sizeToFit];
+	
+	// Create opaque background view when searching to hide table view result under status bar
+	_statusBarBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width, 20)];
+	_statusBarBackgroundView.backgroundColor = [UIColor whiteColor];
+	_statusBarBackgroundView.hidden = YES;
+	self.searchController.searchBar.subviews.firstObject.clipsToBounds = NO; // Search bar contains a single subview for content
+	[self.searchController.searchBar addSubview:_statusBarBackgroundView];
+	
 	self.tableView.tableHeaderView = self.searchController.searchBar;
 	
 	self.searchController.delegate = self;
 	self.searchController.searchResultsUpdater = self;
 	
-	/* Show an "Trash" button to empty */
-	if (_playlist.isHistoryPlaylist) {
+	if (_playlist.isHistoryPlaylist) { // Show an "Trash" button to empty
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
                                                                                                target:self
                                                                                                action:@selector(emptyHistoryAction:)];
-	} else if (!_playlist.isDefaultPlaylist) { /* Show an "Edit" button */
+	} else if (_playlist.isUserPlaylist) { // Show an "Edit" button
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit"
 																				  style:UIBarButtonItemStylePlain
 																				 target:self
@@ -84,24 +92,21 @@
 - (void)updateToolbar
 {
 	BOOL buttonsEnabled = (checkedVerbs.count > 0);
-	for (UIBarButtonItem * buttonItem in self.navigationController.toolbar.items) {
+	for (UIBarButtonItem * buttonItem in self.navigationController.toolbar.items)
 		buttonItem.enabled = buttonsEnabled;
-	}
 }
 
 - (void)updateData
 {
-	NSArray * verbs = nil;
-	if ([_playlist.name isEqualToString:kPlaylistHistoryName] && _playlist.isDefaultPlaylist) {
-		NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
-		verbs = [_playlist.verbs sortedArrayUsingDescriptors:@[sortDescriptor]];
-	} else {
-		NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];
-		verbs = [_playlist.verbs sortedArrayUsingDescriptors:@[sortDescriptor]];
-	}
+	NSSortDescriptor * sortDescriptor = nil;
+	if (_playlist.isHistoryPlaylist)
+		sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
+	else
+		sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];
 	
-	sortedKeys = [[NSArray alloc] initWithArray:verbs];
-	filteredKeys = [[NSArray alloc] initWithArray:verbs];
+	NSArray * verbs = [_playlist.verbs sortedArrayUsingDescriptors:@[ sortDescriptor ]];
+	sortedKeys = verbs.copy;
+	filteredKeys = verbs.copy;
 }
 
 - (void)reloadData
@@ -123,10 +128,9 @@
 	NSInteger index = 0;
 	for (Verb * verb in filteredKeys) {
 		NSString * stringChar = [verb.infinitif substringWithRange:NSMakeRange(0, 1)];
-		if ([beginString compare:stringChar options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+		if ([beginString compare:stringChar options:NSCaseInsensitiveSearch] == NSOrderedSame)
 			return index;
-		}
-		index++;
+		++index;
 	}
 	return -1;
 }
@@ -285,9 +289,9 @@
 		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 		[alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove from %@", _playlist.name]
 															style:UIAlertActionStyleDestructive handler:^(UIAlertAction * __nonnull action) {
-																for (Verb * verb in checkedVerbs) {
+																for (Verb * verb in checkedVerbs)
 																	[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
-																}
+																
 																[self reloadData];
 															}]];
 		
@@ -302,7 +306,7 @@
 	}
 }
 
-#pragma mark - UITableViewDataSource
+#pragma mark - Table view data source
 
 - (NSAttributedString *)highlightedStringFromString:(NSString *)string withSearch:(NSString *)search fontSize:(CGFloat)fontSize
 {
@@ -358,7 +362,6 @@
 {
 	static NSString * cellID = @"cellID";
 	UITableViewCell * cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
-	
 	if (!cell) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
 		cell.textLabel.textColor = [UIColor darkGrayColor];
@@ -383,7 +386,7 @@
 	return cell;
 }
 
-#pragma mark - UITableViewDelegate
+#pragma mark - Table view delegate
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -422,8 +425,8 @@
 		
 		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 		[self updateToolbar];
+		
 	} else {
-        
 		if (TARGET_IS_IPAD()) {
 			[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
 		} else {
@@ -449,11 +452,12 @@
 	}
 }
 
-#pragma makr - UISearchResultsUpdating
+#pragma mark - Search results updating
 
 - (void)didPresentSearchController:(UISearchController *)searchController
 {
 	isSearching = YES;
+	_statusBarBackgroundView.hidden = NO;
 	
 	SearchResultsViewController * searchResultsViewController = (SearchResultsViewController *)searchController.searchResultsController;
 	UIEdgeInsets insets = UIEdgeInsetsMake(self.topLayoutGuide.length + self.navigationController.navigationBar.frame.size.height, 0., 0., 0.);
@@ -475,16 +479,17 @@
 								   @"OR SELF.definition CONTAINS[cd] %@",
 								   searchText, searchText, searchText, searchText];
 		filteredKeys = [sortedKeys filteredArrayUsingPredicate:predicate];
-	} else {
+	} else
 		filteredKeys = sortedKeys.copy;
-	}
 	
-	[((SearchResultsViewController *)self.searchController.searchResultsController).tableView reloadData];
+	SearchResultsViewController * searchResultsViewController = (SearchResultsViewController *)searchController.searchResultsController;
+	[searchResultsViewController.tableView reloadData];
 }
 
 - (void)willDismissSearchController:(nonnull UISearchController *)searchController
 {
 	isSearching = NO;
+	_statusBarBackgroundView.hidden = YES;
 	filteredKeys = sortedKeys.copy;
 	[self.tableView reloadSectionIndexTitles];
 	[self.tableView reloadData];

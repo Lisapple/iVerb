@@ -33,14 +33,14 @@ typedef NS_ENUM(NSUInteger, VerbForm) {
 	UIView * previousPushedView;
 }
 
-@property (nonatomic, strong) IBOutlet UIView * quizView, * responseView;
+@property (nonatomic, assign) IBOutlet UIView * quizView, * responseView;
 
-@property (nonatomic, strong) IBOutlet UILabel * infinitifLabel, * formLabel, * remainingCount;
-@property (nonatomic, strong) IBOutlet UITextField * textField;
-@property (nonatomic, strong) IBOutlet UIImageView * backgroundFieldImageView;
+@property (nonatomic, assign) IBOutlet UILabel * infinitifLabel, * formLabel, * remainingCount;
+@property (nonatomic, assign) IBOutlet UITextField * textField;
+@property (nonatomic, assign) IBOutlet UIImageView * backgroundFieldImageView;
 
-@property (nonatomic, strong) IBOutlet UIImageView * responseImageView;
-@property (nonatomic, strong) IBOutlet UILabel * responseLabel;
+@property (nonatomic, assign) IBOutlet UIImageView * responseImageView;
+@property (nonatomic, assign) IBOutlet UILabel * responseLabel;
 
 - (instancetype)initWithPlaylist:(Playlist *)playlist;
 - (instancetype)initWithPlaylist:(Playlist *)playlist firstVerb:(Verb *)verb verbForm:(VerbForm)verbForm NS_DESIGNATED_INITIALIZER;

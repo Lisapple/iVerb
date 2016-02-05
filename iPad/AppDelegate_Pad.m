@@ -17,14 +17,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 #if !TARGET_IPHONE_SIMULATOR
-	[Fabric with:@[ Crashlytics.class ]];
+	[Fabric with:@[ CrashlyticsKit ]];
 #endif
 	
 	MainViewController * mainViewController = [[MainViewController alloc] init];
 	_window.rootViewController = mainViewController;
-	
-    [_window makeKeyAndVisible];
     _window.tintColor = [UIColor purpleColor];
+	[_window makeKeyAndVisible];
 	
 	// On iOS 9+, index all verbs with Spotlight
 	[[Playlist allVerbsPlaylist] buildingSpolightIndexWithCompletionHandler:^(NSError * _Nullable error) {
@@ -80,12 +79,12 @@
 	return NO;
 }
 
-- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options // iOS 9+
 {
 	return [self openDeeplinkURL:url];
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation // iOS 8
 {
 	return [self openDeeplinkURL:url];
 }

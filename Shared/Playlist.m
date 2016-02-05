@@ -101,7 +101,7 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 	request.fetchLimit = 1;
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
-	request.sortDescriptors = @[sortDescriptor];
+	request.sortDescriptors = @[ sortDescriptor ];
 	return [context executeFetchRequest:request error:NULL].firstObject;
 }
 

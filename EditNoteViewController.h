@@ -12,7 +12,7 @@
 
 @interface EditNoteViewController : UIViewController
 
-@property (nonatomic, strong) IBOutlet UITextView * textView;
+@property (nonatomic, assign) IBOutlet UITextView * textView;
 
 @property (nonatomic, strong) Verb * verb;
 

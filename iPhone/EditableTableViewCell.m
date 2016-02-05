@@ -10,9 +10,6 @@
 
 @implementation EditableTableViewCell
 
-@synthesize delegate = _delegate;
-@synthesize fieldValue = _fieldValue;
-
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {

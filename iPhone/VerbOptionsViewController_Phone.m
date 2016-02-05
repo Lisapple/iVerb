@@ -13,11 +13,6 @@
 
 @implementation VerbOptionsViewController_Phone
 
-@synthesize tableView = _tableView;
-@synthesize headerLabel = _headerLabel, headerView = _headerView;
-
-@synthesize verbs = _verbs;
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -31,14 +26,7 @@
 	self.tableView.delegate = self;
 	self.tableView.dataSource = self;
 	[self.tableView reloadData]; // Reload the tableView to get the size
-	
-	/* Update the label at the top of the tableView with "Verb lists to add "Verb":" or "Verb lists to add these {dd} verbs:" */
-	if (_verbs.count == 1) {
-		Verb * verb = _verbs.firstObject;
-		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add \"%@\":", verb.infinitif.capitalizedString];
-	} else if (_verbs.count > 1) {
-		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %lu verbs:", (unsigned long)_verbs.count];
-	}
+	[self updateUI];
 	
 	[self.tableView reloadData];// Re-reload the tableView to update cells
 }
@@ -46,8 +34,12 @@
 - (void)setVerbs:(NSArray *)verbs
 {
 	_verbs = verbs;
-	
-	/* Update the label at the top of the tableView with "Verb lists to add "Verb":" or "Verb lists to add these {dd} verbs:" */
+	[self updateUI];
+}
+
+- (void)updateUI
+{
+	// Update the label at the top of the tableView with "Verb lists to add "Verb":" or "Verb lists to add these {dd} verbs:"
 	if (_verbs.count == 1) {
 		Verb * verb = _verbs.firstObject;
 		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add \"%@\":", verb.infinitif.capitalizedString];
@@ -61,7 +53,7 @@
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
-#pragma mark - UITableViewDataSource
+#pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -110,7 +102,7 @@
 	return cell;
 }
 
-#pragma mark - UITableViewDelegate
+#pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -119,20 +111,23 @@
 	if (indexPath.section == 0) {
 		
 		BOOL allBookmarked = YES;
-		for (Verb * verb in _verbs) { allBookmarked &= verb.isBookmarked; if (!allBookmarked) break; }
+		for (Verb * verb in _verbs) {
+			allBookmarked &= verb.isBookmarked;
+			if (!allBookmarked) break;
+		}
 		
 		if (allBookmarked)
-			for (Verb * verb in _verbs) { [verb removePlaylist:[Playlist bookmarksPlaylist]]; }
+			for (Verb * verb in _verbs) [verb removePlaylist:[Playlist bookmarksPlaylist]];
 		else
-			for (Verb * verb in _verbs) { [verb addToPlaylist:[Playlist bookmarksPlaylist]]; }
+			for (Verb * verb in _verbs) [verb addToPlaylist:[Playlist bookmarksPlaylist]];
 		
 	} else {
 		Playlist * playlist = userPlaylists[indexPath.row];
 		
 		if (cell.accessoryType == UITableViewCellAccessoryCheckmark)
-			for (Verb * verb in _verbs) { [verb removePlaylist:playlist]; }
+			for (Verb * verb in _verbs) [verb removePlaylist:playlist];
 		else
-			for (Verb * verb in _verbs) { [verb addToPlaylist:playlist]; }
+			for (Verb * verb in _verbs) [verb addToPlaylist:playlist];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"PlaylistDidUpdatedNotification" object:playlist];
 	}

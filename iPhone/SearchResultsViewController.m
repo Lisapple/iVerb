@@ -14,8 +14,4 @@
 
 @implementation SearchResultsViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-}
-
 @end

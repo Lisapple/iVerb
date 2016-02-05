@@ -10,8 +10,6 @@
 
 @implementation HelpViewController
 
-@synthesize webView = _webView;
-
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
@@ -24,7 +22,6 @@
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                            target:self
                                                                                            action:@selector(doneAction:)];
-    
 	_webView.delegate = self;
 	
 	NSString * path = [[NSBundle mainBundle] pathForResource:@"help" ofType:@"html"];
@@ -39,7 +36,7 @@
 	[self dismissViewControllerAnimated:YES completion:NULL];
 }
 
-#pragma mark - UIWebView Delegate
+#pragma mark - Web view delegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
@@ -50,7 +47,6 @@
             return NO;
         }
 	}
-	
 	return YES;
 }
 

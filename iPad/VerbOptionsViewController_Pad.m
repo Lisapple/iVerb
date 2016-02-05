@@ -13,10 +13,6 @@
 
 @implementation VerbOptionsViewController_Pad
 
-@synthesize tableView = _tableView;
-
-@synthesize verbs = _verbs;
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -28,7 +24,7 @@
 	[self.tableView reloadData];
 }
 
-#pragma mark - UITableViewDataSource
+#pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -76,7 +72,7 @@
 	return cell;
 }
 
-#pragma mark - UITableViewDelegate
+#pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {

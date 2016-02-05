@@ -10,7 +10,7 @@
 
 @interface HelpViewController : UIViewController <UIWebViewDelegate>
 
-@property (nonatomic, strong) IBOutlet UIWebView * webView;
+@property (nonatomic, assign) IBOutlet UIWebView * webView;
 @property (nonatomic, strong) NSString * anchor;
 
 - (IBAction)doneAction:(id)sender;

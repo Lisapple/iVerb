@@ -23,16 +23,6 @@
 
 @implementation ResultViewController
 
-@synthesize verbString = _verbString;
-@synthesize verb = _verb;
-
-@synthesize webView = _webView;
-
-@synthesize infinitiveLabel = _infinitiveLabel, pastLabel = _pastLabel, participleLabel = _participleLabel, translationLabel = _translationLabel;
-@synthesize bookmarkImageView = _bookmarkImageView;
-
-@synthesize activityIndicatorView = _activityIndicatorView;
-
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
@@ -72,7 +62,7 @@
 {
 	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Add to list..." style:UIAlertActionStyleDefault
-													  handler:^(UIAlertAction * __nonnull action) {
+													  handler:^(UIAlertAction * action) {
 														  double delayInSeconds = 0.5;
 														  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
 														  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -85,7 +75,7 @@
 	
 	NSString * noteButton = (_verb.note.length > 0) ? @"Edit Note" : @"Add Note";
 	[alertController addAction:[UIAlertAction actionWithTitle:noteButton style:UIAlertActionStyleDefault
-													  handler:^(UIAlertAction * __nonnull action) {
+													  handler:^(UIAlertAction * action) {
 														  /* Show the panel to add/edit note */
 														  EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
 														  editNoteViewController.verb = _verb;
@@ -94,7 +84,7 @@
 														  [self presentViewController:navigationController animated:YES completion:NULL];
 													  }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Listen" style:UIAlertActionStyleDefault
-													  handler:^(UIAlertAction * __nonnull action) {
+													  handler:^(UIAlertAction * action) {
 														  NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", _verb.infinitif, _verb.past, _verb.pastParticiple];
 														  if ([_verb.infinitif isEqualToString:_verb.past] && [_verb.infinitif isEqualToString:_verb.pastParticiple])
 															  string = [NSString stringWithFormat:@"to %@", _verb.infinitif];
@@ -105,7 +95,7 @@
 														  [synthesizer speakUtterance:utterance];
 													  }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault
-													  handler:^(UIAlertAction * __nonnull action) {
+													  handler:^(UIAlertAction * action) {
 														  /* Copy to pasteboard ("Infinitif\nSimple Past\nPP\nDefinition\nNote") */
 														  NSString * note = (_verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", _verb.note] : @"";
 														  NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", _verb.infinitif, _verb.past, _verb.pastParticiple, _verb.definition, note];
@@ -116,7 +106,7 @@
 	
 	if ([MFMailComposeViewController canSendMail]) {
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Mail" style:UIAlertActionStyleDefault
-														  handler:^(UIAlertAction * __nonnull action) {
+														  handler:^(UIAlertAction * action) {
 															  MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
 															  mailCompose.mailComposeDelegate = self;
 															  [mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", _verb.infinitif]];
@@ -141,7 +131,7 @@
 	[controller dismissViewControllerAnimated:YES completion:NULL];
 }
 
-#pragma mark - UIWebView Delegate
+#pragma mark - Web view delegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
@@ -171,12 +161,10 @@
 		double delayInSeconds = 1.;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-			
 			NSString * basePath = [NSBundle mainBundle].bundlePath;
 			[_webView loadHTMLString:_verb.HTMLFormat
 							 baseURL:[NSURL fileURLWithPath:basePath]];
 		});
-        
         return NO;
     }
     
@@ -191,23 +179,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:reloadObserver];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-	
-	self.verbString = nil;
-	self.verb = nil;
-	
-	self.webView = nil;
-	
-	self.infinitiveLabel = nil;
-	self.pastLabel = nil;
-	self.participleLabel = nil;
-	self.translationLabel = nil;
-	
-	self.bookmarkImageView = nil;
 }
 
 @end

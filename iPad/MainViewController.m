@@ -18,34 +18,32 @@
 
 @implementation MainViewController
 
-@synthesize object;
-
 #pragma mark - View lifecycle
 
 - (void)webviewDidZoomIn:(UIGestureRecognizer *)recognizer
 {
 	[recognizer.view removeGestureRecognizer:recognizer];
 	
-	Playlist * playlist = verb.playlists.anyObject;
-	[webView loadHTMLString:playlist.HTMLFormat
+	Playlist * playlist = _verb.playlists.anyObject;
+	[_webView loadHTMLString:playlist.HTMLFormat
 					baseURL:nil];
 	
 	[UIView animateWithDuration:0.5
 					 animations:^{
-						 leftNavigationController.view.transform = CGAffineTransformMakeTranslation(-leftNavigationController.view.frame.size.width, 0.);
-						 navigationBar2.transform = navigationBar.transform = CGAffineTransformMakeTranslation(0., -66.);
+						 _leftNavigationController.view.transform = CGAffineTransformMakeTranslation(-_leftNavigationController.view.frame.size.width, 0.);
+						 _navigationBar2.transform = _navigationBar.transform = CGAffineTransformMakeTranslation(0., -66.);
                          
-                         originalWebViewFrame = webView.frame;
+                         originalWebViewFrame = _webView.frame;
                          CGRect frame = self.view.bounds;
                          frame.origin.y = 20.;
                          frame.size.height -= 20.;
-                         webView.frame = frame;
+                         _webView.frame = frame;
 					 }
 					 completion:^(BOOL finished) {
 						 UIPinchGestureRecognizer * gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
 																										action:@selector(webviewDidZoomOut:)];
 						 gesture.scale = kPinchInScale;
-						 [webView addGestureRecognizer:gesture];
+						 [_webView addGestureRecognizer:gesture];
 					 }];
 }
 
@@ -54,21 +52,19 @@
 	[recognizer.view removeGestureRecognizer:recognizer];
 	
 	NSString * basePath = [NSBundle mainBundle].bundlePath;
-    [webView loadHTMLString:verb.HTMLFormat
+    [_webView loadHTMLString:_verb.HTMLFormat
                     baseURL:[NSURL fileURLWithPath:basePath]];
 	
 	[UIView animateWithDuration:0.5
 					 animations:^{
-						 leftNavigationController.view.transform = CGAffineTransformIdentity;
-						 navigationBar2.transform =navigationBar.transform = CGAffineTransformIdentity;
-						 
-						 webView.frame = originalWebViewFrame;
+						 _leftNavigationController.view.transform = CGAffineTransformIdentity;
+						 _navigationBar2.transform = _navigationBar.transform = CGAffineTransformIdentity;
+						 _webView.frame = originalWebViewFrame;
 					 }
 					 completion:^(BOOL finished) {
-						 UIPinchGestureRecognizer * gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
-																										action:@selector(webviewDidZoomIn:)];
+						 UIPinchGestureRecognizer * gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(webviewDidZoomIn:)];
 						 gesture.scale = kPinchOutScale;
-						 [webView addGestureRecognizer:gesture];
+						 [_webView addGestureRecognizer:gesture];
 					 }];
 }
 
@@ -76,43 +72,40 @@
 {
     [super viewDidLoad];
 	
-	verb = [Verb lastUsedVerb];
-	if (!verb) {
-		verb = [Playlist currentPlaylist].verbs.anyObject;
-		if (!verb) {
-			verb = [Playlist allVerbsPlaylist].verbs.anyObject;
-		}
+	_verb = [Verb lastUsedVerb];
+	if (!_verb) {
+		_verb = [Playlist currentPlaylist].verbs.anyObject;
+		if (!_verb)
+			_verb = [Playlist allVerbsPlaylist].verbs.anyObject;
 	}
 	[self refreshWebview];
     
-    self.title = [NSString stringWithFormat:@"To %@", verb.infinitif];
+    self.title = [NSString stringWithFormat:@"To %@", _verb.infinitif];
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                                           target:self
-                                                                                           action:@selector(showOptionsAction:)];
-	/* Add items from "self.navigationController" to "navigationBar" */
-	navigationBar.items = @[self.navigationItem];
+                                                                                           target:self action:@selector(showOptionsAction:)];
+	// Add items from "self.navigationController" to "navigationBar"
+	_navigationBar.items = @[self.navigationItem];
 	
-	webView.delegate = self;
+	_webView.delegate = self;
     
-	UIPinchGestureRecognizer * gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self
-																				   action:@selector(webviewDidZoomIn:)];
+	UIPinchGestureRecognizer * gesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(webviewDidZoomIn:)];
 	gesture.scale = kPinchOutScale;
-	[webView addGestureRecognizer:gesture];
+	[_webView addGestureRecognizer:gesture];
 	
 	PlaylistsViewController * playlistsViewController = [[PlaylistsViewController alloc] init];
-	leftNavigationController = [[UINavigationController alloc] initWithRootViewController:playlistsViewController];
-	leftNavigationController.view.frame = leftContainerView.bounds;
-	leftNavigationController.title = @"Search";
-	[leftContainerView addSubview:leftNavigationController.view];
+	_leftNavigationController = [[UINavigationController alloc] initWithRootViewController:playlistsViewController];
+	_leftNavigationController.view.frame = _leftContainerView.bounds;
+	_leftNavigationController.title = @"Search";
+	[_leftContainerView addSubview:_leftNavigationController.view];
 	
 	[[NSNotificationCenter defaultCenter] addObserverForName:SearchTableViewDidSelectCellNotification object:nil
 													   queue:nil usingBlock:^(NSNotification *note) {
-													  verb = (Verb *)note.object;
+													  _verb = (Verb *)note.object;
 													  [self refreshWebview];
                                                       
                                                       /* Update the verb from the history */
-                                                      verb.lastUse = [NSDate date];
-                                                      [verb addToPlaylist:[Playlist historyPlaylist]];
+                                                      _verb.lastUse = [NSDate date];
+                                                      [_verb addToPlaylist:[Playlist historyPlaylist]];
 												  }];
 	
 	[[NSNotificationCenter defaultCenter] addObserverForName:@"ResultDidReloadNotification"
@@ -120,7 +113,7 @@
 													   queue:[NSOperationQueue currentQueue]
 												  usingBlock:^(NSNotification *note) {
 													  NSString * basePath = [NSBundle mainBundle].bundlePath;
-													  [webView loadHTMLString:verb.HTMLFormat
+													  [_webView loadHTMLString:_verb.HTMLFormat
 																	  baseURL:[NSURL fileURLWithPath:basePath]];
 												  }];
 }
@@ -144,11 +137,11 @@
 
 - (void)refreshWebview
 {
-	NSString * infinitif = [verb valueForKey:@"infinitif"];
+	NSString * infinitif = [_verb valueForKey:@"infinitif"];
 	self.title = [@"To " stringByAppendingString:infinitif];
 	
 	NSString * basePath = [NSBundle mainBundle].bundlePath;
-	[webView loadHTMLString:verb.HTMLFormat
+	[_webView loadHTMLString:_verb.HTMLFormat
 					baseURL:[NSURL fileURLWithPath:basePath]];
 }
 
@@ -163,7 +156,7 @@
 															  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
 															  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
 																  VerbOptionsViewController_Pad * verbOptionsViewController = [[VerbOptionsViewController_Pad alloc] init];
-																  verbOptionsViewController.verbs = @[verb];
+																  verbOptionsViewController.verbs = @[ _verb ];
 																  verbOptionsViewController.modalPresentationStyle = UIModalPresentationPopover;
 
 																  popoverController = verbOptionsViewController.popoverPresentationController;
@@ -177,12 +170,12 @@
 															  });
 														  }]];
 		
-		NSString * noteButton = (verb.note.length > 0) ? @"Edit Note" : @"Add Note";
+		NSString * noteButton = (_verb.note.length > 0) ? @"Edit Note" : @"Add Note";
 		[alertController addAction:[UIAlertAction actionWithTitle:noteButton style:UIAlertActionStyleDefault
 														  handler:^(UIAlertAction * __nonnull action) {
 															  /* Show the panel to add/edit note */
 															  EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
-															  editNoteViewController.verb = verb;
+															  editNoteViewController.verb = _verb;
 															  
 															  UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
 															  navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -190,9 +183,9 @@
 														  }]];
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Listen" style:UIAlertActionStyleDefault
 														  handler:^(UIAlertAction * __nonnull action) {
-															  NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
-															  if ([verb.infinitif isEqualToString:verb.past] && [verb.infinitif isEqualToString:verb.pastParticiple])
-																  string = [NSString stringWithFormat:@"to %@", verb.infinitif];
+															  NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", _verb.infinitif, _verb.past, _verb.pastParticiple];
+															  if ([_verb.infinitif isEqualToString:_verb.past] && [_verb.infinitif isEqualToString:_verb.pastParticiple])
+																  string = [NSString stringWithFormat:@"to %@", _verb.infinitif];
 															  
 															  synthesizer = [[AVSpeechSynthesizer alloc] init];
 															  AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
@@ -202,8 +195,8 @@
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault
 														  handler:^(UIAlertAction * __nonnull action) {
 															  /* Copy to pasteboard ("Infinitif\nSimple Past\nPP\nDefinition\nNote") */
-															  NSString * note = (verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", verb.note] : @"";
-															  NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", verb.infinitif, verb.past, verb.pastParticiple, verb.definition, note];
+															  NSString * note = (_verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", _verb.note] : @"";
+															  NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", _verb.infinitif, _verb.past, _verb.pastParticiple, _verb.definition, note];
 															  
 															  UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
 															  pasteboard.string = body;
@@ -214,8 +207,8 @@
 															  handler:^(UIAlertAction * __nonnull action) {
 																  MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
 																  mailCompose.mailComposeDelegate = self;
-																  [mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", verb.infinitif]];
-																  [mailCompose setMessageBody:verb.HTMLFormatInlineCSS isHTML:YES];
+																  [mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", _verb.infinitif]];
+																  [mailCompose setMessageBody:_verb.HTMLFormatInlineCSS isHTML:YES];
 																  [self presentViewController:mailCompose animated:YES completion:NULL];
 															  }]];
 		}
@@ -234,9 +227,9 @@
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
 	if (error) {
-		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error when sending mail"
-																				 message:error.localizedDescription
-																		  preferredStyle:UIAlertControllerStyleAlert];
+		UIAlertController * alertController = [UIAlertController alertControllerWithTitle:@"Error when sending mail"
+																				  message:error.localizedDescription
+																		   preferredStyle:UIAlertControllerStyleAlert];
 		[alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:NULL]];
 		[self presentViewController:alertController animated:YES completion:NULL];
 	}
@@ -250,7 +243,7 @@
 	popoverController = nil;
 }
 
-#pragma mark - UIWebView Delegate
+#pragma mark - Web view delegate
 
 - (BOOL)webView:(UIWebView *)aWebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
@@ -267,7 +260,7 @@
         } else if ([request.URL.fragment isEqualToString:@"edit-note"]) {
             
             EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
-            editNoteViewController.verb = verb;
+            editNoteViewController.verb = _verb;
             UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
             navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 			[self presentViewController:navigationController animated:YES completion:NULL];
@@ -277,15 +270,12 @@
 		double delayInSeconds = 1.;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-			
 			NSString * basePath = [NSBundle mainBundle].bundlePath;
-			[webView loadHTMLString:verb.HTMLFormat
-                            baseURL:[NSURL fileURLWithPath:basePath]];
+			[_webView loadHTMLString:_verb.HTMLFormat
+							 baseURL:[NSURL fileURLWithPath:basePath]];
 		});
-        
         return NO;
     }
-    
 	return YES;
 }
 

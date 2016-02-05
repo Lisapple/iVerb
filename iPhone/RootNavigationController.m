@@ -30,7 +30,7 @@
 	return _isLandscapeMode;
 }
 
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimatio
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
 {
 	return UIStatusBarAnimationFade;
 }

@@ -75,7 +75,6 @@
 											 selector:@selector(textFieldDidChange:)
 												 name:UITextFieldTextDidChangeNotification
 											   object:nil];
-	
 	[self start];
 	
 	if (!TARGET_IS_IPAD()) {
@@ -189,9 +188,8 @@
 		VerbForm form = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
 		[self pushVerb:verb form:form animated:YES];
 		
-	} else { // Else, show results
+	} else // Else, show results
 		[self pushResultAnimated:YES];
-	}
 }
 
 - (void)pushVerb:(Verb *)verb form:(VerbForm)form animated:(BOOL)animated
@@ -226,9 +224,9 @@
 			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", verb.quote.pastAuthor]
 																		   attributes:italics]];
 			_formLabel.attributedText = string;
-		} else {
+		} else
 			_formLabel.text = @"Past Simple Form:";
-		}
+		
 	} else { // past participle
 		if (verb.quote.pastParticipleDescription.length > 0) {
 			NSMutableAttributedString * string = [[NSMutableAttributedString alloc] init];
@@ -254,9 +252,8 @@
 			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", verb.quote.pastParticipleAuthor]
 																		   attributes:italics]];
 			_formLabel.attributedText = string;
-		} else {
+		} else
 			_formLabel.text = @"Past Participle Form:";
-		}
 	}
 	
 	currentResponse = (form == VerbFormPastSimple)? (verb.past) : (verb.pastParticiple);
@@ -328,7 +325,7 @@
 				   dispatch_get_main_queue(), ^{ [self pushNewVerbAction:nil]; });
 }
 
-#pragma mark - UITableView Delegate and DataSource
+#pragma mark - Table view delegate & dataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -381,7 +378,7 @@
 	}
 }
 
-#pragma mark - UITextField Delegate
+#pragma mark - Text field delegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -397,11 +394,10 @@
 		
 		[responses addObject:textField.text];
 		[responsesCorrect addObject:@(goodResponse)];
-		
 		return YES;
-	} else {
+		
+	} else
 		_remainingCount.textColor = [UIColor redColor];
-	}
 	
 	return NO;
 }
@@ -435,7 +431,7 @@
 	_remainingCount.textColor = (rem < 0) ? [UIColor redColor] : [UIColor grayColor];
 }
 
-#pragma mark - UINavigationController Delegate
+#pragma mark - Navigation controller delegate
 
 - (BOOL)shouldAutorotate
 {

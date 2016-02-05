@@ -40,7 +40,7 @@
 	self.view.clipsToBounds = YES;
 	
 	if (TARGET_IS_IPAD()) {
-		/* Add a "Done" button on iPad */
+		// Add a "Done" button on iPad
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                                target:self
                                                                                                action:@selector(doneAction:)];
@@ -58,7 +58,7 @@
 	
 	const float height = ((TARGET_IS_IPAD()) ? self.view.frame.size.height : [UIScreen mainScreen].bounds.size.height) - (20. + 44.) - 29.; // Remove the navigation bar height (44px) and the size of the label at bottom (29px max)
 	
-	__unsafe_unretained NSArray * colors = @[[UIColor darkGrayColor], [UIColor grayColor], [UIColor lightGrayColor]];
+	__unsafe_unretained NSArray * colors = @[ [UIColor darkGrayColor], [UIColor grayColor], [UIColor lightGrayColor] ];
 	[verbsSet enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
 		
 		NSString * infinitif = ((Verb *)obj).infinitif;
@@ -85,7 +85,9 @@
 		
 		label.verb = (Verb *)obj;
 		
-		label.backgroundColor = [UIColor clearColor];
+		label.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
+		label.layer.cornerRadius = 4;
+		label.clipsToBounds = YES;
 		
 		label.textColor = colors[(index % 3)];
 		label.textAlignment = NSTextAlignmentCenter;
@@ -96,19 +98,15 @@
 		
 		x += (int)(size.width / 2.);
 		
-		index++;
+		++index;
 	}];
 	
 	free(oldYs);
 	
 	((CloudView *)self.view).totalWidth = x - self.view.frame.size.width;
-    
-    _link = [CADisplayLink displayLinkWithTarget:self.view selector:@selector(update)];
-    
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(labelDidSelected:)
-												 name:@"CloudLabelDidSelectedNotification"
-											   object:nil];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(labelDidSelected:)
+												 name:@"CloudLabelDidSelectedNotification" object:nil];
 }
 
 - (void)labelDidSelected:(NSNotification *)notification
@@ -133,7 +131,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+	
+	_link = [CADisplayLink displayLinkWithTarget:self.view selector:@selector(update)];
     [_link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
     _link.paused = NO;
 }
@@ -167,7 +166,6 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	self.navigationController.delegate = nil;
-	
 }
 
 @end

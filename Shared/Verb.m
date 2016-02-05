@@ -30,7 +30,7 @@
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
 	request.predicate = [NSPredicate predicateWithFormat:@"TRUEPREDICATE"];
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
-	request.sortDescriptors = @[sortDescriptor];
+	request.sortDescriptors = @[ sortDescriptor ];
 	return [context executeFetchRequest:request error:NULL].firstObject;
 }
 

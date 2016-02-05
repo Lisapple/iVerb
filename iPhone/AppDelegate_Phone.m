@@ -235,8 +235,7 @@
     }
 }
 
-#pragma mark -
-#pragma mark Core Data stack
+#pragma mark - Core Data stack
 
 /**
  Returns the managed object context for the application.
@@ -294,7 +293,6 @@
     return managedObjectContext;
 }
 
-
 /**
  Returns the managed object model for the application.
  If the model doesn't already exist, it is created by merging all of the models found in the application bundle.
@@ -307,7 +305,6 @@
     managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];    
     return managedObjectModel;
 }
-
 
 /**
  Returns the persistent store coordinator for the application.
@@ -341,9 +338,7 @@
 	return persistentStoreCoordinator;
 }
 
-
-#pragma mark -
-#pragma mark Application's documents directory
+#pragma mark - Application's documents directory
 
 /**
  Returns the path to the application's documents directory.
@@ -353,9 +348,7 @@
     return NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
 }
 
-
-#pragma mark -
-#pragma mark Memory management
+#pragma mark - Memory management
 
 - (void)dealloc
 {

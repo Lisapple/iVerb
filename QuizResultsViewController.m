@@ -101,8 +101,6 @@
 		[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 	}
 	
-	srand((unsigned int)time(NULL));
-	
 	NSSortDescriptor * descriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO];
 	_results = [_playlist.quizResults sortedArrayUsingDescriptors:@[ descriptor ]];
 	
@@ -142,7 +140,7 @@
 	}
 }
 
-#pragma mark - Tableview delegate & datasource
+#pragma mark - Table view delegate & datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -167,11 +165,6 @@
 #undef LERP
 	
 	return cell;
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (BOOL)shouldAutorotate

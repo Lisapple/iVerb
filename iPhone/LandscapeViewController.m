@@ -12,8 +12,6 @@
 
 @implementation LandscapeViewController
 
-@synthesize webView = _webView;
-
 #pragma mark - View lifecycle
 
 - (void)viewWillAppear:(BOOL)animated

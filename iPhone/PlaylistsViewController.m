@@ -59,14 +59,14 @@
 - (IBAction)moreInfo:(id)sender
 {
 	NSDictionary * infoDictionary = [NSBundle mainBundle].infoDictionary;
-	NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © 2015, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"]];
+	NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © 2016, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"]];
 	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil
 																	  preferredStyle:UIAlertControllerStyleActionSheet];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Feedback & Support" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Feedback & Support" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://support.lisacintosh.com/iVerb/"]]; }]];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Go to my website" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Go to my website" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://lisacintosh.com/"]]; }]];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"See all my application" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
+	[alertController addAction:[UIAlertAction actionWithTitle:@"See all my application" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://applestore.com/lisacintosh"]]; }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
 	
@@ -130,7 +130,7 @@
 	}
 }
 
-#pragma mark - UITableViewDataSource
+#pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -139,11 +139,10 @@
 
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section
 {
-	if (section == 0) {
+	if /**/ (section == 0)
 		return defaultPlaylists.count;
-	} else if (section == 1) {
+	else if (section == 1)
 		return 1;
-	}
 	
 	return userPlaylists.count + 1;
 }
@@ -153,10 +152,9 @@
 	UITableViewCell * cell = nil;
 	
 	static NSString * cellID = @"CellID";
-	if (indexPath.section == 0) {
+	if (indexPath.section == 0) { // Default lists
 		
 		cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
-		
 		if (!cell) {
 			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
@@ -166,41 +164,32 @@
 		Playlist * playlist = defaultPlaylists[indexPath.row];
 		cell.textLabel.text = playlist.localizedName;
         
-        cell.detailTextLabel.text = (playlist.isBookmarksPlaylist && playlist.verbs.count > 0)? [NSString stringWithFormat:@"%lu", (unsigned long)playlist.verbs.count] : @"";
+        cell.detailTextLabel.text = (playlist.isBookmarksPlaylist && playlist.verbs.count > 0) ? [NSString stringWithFormat:@"%lu", (unsigned long)playlist.verbs.count] : @"";
 		
-	} else if (indexPath.section == 1) {
+	} else if (indexPath.section == 1) { // Cloud
 		
 		cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
-		
 		if (!cell) {
 			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
-		
 		cell.textLabel.text = @"Cloud";
 		
-	} else {
+	} else { // User list
 		
-		if (indexPath.row > (NSInteger)(userPlaylists.count - 1)) {
-			// New cell for creating
-			
+		if (indexPath.row > (NSInteger)(userPlaylists.count - 1)) { // Cell to create a new playlist
 			static NSString * newCellID = @"NewCellID";
 			cell = (EditableTableViewCell *)[aTableView dequeueReusableCellWithIdentifier:newCellID];
-			
 			if (!cell) {
 				cell = [[EditableTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:newCellID];
 				((EditableTableViewCell *)cell).delegate = self;
 			}
-			
 			((EditableTableViewCell *)cell).fieldValue = nil;
 			
-		} else {
-			// Existing playlists
-			
+		} else { // Existing user lists
 			static NSString * userCellID = @"UserCellID";
 			cell = [aTableView dequeueReusableCellWithIdentifier:userCellID];
-			
 			if (!cell)
 				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:userCellID];
 			
@@ -208,7 +197,7 @@
 			cell.textLabel.text = playlist.localizedName;
 			
 			/* If the playlist is not empty, show the number of verbs */
-			cell.detailTextLabel.text = (playlist.verbs.count > 0)? [NSString stringWithFormat:@"%lu", (unsigned long)playlist.verbs.count] : @"";
+			cell.detailTextLabel.text = (playlist.verbs.count > 0)? [NSString stringWithFormat:@"%lu", (unsigned long)playlist.verbs.count] : nil;
             
             cell.accessoryType = (playlist.verbs.count > 0) ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
 		}
@@ -247,14 +236,12 @@
 {
     if (indexPath.section == 2) {
 		_selectedPlaylist = userPlaylists[indexPath.row];
-        NSMutableArray * actions = @[ [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive
-                                                                         title:@"Delete"
-                                                                       handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+        NSMutableArray * actions = @[ [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"Delete"
+                                                                       handler:^(UITableViewRowAction * action, NSIndexPath * indexPath) {
                                                                            [self deletePlaylist:_selectedPlaylist]; }] ].mutableCopy;
 		if (_selectedPlaylist.verbs.count > 0) {
-			UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
-																				  title:@"Quiz"
-																				handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+			UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Quiz"
+																				handler:^(UITableViewRowAction * action, NSIndexPath * indexPath) {
 																					[self launchQuizForPlaylist:_selectedPlaylist]; }];
 			rowAction.backgroundColor = [UIColor purpleColor];
 			[actions addObject:rowAction];
@@ -270,13 +257,12 @@
 	
 	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil
 																	  preferredStyle:UIAlertControllerStyleActionSheet];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * __nonnull action) {
-		[self deletePlaylist:_selectedPlaylist]; }]];
 	if (_selectedPlaylist.verbs.count > 0) {
-		[alertController addAction:[UIAlertAction actionWithTitle:@"Launch the Quiz" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Launch the Quiz" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 			[self launchQuizForPlaylist:_selectedPlaylist]; }]];
 	}
-	
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
+		[self deletePlaylist:_selectedPlaylist]; }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
 	
 	if (TARGET_IS_IPAD()) {
@@ -310,11 +296,9 @@
 			navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 			[self.view.window.rootViewController presentViewController:navigationController animated:YES completion:NULL];
 			
-			/* Deselect the cell */
-			[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-		} else {
+			[self.tableView deselectRowAtIndexPath:indexPath animated:YES]; // Deselect the cell
+		} else
 			[self.navigationController pushViewController:cloudViewController animated:YES];
-		}
 		
 	} else {
 		if (indexPath.row <= (NSInteger)(userPlaylists.count - 1)) {
@@ -325,9 +309,8 @@
 			SearchViewController * searchViewController = [[SearchViewController alloc] init];
 			searchViewController.playlist = playlist;
 			[self.navigationController pushViewController:searchViewController animated:YES];
-		} else {
+		} else
 			[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-		}
 	}
 }
 
@@ -339,9 +322,8 @@
 	if (TARGET_IS_IPAD()) {
         navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
         [self.view.window.rootViewController presentViewController:navigationController animated:YES completion:NULL];
-    } else { // iPhone
+    } else // iPhone
         [self presentViewController:navigationController animated:YES completion:NULL];
-    }
 }
 
 - (void)deletePlaylist:(Playlist *)playlist

@@ -18,17 +18,9 @@
 
 #import "Playlist+additions.h"
 
-@interface MainViewController : UIViewController <UIPopoverControllerDelegate, UIPopoverPresentationControllerDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface MainViewController : UIViewController
+<UIPopoverControllerDelegate, UIPopoverPresentationControllerDelegate, UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 {
-	IBOutlet IVWebView * webView;
-	IBOutlet UINavigationBar * navigationBar, * navigationBar2;
-	
-	IBOutlet UINavigationController * leftNavigationController;
-	IBOutlet UIView * leftContainerView;
-	
-	NSManagedObject * object;
-	Verb * verb;
-	
 	@private
 	CGRect originalWebViewFrame;
 	BOOL showingLists;
@@ -39,6 +31,13 @@
 }
 
 @property (nonatomic, strong) NSManagedObject * object;
+@property (nonatomic, strong) Verb * verb;
+
+@property (nonatomic, assign) IBOutlet IVWebView * webView;
+@property (nonatomic, assign) IBOutlet UINavigationBar * navigationBar, * navigationBar2;
+
+@property (nonatomic, strong) UINavigationController * leftNavigationController;
+@property (nonatomic, assign) IBOutlet UIView * leftContainerView;
 
 - (IBAction)showOptionsAction:(id)sender;
 

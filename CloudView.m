@@ -10,9 +10,6 @@
 
 @implementation CloudLabel
 
-@synthesize origin = _origin;
-@synthesize verb = _verb;
-
 - (BOOL)canBecomeFirstResponder
 {
 	return YES;
@@ -44,8 +41,6 @@
 
 
 @implementation CloudView
-
-@synthesize totalWidth = _totalWidth;
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -81,7 +76,7 @@
 		if (frame.origin.x < -(_totalWidth - width))
 			label.origin = CGPointMake(label.origin.x + _totalWidth + 400., label.origin.y);
 		
-		frame.origin.x = label.origin.x - totalOffset;
+		frame.origin.x = label.origin.x - totalOffset * (label.font.pointSize / 30);
 		label.frame = frame;
 	}
 }

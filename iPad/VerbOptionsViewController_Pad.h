@@ -16,7 +16,7 @@
 	NSArray * userPlaylists;
 }
 
-@property (nonatomic, strong) IBOutlet UITableView * tableView;
+@property (nonatomic, assign) IBOutlet UITableView * tableView;
 
 @property (nonatomic, strong) NSArray * verbs;
 

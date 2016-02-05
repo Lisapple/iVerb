@@ -28,11 +28,6 @@
 	
 	@private
 	UINavigationController * _navigationController;
-	
-	/*
-	IBOutlet PlaylistsViewController * playlistsViewController;
-	IBOutlet SearchViewController * searchViewController;
-	*/
 }
 
 @property (nonatomic, strong, readonly) NSManagedObjectModel *managedObjectModel;
@@ -42,11 +37,6 @@
 @property (unsafe_unretained, nonatomic, readonly) NSString *applicationDocumentsDirectory;
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
-
-/*
-@property (nonatomic, retain) IBOutlet PlaylistsViewController * playlistsViewController;
-@property (nonatomic, retain) IBOutlet SearchViewController * searchViewController;
-*/
 
 @property (nonatomic, strong) NSDictionary * dictionary;
 
