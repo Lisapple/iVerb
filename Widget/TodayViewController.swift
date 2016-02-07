@@ -9,6 +9,15 @@
 import UIKit
 import NotificationCenter
 
+extension String {
+	
+	var urlEncode: NSString? {
+		get {
+			return stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.alphanumericCharacterSet())
+		}
+	}
+}
+
 class TodayViewController: UIViewController, NCWidgetProviding {
 	
 	private let kLastUsedPlaylistKey = "Last Used Playlist";
@@ -36,9 +45,11 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 		if (self.infinitif != nil) {
 			if (self.isQuizMode && self.lastUsedPlaylist != nil && self.tense != nil) {
 				self.lastUpdated = nil
-				self.extensionContext?.openURL(NSURL(string: "iverb://quiz/\(self.lastUsedPlaylist!)/\(self.infinitif!)#\(self.tense!)")!, completionHandler: nil)
+				let url = "iverb://quiz/\(self.lastUsedPlaylist!.urlEncode!)/\(self.infinitif!)#\(self.tense!)"
+				self.extensionContext?.openURL(NSURL(string: url)!, completionHandler: nil)
 			} else {
-				self.extensionContext?.openURL(NSURL(string: "iverb://verb#\(self.infinitif!)")!, completionHandler: nil)
+				let url = "iverb://verb#\(self.infinitif!)"
+				self.extensionContext?.openURL(NSURL(string: url)!, completionHandler: nil)
 			}
 		}
 	}

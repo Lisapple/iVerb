@@ -64,7 +64,7 @@
 		return YES;
 		
 	} else { // iverb://quiz/[playlist name]/[infinitif]#[past/past-participle]
-		NSString * urlString = url.absoluteString;
+		NSString * urlString = url.absoluteString.stringByRemovingPercentEncoding;
 		NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"iverb://quiz\\/([^\\/]+)\\/([^#]+)#(.+)$"
 																				options:NSRegularExpressionCaseInsensitive
 																				  error:nil];
