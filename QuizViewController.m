@@ -44,13 +44,13 @@
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:VerbFormPastSimple])) { }
+	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:0])) { }
 	return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:VerbFormPastSimple])) { }
+	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:0])) { }
 	return self;
 }
 
@@ -67,6 +67,9 @@
 	self.view.backgroundColor = [UIColor colorWithWhite:0.96 alpha:1.];
 	
 	allVerbs = self.playlist.verbs.allObjects;
+	
+	_responseView.hidden = YES;
+	[self.view addSubview:_responseView];
 	
 	_textField.delegate = self;
 	_backgroundFieldImageView.image = [[UIImage imageNamed:@"quiz-field"] stretchableImageWithLeftCapWidth:25. topCapHeight:0.];

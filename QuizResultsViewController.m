@@ -108,8 +108,8 @@
 		NSMutableArray <NSValue *> * points = [[NSMutableArray alloc] initWithCapacity:_results.count];
 		for (QuizResult * result in _results) {
 			// x : date (1 for older on left, 0 for today on right), y : percent of success (0% on bottom, 100% on top)
-			const CGFloat totalDuration = _results.lastObject.date.timeIntervalSinceNow;
-			CGFloat dateProgression = 1 - (result.date.timeIntervalSinceNow / totalDuration);
+			const CGFloat totalDuration = [_results.lastObject.date timeIntervalSinceDate:_results.firstObject.date];
+			CGFloat dateProgression = 1 - ([result.date timeIntervalSinceDate:_results.firstObject.date] / totalDuration);
 			CGFloat percentSuccess = result.rightResponses.doubleValue / (result.rightResponses.doubleValue + result.wrongResponses.doubleValue);
 			[points addObject:[NSValue valueWithCGPoint:CGPointMake(dateProgression, percentSuccess)]];
 		}
@@ -134,10 +134,8 @@
 {
 	[self dismissViewControllerAnimated:YES completion:NULL];
 	
-	if (!TARGET_IS_IPAD()) {
-		/* Re-allow the landscape mode of the application */
+	if (!TARGET_IS_IPAD()) // Re-allow the landscape mode of the application
 		[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-	}
 }
 
 #pragma mark - Table view delegate & datasource
@@ -158,8 +156,8 @@
 	QuizResult * result = _results[indexPath.row];
 	cell.result = result;
 	
-	const CGFloat totalDuration = _results.lastObject.date.timeIntervalSinceNow;
-	CGFloat dateProgression = 1 - (result.date.timeIntervalSinceNow / totalDuration);
+	const CGFloat totalDuration = [_results.lastObject.date timeIntervalSinceDate:_results.firstObject.date];
+	CGFloat dateProgression = 1 - ([result.date timeIntervalSinceDate:_results.firstObject.date] / totalDuration);
 #define LERP(A, X, B) (A + (MAX(0,MIN(X,1)) * (B - A)))
 	cell.tintColor = [UIColor colorWithWhite:LERP(0.85, dateProgression, 0.333) alpha:1]; // White from 85% (oldest) to 33% (newest)
 #undef LERP

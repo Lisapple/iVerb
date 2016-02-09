@@ -79,10 +79,10 @@
 	rect.origin = CGPointMake(self.frame.size.width - _rightLabel.frame.size.width - 2, self.frame.size.height - _rightLabel.frame.size.height - 8);
 	_rightLabel.frame = rect;
 	
-	_contentHeight = self.frame.size.height - (8 + MAX(_rightLabel.frame.size.height, _leftLabel.frame.size.height) + 2);
+	_contentHeight = self.frame.size.height - (10 + MAX(_rightLabel.frame.size.height, _leftLabel.frame.size.height) + 2);
 	
 	rect = _topPercentLabel.frame;
-	rect.origin = CGPointMake(2, _contentHeight * 0.2 - (rect.size.height / 2));
+	rect.origin = CGPointMake(10, _contentHeight * 0.2 + 4 - (rect.size.height / 2));
 	_topPercentLabel.frame = rect;
 	
 	[self setNeedsDisplay];
@@ -97,12 +97,13 @@
 - (void)drawRect:(CGRect)rect
 {
 	rect.size.height = self.contentHeight;
-	const CGRect frame = CGRectInset(rect, 4, 2);
+	CGRect frame = CGRectInset(rect, 4, 2);
+	frame.origin.y += 4;
 	
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
 	// Clip content ouside |frame|
-	CGContextClipToRect(context, CGRectInset(rect, 2, 2));
+	CGContextClipToRect(context, CGRectInset(rect, 2, 1));
 	
 	const UIColor * lightGrayColor = [UIColor colorWithWhite:0.85 alpha:1];
 	
