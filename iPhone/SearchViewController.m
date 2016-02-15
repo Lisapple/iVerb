@@ -16,7 +16,7 @@
 #import "Playlist+additions.h"
 #import "NSMutableAttributedString+addition.h"
 
-@interface SearchViewController () <UISearchControllerDelegate, UISearchResultsUpdating>
+@interface SearchViewController () <UISearchControllerDelegate, UISearchResultsUpdating, UIViewControllerPreviewingDelegate>
 {
 	BOOL showingAddToPopover; // Only on iPad
 }
@@ -52,6 +52,8 @@
 	_statusBarBackgroundView.hidden = YES;
 	self.searchController.searchBar.subviews.firstObject.clipsToBounds = NO; // Search bar contains a single subview for content
 	[self.searchController.searchBar addSubview:_statusBarBackgroundView];
+	
+	[self registerForPreviewingWithDelegate:self sourceView:self.tableView];
 	
 	self.tableView.tableHeaderView = self.searchController.searchBar;
 	
