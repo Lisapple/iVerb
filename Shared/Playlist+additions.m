@@ -54,6 +54,20 @@ static Playlist * _currentPlaylist = nil;
 		[sharedDefaults setObject:verbs forKey:SharedVerbsKey];
 		[sharedDefaults setObject:name forKey:LastUsedPlaylistKey];
 	}
+	
+	UIApplication * app = [UIApplication sharedApplication];
+	if ([app respondsToSelector:@selector(shortcutItems)] && app.shortcutItems.count >= 2) {
+		NSMutableArray * shortcutItems = [app.shortcutItems subarrayWithRange:NSMakeRange(0, 2)].mutableCopy;
+		if (name && playlist.isUserPlaylist) {
+			UIApplicationShortcutItem * shortcutItem = [[UIApplicationShortcutItem alloc] initWithType:@"com.lisacintosh.iverb.launch.quiz"
+																						localizedTitle:@"Launch Quiz"
+																					 localizedSubtitle:name
+																								  icon:[UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypePlay]
+																							  userInfo:@{ @"playlist" : name }];
+			[shortcutItems addObject:shortcutItem];
+		}
+		app.shortcutItems = shortcutItems;
+	}
 }
 
 - (NSString *)localizedName

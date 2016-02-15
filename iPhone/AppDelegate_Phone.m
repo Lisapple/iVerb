@@ -22,15 +22,16 @@
 {
 	[Fabric with:@[ Crashlytics.class ]];
 	
-    _window.tintColor = [UIColor purpleColor];
-    
 	PlaylistsViewController * playlistsViewController = [[PlaylistsViewController alloc] init];
-	
 	_navigationController = [[RootNavigationController alloc] initWithRootViewController:playlistsViewController];
 	_window.rootViewController = _navigationController;
-	
+	_window.tintColor = [UIColor purpleColor];
     [_window makeKeyAndVisible];
-    
+	
+	SearchViewController * searchViewController = [[SearchViewController alloc] init];
+	searchViewController.playlist = [Playlist currentPlaylist];
+	[_navigationController pushViewController:searchViewController animated:NO];
+	
 	/*** Hack: Disable the sending of notifications when the device rotate (enabled by default, should be set to one) to set the count to zero... ***/
 	while ([UIDevice currentDevice].generatesDeviceOrientationNotifications) {
 		[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
@@ -68,18 +69,22 @@
 	}
 }
 
-- (void)showQuizForPlaylist:(Playlist *)playlist firstVerbWithInfinitif:(NSString *)infinitif tense:(NSString *)tense
+- (void)showQuizForPlaylist:(nonnull Playlist *)playlist firstVerbWithInfinitif:(nullable NSString *)infinitif tense:(nullable NSString *)tense
 {
+	[_navigationController dismissViewControllerAnimated:NO completion:nil];
+	
 	Verb * verb = [playlist verbWithInfinitif:infinitif];
-	if (verb) {
-		[_navigationController dismissViewControllerAnimated:NO completion:nil];
-		
-		VerbForm form = ([tense isEqualToString:@"past-participle"]) ? VerbFormPastParticiple : VerbFormPastSimple;
-		QuizViewController * controller = [[QuizViewController alloc] initWithPlaylist:playlist firstVerb:verb verbForm:form];
-		
-		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
-		[_navigationController presentViewController:navigationController animated:NO completion:nil];
-	}
+	
+	VerbForm form = VerbFormUnspecified;
+	if /**/ ([tense isEqualToString:@"past"])
+		form = VerbFormPastSimple;
+	else if ([tense isEqualToString:@"past-participle"])
+		form = VerbFormPastParticiple;
+	
+	QuizViewController * controller = [[QuizViewController alloc] initWithPlaylist:playlist firstVerb:verb verbForm:form];
+	
+	UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+	[_navigationController presentViewController:navigationController animated:NO completion:nil];
 }
 
 - (BOOL)openDeeplinkURL:(NSURL *)url
@@ -112,6 +117,35 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
 	return [self openDeeplinkURL:url];
+}
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler
+{
+	if /**/ ([shortcutItem.type isEqualToString:@"com.lisacintosh.iverb.show.search"]) { // Search
+		// Open search field from all verbs playlist
+		[_navigationController popToRootViewControllerAnimated:NO];
+		SearchViewController * searchViewController = [[SearchViewController alloc] init];
+		searchViewController.playlist = [Playlist allVerbsPlaylist];
+		[_navigationController pushViewController:searchViewController animated:NO];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[searchViewController focusSearch]; completionHandler(YES); });
+	}
+	else if ([shortcutItem.type isEqualToString:@"com.lisacintosh.iverb.show.bookmarks"]) { // Favorites
+		// Open Bookmarks playlist
+		[_navigationController popToRootViewControllerAnimated:NO];
+		SearchViewController * searchViewController = [[SearchViewController alloc] init];
+		searchViewController.playlist = [Playlist historyPlaylist];
+		[_navigationController pushViewController:searchViewController animated:NO];
+		completionHandler(YES);
+	}
+	else if ([shortcutItem.type isEqualToString:@"com.lisacintosh.iverb.launch.quiz"]) { // Quizz (last selected playlist)
+		NSString * playlistName = (NSString *)shortcutItem.userInfo[@"playlist"];
+		[self showQuizForPlaylist:[Playlist playlistWithName:playlistName] firstVerbWithInfinitif:nil tense:nil];
+		completionHandler(YES);
+	}
+	else {
+		completionHandler(NO);
+	}
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray * _Nullable))restorationHandler

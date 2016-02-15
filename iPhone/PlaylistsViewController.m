@@ -46,10 +46,6 @@
     
 	defaultPlaylists = [Playlist defaultPlaylists];
 	
-	SearchViewController * searchViewController = [[SearchViewController alloc] init];
-	searchViewController.playlist = [Playlist currentPlaylist];
-	[self.navigationController pushViewController:searchViewController animated:NO];
-	
 	[self reloadData];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData)

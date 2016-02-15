@@ -142,6 +142,9 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 
 - (Verb *)verbWithInfinitif:(NSString *)infinitif
 {
+	if (!infinitif)
+		return nil;
+	
 	infinitif = [infinitif stringByReplacingOccurrencesOfString:@"To " withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, infinitif.length - 1)];
 	[infinitif stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];

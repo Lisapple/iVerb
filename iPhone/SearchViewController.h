@@ -33,6 +33,8 @@
 - (IBAction)shareAction:(id)sender;
 - (IBAction)removeAction:(id)sender;
 
+- (void)focusSearch;
+
 // Private
 - (void)reloadData;
 

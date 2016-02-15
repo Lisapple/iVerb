@@ -10,12 +10,15 @@
 
 #import "Playlist.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef NS_ENUM(NSUInteger, ResponseState) {
 	ResponseStateTrue,
 	ResponseStateFalse
 };
 
 typedef NS_ENUM(NSUInteger, VerbForm) {
+	VerbFormUnspecified = -1,
 	VerbFormPastSimple = 0,
 	VerbFormPastParticiple
 };
@@ -33,20 +36,20 @@ typedef NS_ENUM(NSUInteger, VerbForm) {
 	UIView * previousPushedView;
 }
 
-@property (nonatomic, assign) IBOutlet UIView * quizView, * responseView;
+@property (nonatomic, weak) IBOutlet UIView * quizView, * responseView;
 
-@property (nonatomic, assign) IBOutlet UILabel * infinitifLabel, * formLabel, * remainingCount;
-@property (nonatomic, assign) IBOutlet UITextField * textField;
-@property (nonatomic, assign) IBOutlet UIImageView * backgroundFieldImageView;
+@property (nonatomic, weak) IBOutlet UILabel * infinitifLabel, * formLabel, * remainingCount;
+@property (nonatomic, weak) IBOutlet UITextField * textField;
+@property (nonatomic, weak) IBOutlet UIImageView * backgroundFieldImageView;
 
-@property (nonatomic, assign) IBOutlet UIImageView * responseImageView;
-@property (nonatomic, assign) IBOutlet UILabel * responseLabel;
+@property (nonatomic, weak) IBOutlet UIImageView * responseImageView;
+@property (nonatomic, weak) IBOutlet UILabel * responseLabel;
 
-- (instancetype)initWithPlaylist:(Playlist *)playlist;
-- (instancetype)initWithPlaylist:(Playlist *)playlist firstVerb:(Verb *)verb verbForm:(VerbForm)verbForm NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPlaylist:(nonnull Playlist *)playlist;
+- (instancetype)initWithPlaylist:(nonnull Playlist *)playlist firstVerb:(nullable Verb *)verb verbForm:(VerbForm)verbForm NS_DESIGNATED_INITIALIZER;
 
 #pragma mark Next Verb Management
-- (IBAction)pushNewVerbAction:(id)sender;
+- (IBAction)pushNewVerbAction:(nullable id)sender;
 - (void)pushVerb:(Verb *)verb form:(VerbForm)form animated:(BOOL)animated;
 
 #pragma mark Result Management
@@ -56,3 +59,5 @@ typedef NS_ENUM(NSUInteger, VerbForm) {
 - (void)pushResponse:(ResponseState)response animated:(BOOL)animated;
 
 @end
+
+NS_ASSUME_NONNULL_END

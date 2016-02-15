@@ -42,13 +42,18 @@
 	}
 }
 
-- (void)showQuizForPlaylist:(Playlist *)playlist firstVerbWithInfinitif:(NSString *)infinitif tense:(NSString *)tense
+- (void)showQuizForPlaylist:(nonnull Playlist *)playlist firstVerbWithInfinitif:(nullable NSString *)infinitif tense:(nullable NSString *)tense
 {
 	Verb * verb = [playlist verbWithInfinitif:infinitif];
 	if (verb) {
 		[_window.rootViewController dismissViewControllerAnimated:NO completion:nil];
 		
-		VerbForm form = ([tense isEqualToString:@"past-participle"]) ? VerbFormPastParticiple : VerbFormPastSimple;
+		VerbForm form = VerbFormUnspecified;
+		if /**/ ([tense isEqualToString:@"past"])
+			form = VerbFormPastSimple;
+		else if ([tense isEqualToString:@"past-participle"])
+			form = VerbFormPastParticiple;
+		
 		QuizViewController * controller = [[QuizViewController alloc] initWithPlaylist:playlist firstVerb:verb verbForm:form];
 		
 		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];

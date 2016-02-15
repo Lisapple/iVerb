@@ -16,6 +16,8 @@
 @interface QuizViewController ()
 
 @property (nonatomic, strong) Playlist * playlist;
+@property (nonatomic, strong) Verb * firstVerb;
+@property (nonatomic, assign) VerbForm firstVerbForm;
 
 - (void)start;
 
@@ -29,7 +31,7 @@
 
 - (instancetype)initWithPlaylist:(Playlist *)playlist
 {
-	if ((self = [self initWithPlaylist:playlist firstVerb:nil verbForm:0])) { }
+	if ((self = [self initWithPlaylist:playlist firstVerb:nil verbForm:VerbFormUnspecified])) { }
 	return self;
 }
 
@@ -38,19 +40,31 @@
 	NSString * nibName = (TARGET_IS_IPAD())? @"QuizViewController_Pad" : @"QuizViewController_Phone";
 	if ((self = [super initWithNibName:nibName bundle:[NSBundle mainBundle]])) {
 		_playlist = playlist;
+		
+		srand((unsigned int)time(NULL));
+		
+		_firstVerb = verb;
+		if (!_firstVerb && _playlist.verbs.count > 0) {
+			NSInteger index = rand() % _playlist.verbs.count;
+			_firstVerb = _playlist.verbs.allObjects[index];
+		}
+		
+		_firstVerbForm = verbForm;
+		if (_firstVerbForm == VerbFormUnspecified)
+			_firstVerbForm = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
 	}
 	return self;
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:0])) { }
+	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:VerbFormUnspecified])) { }
 	return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:0])) { }
+	if ((self = [self initWithPlaylist:[Playlist allVerbsPlaylist] firstVerb:nil verbForm:VerbFormUnspecified])) { }
 	return self;
 }
 
@@ -119,13 +133,11 @@
 	BOOL animated = (goodResponseCount + badResponseCount); // Don't animate the first try
 	
 	[self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                            target:self
-                                                                                            action:@selector(cancelAction:)]
+                                                                                            target:self action:@selector(cancelAction:)]
                                      animated:animated];
 	[self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Skip"
                                                                                 style:UIBarButtonItemStylePlain
-                                                                               target:self
-                                                                               action:@selector(skipAction:)]
+                                                                               target:self action:@selector(skipAction:)]
                                       animated:animated];
 	
 	goodResponseCount = 0, badResponseCount = 0;
@@ -135,14 +147,18 @@
 	forms = [[NSMutableArray alloc] initWithCapacity:allVerbs.count];
 	
 	currentIndex = 0;
-	srand((unsigned int)time(NULL));
-	VerbForm form = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
-	[self pushVerb:allVerbs.firstObject form:form animated:animated];
+	if (!_firstVerb)
+		_firstVerb = allVerbs.firstObject;
+	
+	if (_firstVerbForm == VerbFormUnspecified)
+		_firstVerbForm = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
+	
+	[self pushVerb:_firstVerb form:_firstVerbForm animated:animated];
 }
 
 - (void)pushView:(UIView *)view animated:(BOOL)animated
 {
-	/* "Pop" the previous pushed view (if exists) */
+	// "Pop" the previous pushed view (if exists)
 	if (previousPushedView && previousPushedView != view) {
 		CGRect frame = previousPushedView.frame;
 		frame.origin.x = 0;
@@ -156,12 +172,12 @@
 						 }];
 	}
 	
-	/* Push the new view */
+	// Push the new view
 	CGRect frame = view.frame;
 	frame.origin.x = self.view.frame.size.width;
 	view.frame = frame;
 	
-	/* If "view" have been hidden, just re-show it, else add it to the main view */
+	// If "view" have been hidden, just re-show it, else add it to the main view
 	if (view.hidden) view.hidden = NO;
 	else [self.view addSubview:view];
 	

@@ -11,6 +11,8 @@
 @class Verb;
 @class QuizResult;
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString * const kPlaylistAllVerbsName;
 extern NSString * const kPlaylistBasicsVerbsName;
 extern NSString * const kPlaylistBookmarksName;
@@ -44,8 +46,10 @@ extern NSString * const kPlaylistHistoryName;
 - (BOOL)isDefaultPlaylist;
 - (BOOL)isUserPlaylist;
 
-- (Verb *)verbWithInfinitif:(NSString *)infinitif;
+- (nullable Verb *)verbWithInfinitif:(nullable NSString *)infinitif;
 - (void)addVerb:(Verb *)verb;
 - (void)removeVerb:(Verb *)verb;
 
 @end
+
+NS_ASSUME_NONNULL_END

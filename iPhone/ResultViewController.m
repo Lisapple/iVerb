@@ -76,7 +76,7 @@
 	NSString * noteButton = (_verb.note.length > 0) ? @"Edit Note" : @"Add Note";
 	[alertController addAction:[UIAlertAction actionWithTitle:noteButton style:UIAlertActionStyleDefault
 													  handler:^(UIAlertAction * action) {
-														  /* Show the panel to add/edit note */
+														  // Show the panel to add/edit note
 														  EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
 														  editNoteViewController.verb = _verb;
 														  
@@ -96,7 +96,7 @@
 													  }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault
 													  handler:^(UIAlertAction * action) {
-														  /* Copy to pasteboard ("Infinitif\nSimple Past\nPP\nDefinition\nNote") */
+														  // Copy to pasteboard: "Infinitif\nSimple Past\nPP\nDefinition\nNote"
 														  NSString * note = (_verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", _verb.note] : @"";
 														  NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", _verb.infinitif, _verb.past, _verb.pastParticiple, _verb.definition, note];
 														  
@@ -157,7 +157,7 @@
             [self presentViewController:navigationController animated:YES completion:NULL];
         }
         
-        /* Reload the webView from stratch (not by calling "-[UIWebView reload]") */
+        // Reload the webView from stratch (not by calling "-[UIWebView reload]")
 		double delayInSeconds = 1.;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){

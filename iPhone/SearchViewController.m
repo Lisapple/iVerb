@@ -58,15 +58,13 @@
 	self.searchController.delegate = self;
 	self.searchController.searchResultsUpdater = self;
 	
-	if (_playlist.isHistoryPlaylist) { // Show an "Trash" button to empty
+	if /**/ (_playlist.isHistoryPlaylist) { // Show an "Trash" button to empty
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
-                                                                                               target:self
-                                                                                               action:@selector(emptyHistoryAction:)];
-	} else if (_playlist.isUserPlaylist) { // Show an "Edit" button
-		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit"
-																				  style:UIBarButtonItemStylePlain
-																				 target:self
-																				 action:@selector(toogleEditingAction:)];
+                                                                                               target:self action:@selector(emptyHistoryAction:)];
+	}
+	else if (_playlist.isUserPlaylist) { // Show an "Edit" button
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain
+																				 target:self action:@selector(toogleEditingAction:)];
 	}
 	
 	[self reloadData];
@@ -82,10 +80,8 @@
 	}
 	
 	if (!_playlist.isDefaultPlaylist) {
-		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit"
-																				  style:UIBarButtonItemStylePlain
-																				 target:self
-																				 action:@selector(toogleEditingAction:)];
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain
+																				 target:self action:@selector(toogleEditingAction:)];
 	}
 }
 
@@ -98,11 +94,9 @@
 
 - (void)updateData
 {
-	NSSortDescriptor * sortDescriptor = nil;
+	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];
 	if (_playlist.isHistoryPlaylist)
 		sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
-	else
-		sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];
 	
 	NSArray * verbs = [_playlist.verbs sortedArrayUsingDescriptors:@[ sortDescriptor ]];
 	sortedKeys = verbs.copy;
@@ -115,6 +109,13 @@
 	[self updateToolbar];
 	[self updateData];
 	[self.tableView reloadData];
+}
+
+- (void)focusSearch
+{
+	[self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+						  atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+	[self.searchController.searchBar becomeFirstResponder];
 }
 
 - (NSInteger)indexOfObjectBeginingWith:(NSString *)beginString
@@ -228,7 +229,7 @@
 	if (checkedVerbs.count > 0) {
 		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil
 																		  preferredStyle:UIAlertControllerStyleActionSheet];
-		[alertController addAction:[UIAlertAction actionWithTitle:@"Copy to Pasteboard" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Copy to Pasteboard" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 			/* Copy to pasteboard ("Infinitif\nSimple Past\nPP\n\nDefinition\n\n") */
 			NSString * body = @"";
 			for (Verb * verb in checkedVerbs)
@@ -239,7 +240,7 @@
 		}]];
 		
 		if ([MFMailComposeViewController canSendMail]) {
-			[alertController addAction:[UIAlertAction actionWithTitle:@"Send by Mail" style:UIAlertActionStyleDefault handler:^(UIAlertAction * __nonnull action) {
+			[alertController addAction:[UIAlertAction actionWithTitle:@"Send by Mail" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 				NSString * body = @"<table border=\"0\" style=\"border:1px solid #ccc;width:100%;text-align:center;border-collapse:collapse;\">";
 				int index = 0;
 				for (Verb * verb in checkedVerbs) {
@@ -288,7 +289,7 @@
 	if (checkedVerbs.count > 0) {
 		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 		[alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove from %@", _playlist.name]
-															style:UIAlertActionStyleDestructive handler:^(UIAlertAction * __nonnull action) {
+															style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
 																for (Verb * verb in checkedVerbs)
 																	[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
 																
@@ -333,11 +334,12 @@
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    /* Don't show the IndexBar: on iPad, if the playlist is not a ordered list or if searching is occuring */
+    // Don't show the IndexBar: on iPad, if the playlist is not a ordered list or if searching is occuring
 	if (!_playlist.canBeModified && !isSearching) {
-		
-        if (_playlist.isBasicPlaylist) return @[ UITableViewIndexSearch, @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"K", @"L", @"M", @"P", @"Q", @"R", @"S", @"T", @"W" ];
-        else return @[ UITableViewIndexSearch, @"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"W" ];
+		NSString * letters = @"A.B.C.D.E.F.G.H.K.L.M.P.Q.R.S.T.W";
+		if (_playlist.isBasicPlaylist)
+			letters = @"A.B.C.D.E.F.G.H.I.J.K.L.M.O.P.Q.R.S.T.U.W";
+		return [@[ UITableViewIndexSearch ] arrayByAddingObjectsFromArray:[letters componentsSeparatedByString:@"."]];
 	}
     return nil;
 }
@@ -450,6 +452,26 @@
 						   });
 		}
 	}
+}
+
+#pragma mark - Previewing with 3D Touch
+
+- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
+{
+	NSIndexPath * indexPath = [self.tableView indexPathForRowAtPoint:location];
+	if (indexPath) {
+		Verb * verb = filteredKeys[indexPath.row];
+		ResultViewController * resultViewController = [[ResultViewController alloc] init];
+		resultViewController.verb = verb;
+		return resultViewController;
+	}
+	
+	return nil;
+}
+
+- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit
+{
+	[self.navigationController pushViewController:viewControllerToCommit animated:NO];
 }
 
 #pragma mark - Search results updating
