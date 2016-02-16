@@ -13,6 +13,9 @@
 #define NSDebugLog(format, ...)
 #endif
 
-#define TARGET_IS_IPAD() (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define TARGET_IS_IPAD()	(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+
+#define IOS_8_OR_EARLIER()	([UIDevice currentDevice].systemVersion.floatValue < 9.0)
+#define IOS_9_OR_LATER()	([UIDevice currentDevice].systemVersion.floatValue >= 9.0)
 
 #define SearchTableViewDidSelectCellNotification @"SearchTableViewDidSelectCellNotification"

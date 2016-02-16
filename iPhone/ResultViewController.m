@@ -95,10 +95,6 @@
 		}
 	}
 	
-	UIPreviewActionGroup * addToAction = [UIPreviewActionGroup actionGroupWithTitle:@"Add to list..."
-																			  style:UIPreviewActionStyleDefault
-																			actions:addActions];
-	
 	UIPreviewAction * listenAction = [UIPreviewAction actionWithTitle:@"Listen" style:UIPreviewActionStyleDefault
 															  handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
 																  [self listenAction:nil]; }];
@@ -108,9 +104,12 @@
 																  [self copyAction:nil]; }];
 	
 	NSMutableArray <id <UIPreviewActionItem>> * actions = @[ listenAction, copyAction ].mutableCopy;
-	if (addActions.count)
+	if (addActions.count) {
+		UIPreviewActionGroup * addToAction = [UIPreviewActionGroup actionGroupWithTitle:@"Add to list..."
+																				  style:UIPreviewActionStyleDefault
+																				actions:addActions];
 		[actions insertObject:addToAction atIndex:0];
-	
+	}
 	return actions;
 }
 

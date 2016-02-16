@@ -208,7 +208,7 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return (indexPath.section == 2);
+    return (indexPath.section == 2 && indexPath.row < userPlaylists.count); // User playlist section but not the last cell (create new list)
 }
 
 - (void)tableView:(UITableView *)aTableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath

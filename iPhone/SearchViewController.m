@@ -46,14 +46,18 @@
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsViewController];
 	[self.searchController.searchBar sizeToFit];
 	
-	// Create opaque background view when searching to hide table view result under status bar
-	_statusBarBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width, 20)];
-	_statusBarBackgroundView.backgroundColor = [UIColor whiteColor];
-	_statusBarBackgroundView.hidden = YES;
-	self.searchController.searchBar.subviews.firstObject.clipsToBounds = NO; // Search bar contains a single subview for content
-	[self.searchController.searchBar addSubview:_statusBarBackgroundView];
+	if (IOS_8_OR_EARLIER()) {
+		// Create opaque background view when searching to hide table view result under status bar
+		_statusBarBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width, 20)];
+		_statusBarBackgroundView.backgroundColor = [UIColor colorWithRed:201./255. green:201./255. blue:206./255. alpha:1];
+		_statusBarBackgroundView.hidden = YES;
+		self.searchController.searchBar.subviews.firstObject.clipsToBounds = NO; // Search bar contains a single subview for content
+		[self.searchController.searchBar addSubview:_statusBarBackgroundView];
+	}
 	
-	[self registerForPreviewingWithDelegate:self sourceView:self.tableView];
+	if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
+		[self registerForPreviewingWithDelegate:self sourceView:self.tableView];
+	}
 	
 	self.tableView.tableHeaderView = self.searchController.searchBar;
 	
@@ -482,6 +486,9 @@
 {
 	isSearching = YES;
 	_statusBarBackgroundView.hidden = NO;
+	
+	if (editing)
+		[self toogleEditingAction:nil];
 	
 	SearchResultsViewController * searchResultsViewController = (SearchResultsViewController *)searchController.searchResultsController;
 	UIEdgeInsets insets = UIEdgeInsetsMake(self.topLayoutGuide.length + self.navigationController.navigationBar.frame.size.height, 0., 0., 0.);

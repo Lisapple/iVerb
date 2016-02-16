@@ -197,6 +197,8 @@
 	}
 	CGContextRestoreGState(context);
 	
+	if (points) free(points);
+	
 	// Create gradient from progression mask
 	CGContextClipToMask(context, rect, image.CGImage);
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
@@ -204,6 +206,8 @@
 														(__bridge CFArrayRef)@[ (id)lightGrayColor.CGColor, (id)[UIColor darkGrayColor].CGColor ],
 														(const CGFloat[]){ 0, 1 });
 	CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(rect.size.width, 0), 0);
+	CGGradientRelease(gradient);
+	CGColorSpaceRelease(colorSpace);
 }
 
 @end
