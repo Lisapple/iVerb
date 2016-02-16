@@ -58,6 +58,56 @@
 	[_verb addToPlaylist:[Playlist historyPlaylist]];
 }
 
+- (void)listenAction:(id)sender
+{
+	NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", _verb.infinitif, _verb.past, _verb.pastParticiple];
+	if ([_verb.infinitif isEqualToString:_verb.past] && [_verb.infinitif isEqualToString:_verb.pastParticiple])
+		string = [NSString stringWithFormat:@"to %@", _verb.infinitif];
+	
+	synthesizer = [[AVSpeechSynthesizer alloc] init];
+	AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
+	utterance.rate = 0.1;
+	[synthesizer speakUtterance:utterance];
+}
+
+- (void)copyAction:(id)sender
+{
+	// Copy to pasteboard: "Infinitif\nSimple Past\nPP\nDefinition\nNote"
+	NSString * note = (_verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", _verb.note] : @"";
+	NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", _verb.infinitif, _verb.past, _verb.pastParticiple, _verb.definition, note];
+	
+	UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
+	pasteboard.string = body;
+}
+
+- (NSArray <id <UIPreviewActionItem>> *)previewActionItems
+{
+	// Return "Add to list..." (group), "Listen" and "Copy"
+	NSArray <Playlist *> * playlists = [@[ [Playlist bookmarksPlaylist] ] arrayByAddingObjectsFromArray:[Playlist userPlaylists]];
+	NSMutableArray <UIPreviewAction *> * actions = [[NSMutableArray alloc] initWithCapacity:playlists.count];
+	for (Playlist * playlist in playlists) {
+		if (![playlist.verbs containsObject:_verb]) {
+			[actions addObject:[UIPreviewAction actionWithTitle:playlist.name style:UIPreviewActionStyleDefault
+														handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
+															[playlist addVerb:_verb];
+														}]];
+		}
+	}
+	
+	UIPreviewActionGroup * addToAction = [UIPreviewActionGroup actionGroupWithTitle:@"Add to list..."
+																			  style:UIPreviewActionStyleDefault
+																			actions:actions];
+	
+	UIPreviewAction * listenAction = [UIPreviewAction actionWithTitle:@"Listen" style:UIPreviewActionStyleDefault
+															  handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
+																  [self listenAction:nil]; }];
+	
+	UIPreviewAction * copyAction = [UIPreviewAction actionWithTitle:@"Copy" style:UIPreviewActionStyleDefault
+															  handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
+																  [self copyAction:nil]; }];
+	return @[ addToAction, listenAction, copyAction ];
+}
+
 - (IBAction)showOptionAction:(id)sender
 {
 	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -84,25 +134,10 @@
 														  [self presentViewController:navigationController animated:YES completion:NULL];
 													  }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Listen" style:UIAlertActionStyleDefault
-													  handler:^(UIAlertAction * action) {
-														  NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", _verb.infinitif, _verb.past, _verb.pastParticiple];
-														  if ([_verb.infinitif isEqualToString:_verb.past] && [_verb.infinitif isEqualToString:_verb.pastParticiple])
-															  string = [NSString stringWithFormat:@"to %@", _verb.infinitif];
-														  
-														  synthesizer = [[AVSpeechSynthesizer alloc] init];
-														  AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
-														  utterance.rate = 0.1;
-														  [synthesizer speakUtterance:utterance];
-													  }]];
+													  handler:^(UIAlertAction * action) { [self listenAction:nil]; }]];
+	
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault
-													  handler:^(UIAlertAction * action) {
-														  // Copy to pasteboard: "Infinitif\nSimple Past\nPP\nDefinition\nNote"
-														  NSString * note = (_verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", _verb.note] : @"";
-														  NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", _verb.infinitif, _verb.past, _verb.pastParticiple, _verb.definition, note];
-														  
-														  UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
-														  pasteboard.string = body;
-													  }]];
+													  handler:^(UIAlertAction * action) { [self copyAction:nil]; }]];
 	
 	if ([MFMailComposeViewController canSendMail]) {
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Mail" style:UIAlertActionStyleDefault
