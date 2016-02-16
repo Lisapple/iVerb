@@ -84,19 +84,20 @@
 {
 	// Return "Add to list..." (group), "Listen" and "Copy"
 	NSArray <Playlist *> * playlists = [@[ [Playlist bookmarksPlaylist] ] arrayByAddingObjectsFromArray:[Playlist userPlaylists]];
-	NSMutableArray <UIPreviewAction *> * actions = [[NSMutableArray alloc] initWithCapacity:playlists.count];
+	NSMutableArray <UIPreviewAction *> * addActions = [[NSMutableArray alloc] initWithCapacity:playlists.count];
 	for (Playlist * playlist in playlists) {
 		if (![playlist.verbs containsObject:_verb]) {
-			[actions addObject:[UIPreviewAction actionWithTitle:playlist.name style:UIPreviewActionStyleDefault
-														handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
-															[playlist addVerb:_verb];
-														}]];
+			[addActions addObject:[UIPreviewAction actionWithTitle:NSLocalizedString(playlist.name, nil)
+														  style:UIPreviewActionStyleDefault
+														   handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
+															   [playlist addVerb:_verb];
+														   }]];
 		}
 	}
 	
 	UIPreviewActionGroup * addToAction = [UIPreviewActionGroup actionGroupWithTitle:@"Add to list..."
 																			  style:UIPreviewActionStyleDefault
-																			actions:actions];
+																			actions:addActions];
 	
 	UIPreviewAction * listenAction = [UIPreviewAction actionWithTitle:@"Listen" style:UIPreviewActionStyleDefault
 															  handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
@@ -105,7 +106,12 @@
 	UIPreviewAction * copyAction = [UIPreviewAction actionWithTitle:@"Copy" style:UIPreviewActionStyleDefault
 															  handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
 																  [self copyAction:nil]; }];
-	return @[ addToAction, listenAction, copyAction ];
+	
+	NSMutableArray <id <UIPreviewActionItem>> * actions = @[ listenAction, copyAction ].mutableCopy;
+	if (addActions.count)
+		[actions insertObject:addToAction atIndex:0];
+	
+	return actions;
 }
 
 - (IBAction)showOptionAction:(id)sender
