@@ -24,7 +24,7 @@
 	BOOL isSearching;// Search Bar is the First Responder, the keyboard is showing
 	
 	BOOL editing;
-	NSMutableArray * checkedVerbs;
+	NSMutableArray <Verb *> * checkedVerbs;
 }
 
 @property (nonatomic, strong) Playlist * playlist;

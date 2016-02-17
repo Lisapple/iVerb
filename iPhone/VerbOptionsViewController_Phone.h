@@ -7,19 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "IVViewController.h"
+#import "IVTableViewController.h"
 
 #import "Playlist.h"
 #import "Verb.h"
 
-@interface VerbOptionsViewController_Phone : IVViewController <UITableViewDelegate, UITableViewDataSource>
+@interface VerbOptionsViewController_Phone : IVTableViewController <UITableViewDelegate, UITableViewDataSource>
 {
 	NSArray * userPlaylists;
 }
-
-@property (nonatomic, assign) IBOutlet UITableView * tableView;
-@property (nonatomic, assign) IBOutlet UILabel * headerLabel;
-@property (nonatomic, assign) IBOutlet UIView * headerView;
 
 @property (nonatomic, strong) NSArray * verbs;
 

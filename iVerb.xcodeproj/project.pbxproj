@@ -19,6 +19,7 @@
 		500B9F7319A4208100C91E39 /* NSMutableAttributedString+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 500B9F7219A4208100C91E39 /* NSMutableAttributedString+addition.m */; };
 		500BD3A7123BF35000FC6947 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 500BD3A5123BF35000FC6947 /* SearchViewController.m */; };
 		500BD3A8123BF35000FC6947 /* SearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 500BD3A6123BF35000FC6947 /* SearchViewController.xib */; };
+		500C0C1E1C7497690033730B /* NSString+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 500C0C1D1C7497690033730B /* NSString+addition.m */; };
 		5012072E164C2CE40036BA98 /* VerbOptionsViewController_Pad.m in Sources */ = {isa = PBXBuildFile; fileRef = 5012072C164C2CE40036BA98 /* VerbOptionsViewController_Pad.m */; };
 		5012072F164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5012072D164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib */; };
 		501BDB7B170B4A3100F7154F /* index.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 501BDB7A170B4A3100F7154F /* index.min.css */; };
@@ -132,6 +133,8 @@
 		500BD3A4123BF35000FC6947 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		500BD3A5123BF35000FC6947 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SearchViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		500BD3A6123BF35000FC6947 /* SearchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchViewController.xib; sourceTree = "<group>"; };
+		500C0C1C1C7497690033730B /* NSString+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+addition.h"; sourceTree = "<group>"; };
+		500C0C1D1C7497690033730B /* NSString+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+addition.m"; sourceTree = "<group>"; };
 		5012072B164C2CE40036BA98 /* VerbOptionsViewController_Pad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbOptionsViewController_Pad.h; sourceTree = "<group>"; };
 		5012072C164C2CE40036BA98 /* VerbOptionsViewController_Pad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VerbOptionsViewController_Pad.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		5012072D164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbOptionsViewController_Pad.xib; sourceTree = "<group>"; };
@@ -420,6 +423,8 @@
 				5009FC1319A5518900CFB284 /* UINavigationController+addition.m */,
 				500B9F7119A4208100C91E39 /* NSMutableAttributedString+addition.h */,
 				500B9F7219A4208100C91E39 /* NSMutableAttributedString+addition.m */,
+				500C0C1C1C7497690033730B /* NSString+addition.h */,
+				500C0C1D1C7497690033730B /* NSString+addition.m */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -632,6 +637,7 @@
 				500B9F7319A4208100C91E39 /* NSMutableAttributedString+addition.m in Sources */,
 				50CD97E3123CFF0900E31BC8 /* ResultViewController.m in Sources */,
 				501CFFAD1986BB1600F8731D /* IVTableViewController.m in Sources */,
+				500C0C1E1C7497690033730B /* NSString+addition.m in Sources */,
 				5009FC1419A5518900CFB284 /* UINavigationController+addition.m in Sources */,
 				506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */,
 				5036F079160CE15700E0BECD /* MainViewController.m in Sources */,

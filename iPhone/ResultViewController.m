@@ -118,14 +118,10 @@
 	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Add to list..." style:UIAlertActionStyleDefault
 													  handler:^(UIAlertAction * action) {
-														  double delayInSeconds = 0.5;
-														  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-														  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-															  VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
-															  optionsViewController.verbs = @[ _verb ];
-															  UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
-															  [self presentViewController:navigationController animated:YES completion:NULL];
-														  });
+														  VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
+														  optionsViewController.verbs = @[ _verb ];
+														  UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
+														  [self presentViewController:navigationController animated:YES completion:NULL];
 													  }]];
 	
 	NSString * noteButton = (_verb.note.length > 0) ? @"Edit Note" : @"Add Note";

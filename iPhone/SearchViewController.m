@@ -14,7 +14,8 @@
 
 #import "ManagedObjectContext.h"
 #import "Playlist+additions.h"
-#import "NSMutableAttributedString+addition.h"
+
+#import "NSString+addition.h"
 
 @interface SearchViewController () <UISearchControllerDelegate, UISearchResultsUpdating, UIViewControllerPreviewingDelegate>
 {
@@ -104,9 +105,8 @@
 	if (_playlist.isHistoryPlaylist)
 		sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
 	
-	NSArray * verbs = [_playlist.verbs sortedArrayUsingDescriptors:@[ sortDescriptor ]];
-	sortedKeys = verbs.copy;
-	filteredKeys = verbs.copy;
+	sortedKeys = [_playlist.verbs sortedArrayUsingDescriptors:@[ sortDescriptor ]];
+	filteredKeys = sortedKeys.copy;
 }
 
 - (void)reloadData
@@ -294,11 +294,12 @@
 {
 	if (checkedVerbs.count > 0) {
 		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-		[alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove from %@", _playlist.name]
+		[alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove from \"%@\"", _playlist.name]
 															style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
 																for (Verb * verb in checkedVerbs)
 																	[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
 																
+																[checkedVerbs removeAllObjects];
 																[self reloadData];
 															}]];
 		
@@ -314,29 +315,6 @@
 }
 
 #pragma mark - Table view data source
-
-- (NSAttributedString *)highlightedStringFromString:(NSString *)string withSearch:(NSString *)search fontSize:(CGFloat)fontSize
-{
-	NSMutableAttributedString * attrString = [[NSMutableAttributedString alloc] init];
-	
-	NSDictionary * attributes = @{ NSFontAttributeName : [UIFont systemFontOfSize:fontSize] };
-	NSDictionary * boldAttributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:fontSize] };
-	
-	NSInteger index = 0;
-	NSRange range;
-	while ((range = [string rangeOfString:search
-								  options:NSCaseInsensitiveSearch
-									range:NSMakeRange(index, string.length - index)]).location != NSNotFound) {
-		[attrString appendString:[string substringWithRange:NSMakeRange(index, range.location - index)]
-					  attributes:attributes];
-		[attrString appendString:[string substringWithRange:range]
-					  attributes:boldAttributes];
-		index = range.location + range.length;
-	}
-	[attrString appendString:[string substringWithRange:NSMakeRange(index, string.length - index)]
-				  attributes:attributes];
-	return attrString;
-}
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
@@ -379,18 +357,14 @@
 	NSString * search = self.searchController.searchBar.text;
 	if (isSearching && search.length > 0) {
 		NSString * title = [NSString stringWithFormat:@"%@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
-		cell.textLabel.attributedText = [self highlightedStringFromString:title withSearch:search fontSize:17.];
+		cell.textLabel.attributedText = [title highlightOccurrencesOfString:search fontSize:17.];
 		cell.detailTextLabel.text = @""; // This line fix a bug on iOS 8 where the attributed detail text don't shows up on first letter searched
-		cell.detailTextLabel.attributedText = [self highlightedStringFromString:verb.definition withSearch:search fontSize:12.];
+		cell.detailTextLabel.attributedText = [verb.definition highlightOccurrencesOfString:search fontSize:12.];
 	} else {
 		cell.textLabel.text = verb.infinitif;
 		cell.detailTextLabel.attributedText = nil;
 	}
-	
-	// Clear checkmarks when after editing
-	if (!editing)
-		cell.accessoryType = UITableViewCellAccessoryNone;
-	
+	cell.accessoryType = ([checkedVerbs containsObject:verb] && editing) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
 	return cell;
 }
 

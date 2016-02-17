@@ -22,30 +22,6 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                           target:self action:@selector(doneAction:)];
 	userPlaylists = [Playlist userPlaylists];
-	
-	self.tableView.delegate = self;
-	self.tableView.dataSource = self;
-	[self.tableView reloadData]; // Reload the tableView to get the size
-	[self updateUI];
-	
-	[self.tableView reloadData];// Re-reload the tableView to update cells
-}
-
-- (void)setVerbs:(NSArray *)verbs
-{
-	_verbs = verbs;
-	[self updateUI];
-}
-
-- (void)updateUI
-{
-	// Update the label at the top of the tableView with "Verb lists to add "Verb":" or "Verb lists to add these {dd} verbs:"
-	if (_verbs.count == 1) {
-		Verb * verb = _verbs.firstObject;
-		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add \"%@\":", verb.infinitif.capitalizedString];
-	} else if (_verbs.count > 1) {
-		_headerLabel.text = [NSString stringWithFormat:@"Verb lists to add these %lu verbs:", (unsigned long)_verbs.count];
-	}
 }
 
 - (IBAction)doneAction:(id)sender
@@ -73,7 +49,6 @@
 {
 	static NSString * cellID = @"cellID";
 	UITableViewCell * cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
-	
 	if (!cell) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
 		cell.selectionStyle = UITableViewCellSelectionStyleGray;
