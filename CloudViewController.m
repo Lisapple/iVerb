@@ -42,8 +42,7 @@
 	if (TARGET_IS_IPAD()) {
 		// Add a "Done" button on iPad
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                               target:self
-                                                                                               action:@selector(doneAction:)];
+                                                                                               target:self action:@selector(doneAction:)];
 	}
 	
 	NSSet * verbsSet = [Playlist allVerbsPlaylist].verbs;

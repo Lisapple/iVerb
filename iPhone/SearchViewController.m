@@ -16,6 +16,7 @@
 #import "Playlist+additions.h"
 
 #import "NSString+addition.h"
+#import <Crashlytics/Crashlytics.h>
 
 @interface SearchViewController () <UISearchControllerDelegate, UISearchResultsUpdating, UIViewControllerPreviewingDelegate>
 {
@@ -351,6 +352,11 @@
 	if (!cell) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
 		cell.textLabel.textColor = [UIColor darkGrayColor];
+	}
+	
+	if (indexPath.row >= filteredKeys.count) { // Production debug code to catch a crash
+		CLSLog(@"Querying verb at index %ld of %ld from playlist %@ (%ld verbs), searching for: \"%@\"",
+			   indexPath.row, filteredKeys.count, _playlist.name, _playlist.verbs.count, self.searchController.searchBar.text);
 	}
 	
 	Verb * verb = filteredKeys[indexPath.row];

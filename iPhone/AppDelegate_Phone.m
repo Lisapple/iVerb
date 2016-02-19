@@ -263,8 +263,7 @@
     NSError *error;
     if (managedObjectContext != nil) {
         if (managedObjectContext.hasChanges && ![managedObjectContext save:&error]) {
-			NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-			exit(-1); // Fail
+			// @TODO: Do something with the error
         } 
     }
 }
