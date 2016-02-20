@@ -356,7 +356,7 @@
 	
 	if (indexPath.row >= filteredKeys.count) { // Production debug code to catch a crash
 		CLSLog(@"Querying verb at index %ld of %ld from playlist %@ (%ld verbs), searching for: \"%@\"",
-			   indexPath.row, filteredKeys.count, _playlist.name, _playlist.verbs.count, self.searchController.searchBar.text);
+			   (long)indexPath.row, (long)filteredKeys.count, _playlist.name, (long)_playlist.verbs.count, self.searchController.searchBar.text);
 	}
 	
 	Verb * verb = filteredKeys[indexPath.row];

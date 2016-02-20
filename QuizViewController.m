@@ -217,15 +217,18 @@
 	
 	self.title = [NSString stringWithFormat:@"%ld of %ld", (long)currentIndex + 1, (long)allVerbs.count];
 	
+	NSMutableParagraphStyle * style = [[NSMutableParagraphStyle alloc] init];
+	style.hyphenationFactor = 0.5; style.alignment = NSTextAlignmentCenter;
+	NSDictionary * const attributes = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
+										 NSFontAttributeName : [UIFont systemFontOfSize:18.],
+										 NSParagraphStyleAttributeName : style };
+	
 	_infinitifLabel.text = [@"To " stringByAppendingString:verb.infinitif];
+	// @TODO: Need refactoring
 	if (form == VerbFormPastSimple) { // past
 		if (verb.quote.pastDescription.length > 0) {
 			NSMutableAttributedString * string = [[NSMutableAttributedString alloc] init];
-			NSMutableParagraphStyle * style = [[NSMutableParagraphStyle alloc] init];
-			style.hyphenationFactor = 0.5;
-			NSDictionary * attributes = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
-										   NSFontAttributeName : [UIFont systemFontOfSize:18.],
-										   NSParagraphStyleAttributeName : style };
+			
 			NSMutableString * placeholder = [[NSMutableString alloc] initWithCapacity:verb.past.length];
 			for (int i = 0; i < verb.past.length; i++) { [placeholder appendString:@"_"]; }
 			// Replace all occurrences (only for the whole word)
@@ -239,7 +242,7 @@
 																		   attributes:attributes]];
 			
 			NSDictionary * italics = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
-										NSFontAttributeName : [UIFont italicSystemFontOfSize:18.] };
+										NSFontAttributeName : [UIFont italicSystemFontOfSize:16.] };
 			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", verb.quote.pastAuthor]
 																		   attributes:italics]];
 			_formLabel.attributedText = string;
@@ -249,11 +252,6 @@
 	} else { // past participle
 		if (verb.quote.pastParticipleDescription.length > 0) {
 			NSMutableAttributedString * string = [[NSMutableAttributedString alloc] init];
-			NSMutableParagraphStyle * style = [[NSMutableParagraphStyle alloc] init];
-			style.hyphenationFactor = 0.5;
-			NSDictionary * attributes = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
-										   NSFontAttributeName : [UIFont systemFontOfSize:18.],
-										   NSParagraphStyleAttributeName : style };
 			NSMutableString * placeholder = [[NSMutableString alloc] initWithCapacity:verb.pastParticiple.length];
 			for (int i = 0; i < verb.pastParticiple.length; i++) { [placeholder appendString:@"_"]; }
 			// Replace all occurrences (only for the whole word)
@@ -267,7 +265,7 @@
 																		   attributes:attributes]];
 			
 			NSDictionary * italics = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
-										NSFontAttributeName : [UIFont italicSystemFontOfSize:18.] };
+										NSFontAttributeName : [UIFont italicSystemFontOfSize:16.] };
 			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", verb.quote.pastParticipleAuthor]
 																		   attributes:italics]];
 			_formLabel.attributedText = string;
