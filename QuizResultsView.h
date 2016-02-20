@@ -7,7 +7,6 @@
 //
 
 @import UIKit;
-@import SpriteKit;
 
 @interface QuizResultsView : UIView
 

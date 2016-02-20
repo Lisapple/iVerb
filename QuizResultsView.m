@@ -94,6 +94,42 @@
 	[self updateUI];
 }
 
+/**
+ Add a smooth spline path passing through each `points'; Add an empty path if `count' is zero.
+ @discussion First and last points tangents are zero.
+ */
+void LSContextAddSmoothSpline(CGContextRef context, CGPoint points[], size_t count)
+{
+	CGContextBeginPath(context);
+	if (count == 0)
+		return ;
+	
+	CGContextMoveToPoint(context, points[0].x, points[0].y);
+	
+	CGFloat prevTangentAngle = 0;
+	for (NSUInteger i = 1; i < count; ++i) {
+		
+		const CGPoint prev_pt = points[i-1];
+		const CGPoint pt = points[i];
+		
+		const CGFloat tangentLength = MIN(60, ABS(pt.x - prev_pt.x) / 2) * ((prev_pt.x < pt.x) ?: -1); // Negative if points goes from right to left
+		CGFloat tangentAngle = 0; // Set vertical tangent by default
+		if (i != (count - 1)) { // Skip for last point
+			const CGPoint next_pt = points[i+1];
+			if ((prev_pt.y < pt.y && pt.y < next_pt.y) ||
+				(prev_pt.y > pt.y && pt.y > next_pt.y)) // If the point is between previous and next points (from y-axis), compute tangent angle
+				tangentAngle = atan2(next_pt.y - prev_pt.y, next_pt.x - prev_pt.x);
+		}
+		
+		CGContextAddCurveToPoint(context,
+								 prev_pt.x + tangentLength * cos(prevTangentAngle), prev_pt.y + tangentLength * sin(prevTangentAngle),
+								 pt.x - tangentLength * cos(tangentAngle), pt.y - tangentLength * sin(tangentAngle),
+								 pt.x, pt.y);
+		
+		prevTangentAngle = tangentAngle; // Keep the same tangent angle for each point (at left and right of the point)
+	}
+}
+
 - (void)drawRect:(CGRect)rect
 {
 	rect.size.height = self.contentHeight;
@@ -179,16 +215,14 @@
 		[[UIColor blackColor] set];
 		
 		// Draw points
+		const CGFloat pointWide = 5;
 		for (int i = 0; i < _points.count; ++i) {
-			CGContextFillEllipseInRect(context, CGRectMake(points[i].x - 2.5, points[i].y - 2.5, 5, 5));
+			const CGRect rect = CGRectMake(points[i].x - pointWide/2, points[i].y - pointWide/2, pointWide, pointWide);
+			CGContextFillEllipseInRect(context, rect);
 		}
 		
 		// Draw progression curve
-		CGContextBeginPath(context);
-		
-		SKShapeNode * node = [SKShapeNode shapeNodeWithSplinePoints:points count:_points.count];
-		CGContextAddPath(context, node.path);
-		
+		LSContextAddSmoothSpline(context, points, _points.count);
 		CGContextSetLineWidth(context, 2);
 		CGContextSetLineJoin(context, kCGLineJoinRound);
 		CGContextStrokePath(context);
