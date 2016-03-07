@@ -105,7 +105,7 @@
 	((CloudView *)self.view).totalWidth = x - self.view.frame.size.width;
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(labelDidSelected:)
-												 name:@"CloudLabelDidSelectedNotification" object:nil];
+												 name:CloudLabelDidSelectedNotification object:nil];
 }
 
 - (void)labelDidSelected:(NSNotification *)notification

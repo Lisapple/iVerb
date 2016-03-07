@@ -36,7 +36,7 @@ extern NSString * const kPlaylistHistoryName;
 + (NSArray *)defaultPlaylists;
 + (NSArray *)userPlaylists;
 
-+ (Playlist *)playlistWithName:(NSString *)name;
++ (nullable Playlist *)playlistWithName:(NSString *)name;
 
 - (BOOL)canBeModified;
 - (BOOL)isBasicPlaylist;

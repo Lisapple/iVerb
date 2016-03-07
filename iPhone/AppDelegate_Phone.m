@@ -33,7 +33,7 @@
 	_navigationController = (UINavigationController *)_window.rootViewController;
 	
 	SearchViewController * searchViewController = [[SearchViewController alloc] init];
-	searchViewController.playlist = [Playlist currentPlaylist];
+	searchViewController.playlist = [Playlist playlistForAction:PlaylistActionSelect];
 	[_navigationController pushViewController:searchViewController animated:NO];
 	
 	/*** Hack: Disable the sending of notifications when the device rotate (enabled by default, should be set to one) to set the count to zero... ***/

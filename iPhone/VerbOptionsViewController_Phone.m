@@ -104,7 +104,7 @@
 		else
 			for (Verb * verb in _verbs) [verb addToPlaylist:playlist];
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"PlaylistDidUpdatedNotification" object:playlist];
+		[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistDidUpdatedNotification object:playlist];
 	}
 	
 	if (cell.accessoryType == UITableViewCellAccessoryNone)

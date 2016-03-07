@@ -34,7 +34,7 @@
 {
 	self.backgroundColor = [UIColor clearColor];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"CloudLabelDidSelectedNotification" object:_verb];
+	[[NSNotificationCenter defaultCenter] postNotificationName:CloudLabelDidSelectedNotification object:_verb];
 }
 
 @end

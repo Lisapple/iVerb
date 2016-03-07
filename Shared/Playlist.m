@@ -87,7 +87,7 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
 	request.predicate = [NSPredicate predicateWithFormat:@"creationDate != NULL"];
 	
-	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
+	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:YES];
 	request.sortDescriptors = @[ sortDescriptor ];
 	return [context executeFetchRequest:request error:NULL];
 }

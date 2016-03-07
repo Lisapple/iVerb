@@ -34,7 +34,7 @@
 {
 	if (section == 0) {
 		NSDictionary * infoDictionary = [NSBundle mainBundle].infoDictionary;
-		return [NSString stringWithFormat:@"iVerb %@\nCopyright © %lu, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"], [NSDate date].year];
+		return [NSString stringWithFormat:@"iVerb %@\nCopyright © %lu, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"], (long)[NSDate date].year];
 	}
 	else if (section == tableView.numberOfSections - 1) {
 		return @"iVerb is an open-source projet, under MIT license.";
@@ -60,7 +60,7 @@
 	}
 	
 	[Answers logCustomEventWithName:@"open-about-url"
-				   customAttributes:@{ @"url" : url }];
+				   customAttributes:@{ @"url" : url.absoluteString }];
 }
 
 @end

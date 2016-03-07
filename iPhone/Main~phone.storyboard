@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <scenes>
-        <!--Root View Controller-->
+        <!--Lists-->
         <scene sceneID="xic-KU-fdM">
             <objects>
-                <tableViewController id="TCe-G5-J3h" customClass="PlaylistsViewController" sceneMemberID="viewController">
+                <tableViewController title="Lists" id="TCe-G5-J3h" customClass="PlaylistsViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="yuQ-hS-CMF">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -18,7 +18,7 @@
                             <outlet property="delegate" destination="TCe-G5-J3h" id="m1I-U1-CV9"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="Vbz-zH-mXM"/>
+                    <navigationItem key="navigationItem" title="Lists" id="Vbz-zH-mXM"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3Fq-TI-0GB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -57,7 +57,7 @@ Lisacintosh.com, 2016</string>
                             <tableViewSection id="xjq-ME-Mti">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="9EZ-0B-s03" style="IBUITableViewCellStyleDefault" id="YTi-AI-C3z">
-                                        <rect key="frame" x="0.0" y="96" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="94" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YTi-AI-C3z" id="NdF-c1-9Tr">
                                             <rect key="frame" x="0.0" y="0.0" width="567" height="43"/>
@@ -74,7 +74,7 @@ Lisacintosh.com, 2016</string>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="6mC-Oi-GLx" style="IBUITableViewCellStyleDefault" id="KeV-F3-gAo">
-                                        <rect key="frame" x="0.0" y="140" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="138" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KeV-F3-gAo" id="bxa-jX-N2t">
                                             <rect key="frame" x="0.0" y="0.0" width="567" height="43"/>
@@ -91,7 +91,7 @@ Lisacintosh.com, 2016</string>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="dAW-Ya-n9B" style="IBUITableViewCellStyleDefault" id="DjF-kD-bvI">
-                                        <rect key="frame" x="0.0" y="184" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="182" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DjF-kD-bvI" id="lvN-bO-LdE">
                                             <rect key="frame" x="0.0" y="0.0" width="567" height="43"/>
@@ -108,7 +108,7 @@ Lisacintosh.com, 2016</string>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="bTS-ad-hnP" style="IBUITableViewCellStyleDefault" id="lgZ-2Z-OHD">
-                                        <rect key="frame" x="0.0" y="228" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="226" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lgZ-2Z-OHD" id="f1U-Bq-oJP">
                                             <rect key="frame" x="0.0" y="0.0" width="567" height="43"/>
@@ -129,7 +129,7 @@ Lisacintosh.com, 2016</string>
                             <tableViewSection footerTitle="iVerb is an open-source projet, under MIT license." id="ZjG-R7-euo">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="tdM-s1-xpA" style="IBUITableViewCellStyleDefault" id="Iob-Ar-uZ8">
-                                        <rect key="frame" x="0.0" y="308" width="600" height="44"/>
+                                        <rect key="frame" x="0.0" y="306" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Iob-Ar-uZ8" id="510-ZY-3Cn">
                                             <rect key="frame" x="0.0" y="0.0" width="567" height="43"/>

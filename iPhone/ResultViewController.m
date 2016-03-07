@@ -9,16 +9,16 @@
 #import "ResultViewController.h"
 
 #import "ManagedObjectContext.h"
+#import "Playlist+additions.h"
 
 #import "VerbOptionsViewController_Phone.h"
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
 
 @interface ResultViewController ()
-{
-	id reloadObserver;
-    AVSpeechSynthesizer * synthesizer;
-}
+
+@property (nonatomic, strong) AVSpeechSynthesizer * synthesizer;
+
 @end
 
 @implementation ResultViewController
@@ -39,14 +39,17 @@
 					 baseURL:[NSURL fileURLWithPath:basePath]];
 	[_activityIndicatorView startAnimating];
     
-    reloadObserver = [[NSNotificationCenter defaultCenter] addObserverForName:@"ResultDidReloadNotification"
-                                                                       object:nil
-                                                                        queue:[NSOperationQueue currentQueue]
-                                                                   usingBlock:^(NSNotification *note) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:ResultDidReloadNotification
+                                                                       object:nil queue:nil
+                                                                   usingBlock:^(NSNotification * notification) {
                                                                        NSString * basePath = [NSBundle mainBundle].bundlePath;
                                                                        [_webView loadHTMLString:_verb.HTMLFormat
                                                                                         baseURL:[NSURL fileURLWithPath:basePath]];
                                                                    }];
+	[[NSNotificationCenter defaultCenter] addObserverForName:PlaylistDidUpdatedNotification
+													  object:nil queue:nil
+												  usingBlock:^(NSNotification * notification) {
+													  [Playlist setPlaylist:notification.object forAction:PlaylistActionAddTo]; }];
 }
 
 - (void)setVerb:(Verb *)verb
@@ -64,10 +67,10 @@
 	if ([_verb.infinitif isEqualToString:_verb.past] && [_verb.infinitif isEqualToString:_verb.pastParticiple])
 		string = [NSString stringWithFormat:@"to %@", _verb.infinitif];
 	
-	synthesizer = [[AVSpeechSynthesizer alloc] init];
+	self.synthesizer = [[AVSpeechSynthesizer alloc] init];
 	AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
 	utterance.rate = 0.1;
-	[synthesizer speakUtterance:utterance];
+	[_synthesizer speakUtterance:utterance];
 }
 
 - (void)copyAction:(id)sender
@@ -87,7 +90,7 @@
 	NSMutableArray <UIPreviewAction *> * addActions = [[NSMutableArray alloc] initWithCapacity:playlists.count];
 	for (Playlist * playlist in playlists) {
 		if (![playlist.verbs containsObject:_verb]) {
-			[addActions addObject:[UIPreviewAction actionWithTitle:NSLocalizedString(playlist.name, nil)
+			[addActions addObject:[UIPreviewAction actionWithTitle:playlist.localizedName
 														  style:UIPreviewActionStyleDefault
 														   handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
 															   [playlist addVerb:_verb];
@@ -104,18 +107,42 @@
 																  [self copyAction:nil]; }];
 	
 	NSMutableArray <id <UIPreviewActionItem>> * actions = @[ listenAction, copyAction ].mutableCopy;
-	if (addActions.count) {
+	if (addActions.count) { // Show the "Add to list..." if the verb is not in all list (the action will not remove any verb, only add to list)
 		UIPreviewActionGroup * addToAction = [UIPreviewActionGroup actionGroupWithTitle:@"Add to list..."
 																				  style:UIPreviewActionStyleDefault
 																				actions:addActions];
 		[actions insertObject:addToAction atIndex:0];
 	}
+	
+	Playlist * lastPlaylist = [Playlist playlistForAction:PlaylistActionAddTo];
+	if (lastPlaylist && ![lastPlaylist.verbs containsObject:_verb]) {
+		UIPreviewAction * addToListAction = [UIPreviewAction actionWithTitle:[NSString stringWithFormat:@"Add to \"%@\"", lastPlaylist.localizedName]
+																	   style:UIPreviewActionStyleDefault
+																	 handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
+																		 [lastPlaylist addVerb:_verb]; }];
+		[actions insertObject:addToListAction atIndex:0];
+	}
+	
 	return actions;
 }
 
 - (IBAction)showOptionAction:(id)sender
 {
 	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+	
+	Playlist * lastPlaylist = [Playlist playlistForAction:PlaylistActionAddTo];
+	if (lastPlaylist) {
+		NSString * actionString = ([lastPlaylist.verbs containsObject:_verb]) ? @"Remove from" : @"Add to";
+		NSString * title = [NSString stringWithFormat:@"%@ \"%@\"", actionString, lastPlaylist.localizedName];
+		[alertController addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault
+														  handler:^(UIAlertAction * _Nonnull action) {
+															  if ([lastPlaylist.verbs containsObject:_verb])
+																  [lastPlaylist removeVerb:_verb];
+															  else
+																  [lastPlaylist addVerb:_verb];
+															  }]];
+	}
+	
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Add to list..." style:UIAlertActionStyleDefault
 													  handler:^(UIAlertAction * action) {
 														  VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
@@ -141,7 +168,7 @@
 													  handler:^(UIAlertAction * action) { [self copyAction:nil]; }]];
 	
 	if ([MFMailComposeViewController canSendMail]) {
-		[alertController addAction:[UIAlertAction actionWithTitle:@"Mail" style:UIAlertActionStyleDefault
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Send with Mail" style:UIAlertActionStyleDefault
 														  handler:^(UIAlertAction * action) {
 															  MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
 															  mailCompose.mailComposeDelegate = self;
@@ -214,7 +241,7 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:reloadObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

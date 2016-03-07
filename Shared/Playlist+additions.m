@@ -20,53 +20,66 @@ NSString * const SharedVerbsKey = @"Shared Verbs";
 
 @implementation Playlist (additions)
 
-static Playlist * _currentPlaylist = nil;
+static Playlist * _lastSelectedPlaylist = nil;
+static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 
-+ (Playlist *)currentPlaylist
++ (nullable Playlist *)playlistForAction:(PlaylistAction)action
 {
-	if (!_currentPlaylist) {
-		NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-		NSString * name = [userDefaults stringForKey:LastUsedPlaylistKey];
-		_currentPlaylist = [Playlist playlistWithName:name];
-		if (!_currentPlaylist) {
-			_currentPlaylist = [Playlist allVerbsPlaylist];
+	switch (action) {
+		case PlaylistActionSelect: {
+			if (!_lastSelectedPlaylist) {
+				NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+				NSString * name = [userDefaults stringForKey:LastUsedPlaylistKey];
+				_lastSelectedPlaylist = [Playlist playlistWithName:name];
+				if (!_lastSelectedPlaylist) {
+					_lastSelectedPlaylist = [Playlist allVerbsPlaylist];
+				}
+			}
+			return _lastSelectedPlaylist;
 		}
+		case PlaylistActionAddTo:
+			return _lastPlaylistSelectedToAddVerb;
+		default: break;
 	}
-	
-	return _currentPlaylist;
+	return nil;
 }
 
-+ (void)setCurrentPlaylist:(Playlist *)playlist
++ (void)setPlaylist:(nullable Playlist *)playlist forAction:(PlaylistAction)action
 {
-	_currentPlaylist = playlist;
-	
-	NSString * name = _currentPlaylist.name;
-	if (name) {
-		NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-		[userDefaults setObject:name forKey:LastUsedPlaylistKey];
+	if /**/ (action == PlaylistActionSelect) {
+		_lastSelectedPlaylist = playlist;
 		
-		NSMutableDictionary * verbs = [[NSMutableDictionary alloc] initWithCapacity:playlist.verbs.count];
-		for (Verb * verb in playlist.verbs) {
-			verbs[verb.infinitif] = [NSString stringWithFormat:@"%@|%@|%@|%@",
-									 verb.infinitif, verb.past, verb.pastParticiple, verb.definition];
+		NSString * name = playlist.name;
+		if (name) {
+			NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+			[userDefaults setObject:name forKey:LastUsedPlaylistKey];
+			
+			NSMutableDictionary * verbs = [[NSMutableDictionary alloc] initWithCapacity:playlist.verbs.count];
+			for (Verb * verb in playlist.verbs) {
+				verbs[verb.infinitif] = [NSString stringWithFormat:@"%@|%@|%@|%@",
+										 verb.infinitif, verb.past, verb.pastParticiple, verb.definition];
+			}
+			NSUserDefaults * sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.lisacintosh.iverb"];
+			[sharedDefaults setObject:verbs forKey:SharedVerbsKey];
+			[sharedDefaults setObject:name forKey:LastUsedPlaylistKey];
 		}
-		NSUserDefaults * sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.lisacintosh.iverb"];
-		[sharedDefaults setObject:verbs forKey:SharedVerbsKey];
-		[sharedDefaults setObject:name forKey:LastUsedPlaylistKey];
+		
+		UIApplication * app = [UIApplication sharedApplication];
+		if ([app respondsToSelector:@selector(shortcutItems)] && app.shortcutItems.count >= 2) {
+			NSMutableArray * shortcutItems = [app.shortcutItems subarrayWithRange:NSMakeRange(0, 2)].mutableCopy;
+			if (name && playlist.isUserPlaylist) {
+				UIApplicationShortcutItem * shortcutItem = [[UIApplicationShortcutItem alloc] initWithType:@"com.lisacintosh.iverb.launch.quiz"
+																							localizedTitle:@"Launch Quiz"
+																						 localizedSubtitle:name
+																									  icon:[UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypePlay]
+																								  userInfo:@{ @"playlist" : name }];
+				[shortcutItems addObject:shortcutItem];
+			}
+			app.shortcutItems = shortcutItems;
+		}
 	}
-	
-	UIApplication * app = [UIApplication sharedApplication];
-	if ([app respondsToSelector:@selector(shortcutItems)] && app.shortcutItems.count >= 2) {
-		NSMutableArray * shortcutItems = [app.shortcutItems subarrayWithRange:NSMakeRange(0, 2)].mutableCopy;
-		if (name && playlist.isUserPlaylist) {
-			UIApplicationShortcutItem * shortcutItem = [[UIApplicationShortcutItem alloc] initWithType:@"com.lisacintosh.iverb.launch.quiz"
-																						localizedTitle:@"Launch Quiz"
-																					 localizedSubtitle:name
-																								  icon:[UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypePlay]
-																							  userInfo:@{ @"playlist" : name }];
-			[shortcutItems addObject:shortcutItem];
-		}
-		app.shortcutItems = shortcutItems;
+	else if (action == PlaylistActionAddTo) {
+		_lastPlaylistSelectedToAddVerb = playlist;
 	}
 }
 

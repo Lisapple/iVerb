@@ -69,7 +69,7 @@
 		[userDefaults removeObjectForKey:key];
     [userDefaults synchronize];
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"ResultDidReloadNotification" object:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:ResultDidReloadNotification object:nil];
 	
 	[self dismissViewControllerAnimated:YES completion:NULL];
 }

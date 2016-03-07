@@ -247,7 +247,7 @@
 		}]];
 		
 		if ([MFMailComposeViewController canSendMail]) {
-			[alertController addAction:[UIAlertAction actionWithTitle:@"Send by Mail" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+			[alertController addAction:[UIAlertAction actionWithTitle:@"Send with Mail" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 				NSString * body = @"<table border=\"0\" style=\"border:1px solid #ccc;width:100%;text-align:center;border-collapse:collapse;\">";
 				int index = 0;
 				for (Verb * verb in checkedVerbs) {
@@ -295,7 +295,7 @@
 {
 	if (checkedVerbs.count > 0) {
 		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-		[alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove from \"%@\"", _playlist.name]
+		[alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove from \"%@\"", _playlist.localizedName]
 															style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
 																for (Verb * verb in checkedVerbs)
 																	[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
@@ -378,7 +378,7 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return (_playlist.isUserPlaylist || _playlist.isBookmarksPlaylist);
+    return ((_playlist.isUserPlaylist || _playlist.isBookmarksPlaylist) && !isSearching);
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -515,7 +515,7 @@
 {
 	[super viewWillAppear:animated];
 	
-	[[NSNotificationCenter defaultCenter] addObserverForName:@"PlaylistDidUpdatedNotification" object:nil
+	[[NSNotificationCenter defaultCenter] addObserverForName:PlaylistDidUpdatedNotification object:nil
 													   queue:nil usingBlock:^(NSNotification *note) { if (note.object == _playlist) { [self reloadData]; } }];
 }
 

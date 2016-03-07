@@ -74,7 +74,7 @@
 	
 	_verb = [Verb lastUsedVerb];
 	if (!_verb) {
-		_verb = [Playlist currentPlaylist].verbs.anyObject;
+		_verb = [Playlist playlistForAction:PlaylistActionSelect].verbs.anyObject;
 		if (!_verb)
 			_verb = [Playlist allVerbsPlaylist].verbs.anyObject;
 	}
@@ -108,7 +108,7 @@
                                                       [_verb addToPlaylist:[Playlist historyPlaylist]];
 												  }];
 	
-	[[NSNotificationCenter defaultCenter] addObserverForName:@"ResultDidReloadNotification"
+	[[NSNotificationCenter defaultCenter] addObserverForName:ResultDidReloadNotification
 													  object:nil
 													   queue:[NSOperationQueue currentQueue]
 												  usingBlock:^(NSNotification *note) {
@@ -150,6 +150,20 @@
 	if (!showingLists) {
 		
 		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+		
+		Playlist * lastPlaylist = [Playlist playlistForAction:PlaylistActionAddTo];
+		if (lastPlaylist) {
+			NSString * actionString = ([lastPlaylist.verbs containsObject:_verb]) ? @"Remove from" : @"Add to";
+			NSString * title = [NSString stringWithFormat:@"%@ \"%@\"", actionString, lastPlaylist.localizedName];
+			[alertController addAction:[UIAlertAction actionWithTitle:title style:UIAlertActionStyleDefault
+															  handler:^(UIAlertAction * _Nonnull action) {
+																  if ([lastPlaylist.verbs containsObject:_verb])
+																	  [lastPlaylist removeVerb:_verb];
+																  else
+																	  [lastPlaylist addVerb:_verb];
+															  }]];
+		}
+		
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Add to list..." style:UIAlertActionStyleDefault
 														  handler:^(UIAlertAction * __nonnull action) {
 															  double delayInSeconds = .25;
@@ -203,7 +217,7 @@
 														  }]];
 		
 		if ([MFMailComposeViewController canSendMail]) {
-			[alertController addAction:[UIAlertAction actionWithTitle:@"Mail" style:UIAlertActionStyleDefault
+			[alertController addAction:[UIAlertAction actionWithTitle:@"Send with Mail" style:UIAlertActionStyleDefault
 															  handler:^(UIAlertAction * __nonnull action) {
 																  MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
 																  mailCompose.mailComposeDelegate = self;

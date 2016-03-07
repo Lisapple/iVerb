@@ -51,14 +51,14 @@
 	[self reloadData];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData)
-												 name:@"PlaylistDidUpdatedNotification" object:nil];
+												 name:PlaylistDidUpdatedNotification object:nil];
 }
 
 - (IBAction)moreInfo:(id)sender
 {
 	if (TARGET_IS_IPAD()) {
 		NSDictionary * infoDictionary = [NSBundle mainBundle].infoDictionary;
-		NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © %lu, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"], [NSDate date].year];
+		NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © %lu, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"], (long)[NSDate date].year];
 		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil
 																		  preferredStyle:UIAlertControllerStyleActionSheet];
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Feedback & Support" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
@@ -113,7 +113,7 @@
 {
     [super viewDidAppear:animated];
 	
-	[Playlist setCurrentPlaylist:nil];
+	[Playlist setPlaylist:nil forAction:PlaylistActionSelect];
 }
 
 - (void)editableCellDidBeginEditing:(EditableTableViewCell *)cell
@@ -283,7 +283,7 @@
 	if (indexPath.section == 0) {
 		
 		Playlist * playlist = defaultPlaylists[indexPath.row];
-		[Playlist setCurrentPlaylist:playlist];
+		[Playlist setPlaylist:playlist forAction:PlaylistActionSelect];
 		
 		SearchViewController * searchViewController = [[SearchViewController alloc] init];
 		searchViewController.playlist = playlist;
@@ -306,7 +306,7 @@
 		if (indexPath.row <= (NSInteger)(userPlaylists.count - 1)) {
 			
 			Playlist * playlist = userPlaylists[indexPath.row];
-			[Playlist setCurrentPlaylist:playlist];
+			[Playlist setPlaylist:playlist forAction:PlaylistActionSelect];
 			
 			SearchViewController * searchViewController = [[SearchViewController alloc] init];
 			searchViewController.playlist = playlist;

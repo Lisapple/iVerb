@@ -88,7 +88,7 @@
 		else
 			for (Verb * verb in _verbs) { [verb addToPlaylist:[Playlist bookmarksPlaylist]]; }
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"PlaylistDidUpdatedNotification" object:[Playlist bookmarksPlaylist]];
+		[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistDidUpdatedNotification object:[Playlist bookmarksPlaylist]];
 	} else {
 		Playlist * playlist = userPlaylists[indexPath.row];
 		
@@ -97,7 +97,7 @@
 		else
 			for (Verb * verb in _verbs) { [verb addToPlaylist:playlist]; }
 		
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"PlaylistDidUpdatedNotification" object:playlist];
+		[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistDidUpdatedNotification object:playlist];
 	}
 	
 	if (cell.accessoryType == UITableViewCellAccessoryNone)

@@ -11,10 +11,18 @@
 
 #import "Playlist.h"
 
+typedef NS_ENUM(NSUInteger, PlaylistAction) {
+	/** When selecting a playlist (saved in user defaults) */
+	PlaylistActionSelect,
+	
+	/** When added/remove a verb to a playlist (not saved in user defaults) */
+	PlaylistActionAddTo
+};
+
 @interface Playlist (additions)
 
-+ (nonnull Playlist *)currentPlaylist;
-+ (void)setCurrentPlaylist:(nullable Playlist *)playlist;
++ (nullable Playlist *)playlistForAction:(PlaylistAction)action;
++ (void)setPlaylist:(nullable Playlist *)playlist forAction:(PlaylistAction)action;
 
 - (nonnull NSString *)localizedName;
 

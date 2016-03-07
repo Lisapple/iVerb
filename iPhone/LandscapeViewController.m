@@ -32,7 +32,7 @@
 {
     [super viewDidLoad];
 	
-	Playlist * currentPlaylist = [Playlist currentPlaylist];
+	Playlist * currentPlaylist = [Playlist playlistForAction:PlaylistActionSelect];
 	NSString * source = [currentPlaylist HTMLFormat];
 	[_webView loadHTMLString:source
 					 baseURL:nil];

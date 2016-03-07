@@ -3,14 +3,14 @@
 //
 
 #ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-    #import <UIKit/UIKit.h>
+#  import <Foundation/Foundation.h>
+#  import <UIKit/UIKit.h>
 #endif
 
 #if TARGET_IPHONE_SIMULATOR
-#define NSDebugLog(format, ...)  NSLog(format, ##__VA_ARGS__)
+#  define NSDebugLog(format, ...)  NSLog(format, ##__VA_ARGS__)
 #else
-#define NSDebugLog(format, ...)
+#  define NSDebugLog(format, ...)
 #endif
 
 #define TARGET_IS_IPAD()	(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -18,4 +18,7 @@
 #define IOS_8_OR_EARLIER()	([UIDevice currentDevice].systemVersion.floatValue < 9.0)
 #define IOS_9_OR_LATER()	([UIDevice currentDevice].systemVersion.floatValue >= 9.0)
 
-#define SearchTableViewDidSelectCellNotification @"SearchTableViewDidSelectCellNotification"
+static NSString * const SearchTableViewDidSelectCellNotification = @"SearchTableViewDidSelectCellNotification"; // object is a Verb
+static NSString * const ResultDidReloadNotification = @"ResultDidReloadNotification"; // No object and no userInfo
+static NSString * const PlaylistDidUpdatedNotification = @"PlaylistDidUpdatedNotification"; // object is a Playlist
+static NSString * const CloudLabelDidSelectedNotification = @"CloudLabelDidSelectedNotification"; // object is a Verb
