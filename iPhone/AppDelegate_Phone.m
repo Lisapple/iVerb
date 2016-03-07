@@ -9,9 +9,12 @@
 #import "AppDelegate_Phone.h"
 
 #import "LandscapeViewController.h"
-#import "RootNavigationController.h"
 #import "QuizViewController.h"
 #import "Quote.h"
+
+#import "PlaylistsViewController.h"
+#import "SearchViewController.h"
+#import "ResultViewController.h"
 
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
@@ -20,13 +23,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	[Fabric with:@[ Crashlytics.class ]];
+#if TARGET_IPHONE_SIMULATOR
+#else
+	[Fabric with:@[ CrashlyticsKit ]];
+#endif
 	
-	PlaylistsViewController * playlistsViewController = [[PlaylistsViewController alloc] init];
-	_navigationController = [[RootNavigationController alloc] initWithRootViewController:playlistsViewController];
-	_window.rootViewController = _navigationController;
+	_window.backgroundColor = [UIColor blackColor];
 	_window.tintColor = [UIColor purpleColor];
-    [_window makeKeyAndVisible];
+	_navigationController = (UINavigationController *)_window.rootViewController;
 	
 	SearchViewController * searchViewController = [[SearchViewController alloc] init];
 	searchViewController.playlist = [Playlist currentPlaylist];
@@ -258,11 +262,11 @@
 	}
 }
 
-- (void)applicationWillTerminate:(UIApplication *)application {
-	
+- (void)applicationWillTerminate:(UIApplication *)application
+{
     NSError *error;
-    if (managedObjectContext != nil) {
-        if (managedObjectContext.hasChanges && ![managedObjectContext save:&error]) {
+    if (_managedObjectContext != nil) {
+        if (_managedObjectContext.hasChanges && ![_managedObjectContext save:&error]) {
 			// @TODO: Do something with the error
         } 
     }
@@ -274,20 +278,20 @@
  Returns the managed object context for the application.
  If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
  */
-- (NSManagedObjectContext *) managedObjectContext {
-	
-    if (managedObjectContext != nil) {
-        return managedObjectContext;
+- (NSManagedObjectContext *)managedObjectContext
+{
+    if (_managedObjectContext != nil) {
+        return _managedObjectContext;
     }
 	
     NSPersistentStoreCoordinator *coordinator = self.persistentStoreCoordinator;
     if (coordinator != nil) {
-        managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-        managedObjectContext.persistentStoreCoordinator = coordinator;
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+        _managedObjectContext.persistentStoreCoordinator = coordinator;
 		
 		NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
 		request.predicate = [NSPredicate predicateWithFormat:@"SELF.quote == nil"];
-		NSArray * verbs = [managedObjectContext executeFetchRequest:request error:NULL];
+		NSArray * verbs = [_managedObjectContext executeFetchRequest:request error:NULL];
 		if (verbs.count > 0) {
 			
 			NSPersistentStoreCoordinator * applicationStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
@@ -319,35 +323,34 @@
 						[verb setValue:quote forKey:@"quote"];
 					}
 				}
-				[managedObjectContext save:NULL];
+				[_managedObjectContext save:NULL];
 			}
 		}
     }
-    return managedObjectContext;
+    return _managedObjectContext;
 }
 
 /**
  Returns the managed object model for the application.
  If the model doesn't already exist, it is created by merging all of the models found in the application bundle.
  */
-- (NSManagedObjectModel *)managedObjectModel {
+- (NSManagedObjectModel *)managedObjectModel
+{
+    if (_managedObjectModel != nil)
+        return _managedObjectModel;
 	
-    if (managedObjectModel != nil) {
-        return managedObjectModel;
-    }
-    managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];    
-    return managedObjectModel;
+    _managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];
+    return _managedObjectModel;
 }
 
 /**
  Returns the persistent store coordinator for the application.
  If the coordinator doesn't already exist, it is created and the application's store added to it.
  */
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-	
-	if (persistentStoreCoordinator != nil) {
-		return persistentStoreCoordinator;
-	}
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
+{
+	if (_persistentStoreCoordinator != nil)
+		return _persistentStoreCoordinator;
 	
 	NSString *storePath = [[self applicationDocumentsDirectory] stringByAppendingPathComponent:@"verbs.sqlite"];
 	if (![[NSFileManager defaultManager] fileExistsAtPath:storePath]) {
@@ -357,18 +360,18 @@
 		}
 	}
 	
-	persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
+	_persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
 	
 	NSURL *storeUrl = [NSURL fileURLWithPath:storePath];
 	NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES };
 	NSError *error;
-	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
+	if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
 		// Update to handle the error appropriately.
 		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
 		exit(-1);  // Fail
 	}
 	
-	return persistentStoreCoordinator;
+	return _persistentStoreCoordinator;
 }
 
 #pragma mark - Application's documents directory

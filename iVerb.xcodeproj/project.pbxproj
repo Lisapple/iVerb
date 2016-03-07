@@ -11,7 +11,6 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2860E328111B887F00E27156 /* AppDelegate_Phone.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E326111B887F00E27156 /* AppDelegate_Phone.m */; };
-		2860E329111B887F00E27156 /* MainWindow_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2860E327111B887F00E27156 /* MainWindow_Phone.xib */; };
 		2860E32E111B888700E27156 /* AppDelegate_Pad.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E32C111B888700E27156 /* AppDelegate_Pad.m */; };
 		2860E32F111B888700E27156 /* MainWindow_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2860E32D111B888700E27156 /* MainWindow_Pad.xib */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
@@ -46,7 +45,6 @@
 		506509D61C24AF7700A740B0 /* spotlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 506509D41C24AF7700A740B0 /* spotlight@2x.png */; };
 		506509D81C24B21100A740B0 /* spotlight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 506509D71C24B21100A740B0 /* spotlight@3x.png */; };
 		506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 506FE25C148E62280061045E /* PlaylistsViewController.m */; };
-		506FE25F148E62290061045E /* PlaylistsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 506FE25D148E62280061045E /* PlaylistsViewController.xib */; };
 		50746AFD1C52947800A35633 /* QuizResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 50746AFB1C52947800A35633 /* QuizResult.m */; };
 		5075F9CF1BC4512600D32FCB /* verbs.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */; };
 		5075F9D01BC457DB00D32FCB /* verbs.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = 5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */; };
@@ -60,12 +58,14 @@
 		50A68C401C261464004A187C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A68C3C1C261464004A187C /* SystemConfiguration.framework */; };
 		50A68C411C261464004A187C /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A68C3D1C261464004A187C /* Fabric.framework */; };
 		50A68C421C261464004A187C /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A68C3E1C261464004A187C /* Crashlytics.framework */; };
-		50AB34C31B39F08B00946929 /* RootNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AB34C21B39F08B00946929 /* RootNavigationController.m */; };
 		50AE533F1649608500FE8879 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50AE53411649608500FE8879 /* Localizable.strings */; };
 		50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AE534616496B9A00FE8879 /* Verb+additions.m */; };
 		50C3A6F4161488E800317F92 /* ManagedObjectContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C3A6F3161488E700317F92 /* ManagedObjectContext.m */; };
 		50CD97E3123CFF0900E31BC8 /* ResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50CD97E1123CFF0900E31BC8 /* ResultViewController.m */; };
 		50CD97E4123CFF0900E31BC8 /* ResultViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50CD97E2123CFF0900E31BC8 /* ResultViewController.xib */; };
+		50D15B931C88D28200B2E49B /* Main~phone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50D15B921C88D28200B2E49B /* Main~phone.storyboard */; };
+		50D15B961C88D8B200B2E49B /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50D15B951C88D8B200B2E49B /* AboutViewController.m */; };
+		50D15B9C1C88DA1A00B2E49B /* NSDate+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 50D15B9B1C88DA1A00B2E49B /* NSDate+addition.m */; };
 		50D4402816CBEEEC00D4A5DC /* QuizViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50D4402716CBEEEC00D4A5DC /* QuizViewController_Pad.xib */; };
 		50D4402A16CBF9EE00D4A5DC /* CloudViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50D4402916CBF9EE00D4A5DC /* CloudViewController_Pad.xib */; };
 		50D9FBA4150FDFED00990B47 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 50D9FBA3150FDFED00990B47 /* index.html */; };
@@ -119,7 +119,6 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2860E325111B887F00E27156 /* AppDelegate_Phone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate_Phone.h; sourceTree = "<group>"; };
 		2860E326111B887F00E27156 /* AppDelegate_Phone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppDelegate_Phone.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		2860E327111B887F00E27156 /* MainWindow_Phone.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow_Phone.xib; sourceTree = "<group>"; };
 		2860E32B111B888700E27156 /* AppDelegate_Pad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate_Pad.h; sourceTree = "<group>"; };
 		2860E32C111B888700E27156 /* AppDelegate_Pad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate_Pad.m; sourceTree = "<group>"; };
 		2860E32D111B888700E27156 /* MainWindow_Pad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow_Pad.xib; sourceTree = "<group>"; };
@@ -171,7 +170,6 @@
 		506509D71C24B21100A740B0 /* spotlight@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spotlight@3x.png"; sourceTree = "<group>"; };
 		506FE25B148E62280061045E /* PlaylistsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistsViewController.h; sourceTree = "<group>"; };
 		506FE25C148E62280061045E /* PlaylistsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PlaylistsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		506FE25D148E62280061045E /* PlaylistsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaylistsViewController.xib; sourceTree = "<group>"; };
 		50746AF71C527B2500A35633 /* verbs 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "verbs 3.xcdatamodel"; sourceTree = "<group>"; };
 		50746AFA1C52947800A35633 /* QuizResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuizResult.h; sourceTree = "<group>"; };
 		50746AFB1C52947800A35633 /* QuizResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuizResult.m; sourceTree = "<group>"; };
@@ -190,8 +188,6 @@
 		50A68C3C1C261464004A187C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		50A68C3D1C261464004A187C /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		50A68C3E1C261464004A187C /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
-		50AB34C11B39F08B00946929 /* RootNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootNavigationController.h; sourceTree = "<group>"; };
-		50AB34C21B39F08B00946929 /* RootNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootNavigationController.m; sourceTree = "<group>"; };
 		50AE53401649608500FE8879 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		50AE534516496B9900FE8879 /* Verb+additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Verb+additions.h"; path = "Shared/Verb+additions.h"; sourceTree = "<group>"; };
 		50AE534616496B9A00FE8879 /* Verb+additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Verb+additions.m"; path = "Shared/Verb+additions.m"; sourceTree = "<group>"; };
@@ -200,6 +196,11 @@
 		50CD97E0123CFF0900E31BC8 /* ResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultViewController.h; sourceTree = "<group>"; };
 		50CD97E1123CFF0900E31BC8 /* ResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ResultViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		50CD97E2123CFF0900E31BC8 /* ResultViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResultViewController.xib; sourceTree = "<group>"; };
+		50D15B921C88D28200B2E49B /* Main~phone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Main~phone.storyboard"; sourceTree = "<group>"; };
+		50D15B941C88D8B200B2E49B /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		50D15B951C88D8B200B2E49B /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		50D15B9A1C88DA1A00B2E49B /* NSDate+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+addition.h"; sourceTree = "<group>"; };
+		50D15B9B1C88DA1A00B2E49B /* NSDate+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+addition.m"; sourceTree = "<group>"; };
 		50D4402716CBEEEC00D4A5DC /* QuizViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuizViewController_Pad.xib; sourceTree = "<group>"; };
 		50D4402916CBF9EE00D4A5DC /* CloudViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CloudViewController_Pad.xib; sourceTree = "<group>"; };
 		50D9FBA3150FDFED00990B47 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
@@ -282,12 +283,11 @@
 			children = (
 				2860E325111B887F00E27156 /* AppDelegate_Phone.h */,
 				2860E326111B887F00E27156 /* AppDelegate_Phone.m */,
-				2860E327111B887F00E27156 /* MainWindow_Phone.xib */,
-				50AB34C11B39F08B00946929 /* RootNavigationController.h */,
-				50AB34C21B39F08B00946929 /* RootNavigationController.m */,
+				50D15B921C88D28200B2E49B /* Main~phone.storyboard */,
 				506FE25B148E62280061045E /* PlaylistsViewController.h */,
 				506FE25C148E62280061045E /* PlaylistsViewController.m */,
-				506FE25D148E62280061045E /* PlaylistsViewController.xib */,
+				50D15B941C88D8B200B2E49B /* AboutViewController.h */,
+				50D15B951C88D8B200B2E49B /* AboutViewController.m */,
 				500BD3A4123BF35000FC6947 /* SearchViewController.h */,
 				500BD3A5123BF35000FC6947 /* SearchViewController.m */,
 				507F9BDF1B38B0CD002B5CF4 /* SearchResultsViewController.h */,
@@ -425,6 +425,8 @@
 				500B9F7219A4208100C91E39 /* NSMutableAttributedString+addition.m */,
 				500C0C1C1C7497690033730B /* NSString+addition.h */,
 				500C0C1D1C7497690033730B /* NSString+addition.m */,
+				50D15B9A1C88DA1A00B2E49B /* NSDate+addition.h */,
+				50D15B9B1C88DA1A00B2E49B /* NSDate+addition.m */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -567,12 +569,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				5075F9D01BC457DB00D32FCB /* verbs.xcdatamodeld in Resources */,
-				2860E329111B887F00E27156 /* MainWindow_Phone.xib in Resources */,
 				2860E32F111B888700E27156 /* MainWindow_Pad.xib in Resources */,
 				500BD3A8123BF35000FC6947 /* SearchViewController.xib in Resources */,
 				50CD97E4123CFF0900E31BC8 /* ResultViewController.xib in Resources */,
 				503B0DC212C7E0E20060B502 /* verbs.sqlite in Resources */,
-				506FE25F148E62290061045E /* PlaylistsViewController.xib in Resources */,
+				50D15B931C88D28200B2E49B /* Main~phone.storyboard in Resources */,
 				50F1014D1985610C005D852F /* Images.xcassets in Resources */,
 				50D9FBA4150FDFED00990B47 /* index.html in Resources */,
 				5036F07A160CE15700E0BECD /* MainViewController.xib in Resources */,
@@ -647,7 +648,6 @@
 				50E91C6F16135B65009254F6 /* Playlist.m in Sources */,
 				50E91C7216135B7C009254F6 /* Verb.m in Sources */,
 				50C3A6F4161488E800317F92 /* ManagedObjectContext.m in Sources */,
-				50AB34C31B39F08B00946929 /* RootNavigationController.m in Sources */,
 				5075F9D31BC45FB500D32FCB /* Quote.m in Sources */,
 				50E507F91614B26B00B6915D /* Playlist+additions.m in Sources */,
 				50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */,
@@ -655,12 +655,14 @@
 				5012072E164C2CE40036BA98 /* VerbOptionsViewController_Pad.m in Sources */,
 				50E31E1C16C150E10007FFBA /* CloudViewController.m in Sources */,
 				50746AFD1C52947800A35633 /* QuizResult.m in Sources */,
+				50D15B961C88D8B200B2E49B /* AboutViewController.m in Sources */,
 				50F5865F1C5510AE00E759E4 /* QuizResultsView.m in Sources */,
 				50E33F9916C1A9C30091AE21 /* QuizViewController.m in Sources */,
 				505D0FBC16C55CF3007B3A90 /* HelpViewController.m in Sources */,
 				501CFFAA1986BB0200F8731D /* IVViewController.m in Sources */,
 				505D0FCC16C5922D007B3A90 /* CloudView.m in Sources */,
 				508784E6170B6BBA00693C3C /* EditNoteViewController.m in Sources */,
+				50D15B9C1C88DA1A00B2E49B /* NSDate+addition.m in Sources */,
 				501CFFB01986BB9800F8731D /* IVWebView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -708,7 +710,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = iVerb/iVerb.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -738,7 +739,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = iVerb/iVerb.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

@@ -11,32 +11,22 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreSpotlight/CoreSpotlight.h>
 
-#import "PlaylistsViewController.h"
-#import "SearchViewController.h"
-#import "ResultViewController.h"
-
 #import "ManagedObjectContext.h"
 #import "Playlist+additions.h"
 
-@interface AppDelegate_Phone : NSObject <UIApplicationDelegate, UITabBarDelegate, ManagedObjectContext>
+@interface AppDelegate_Phone : UIResponder <UIApplicationDelegate, UITabBarDelegate, ManagedObjectContext>
 {
-	NSManagedObjectModel *managedObjectModel;
-    NSManagedObjectContext *managedObjectContext;	    
-    NSPersistentStoreCoordinator *persistentStoreCoordinator;
-	
     UIWindow * landscapeWindow;
-	
-	@private
-	UINavigationController * _navigationController;
 }
 
-@property (nonatomic, strong, readonly) NSManagedObjectModel *managedObjectModel;
-@property (nonatomic, strong, readonly) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (nonatomic, strong) NSManagedObjectModel * managedObjectModel;
+@property (nonatomic, strong) NSManagedObjectContext * managedObjectContext;
+@property (nonatomic, strong) NSPersistentStoreCoordinator * persistentStoreCoordinator;
 
-@property (unsafe_unretained, nonatomic, readonly) NSString *applicationDocumentsDirectory;
+@property (nonatomic, strong, readonly) NSString * applicationDocumentsDirectory;
 
-@property (nonatomic, strong) IBOutlet UIWindow *window;
+@property (nonatomic, strong) IBOutlet UIWindow * window;
+@property (nonatomic, strong) UINavigationController * navigationController;
 
 @property (nonatomic, strong) NSDictionary * dictionary;
 

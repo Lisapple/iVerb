@@ -11,10 +11,12 @@
 #import "SearchViewController.h"
 #import "CloudViewController.h"
 #import "QuizViewController.h"
+#import "AboutViewController.h"
 
 #import "ManagedObjectContext.h"
 
 #import "Playlist+additions.h"
+#import "NSDate+addition.h"
 
 @interface PlaylistsViewController ()
 
@@ -54,27 +56,31 @@
 
 - (IBAction)moreInfo:(id)sender
 {
-	NSDictionary * infoDictionary = [NSBundle mainBundle].infoDictionary;
-	NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © 2016, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"]];
-	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil
-																	  preferredStyle:UIAlertControllerStyleActionSheet];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Feedback & Support" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://support.lisacintosh.com/iVerb/"]]; }]];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Go to my website" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://lisacintosh.com/"]]; }]];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"See all my application" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-		[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://applestore.com/lisacintosh"]]; }]];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
-	
 	if (TARGET_IS_IPAD()) {
+		NSDictionary * infoDictionary = [NSBundle mainBundle].infoDictionary;
+		NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © %lu, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"], [NSDate date].year];
+		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil
+																		  preferredStyle:UIAlertControllerStyleActionSheet];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Feedback & Support" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+			[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://support.lisacintosh.com/iVerb/"]]; }]];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Go to my website" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+			[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://lisacintosh.com/"]]; }]];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"See all my application" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+			[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://applestore.com/lisacintosh"]]; }]];
+		[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+		
 		alertController.modalPresentationStyle = UIModalPresentationPopover;
 		UIPopoverPresentationController * popController = alertController.popoverPresentationController;
 		popController.permittedArrowDirections = UIPopoverArrowDirectionUp;
 		popController.sourceRect = CGRectMake(30., 0., 0., 0.);
 		popController.sourceView = self.view;
 		[self.view.window.rootViewController presentViewController:alertController animated:YES completion:NULL];
+		
 	} else {
-		[self presentViewController:alertController animated:YES completion:NULL];
+		NSString * name = [NSBundle mainBundle].infoDictionary[@"UIMainStoryboardFile"];
+		AboutViewController * controller = [[UIStoryboard storyboardWithName:name bundle:nil] instantiateViewControllerWithIdentifier:@"AboutController"];
+		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+		[self presentViewController:navigationController animated:YES completion:nil];
 	}
 }
 
