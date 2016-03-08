@@ -33,4 +33,10 @@
 - (void)addToPlaylist:(Playlist *)playlist;
 - (void)removePlaylist:(Playlist *)playlist;
 
+/**
+ Same as `definition' with the first "To" and occurences of " to " removed.
+ @discussion Use this property, instead of `definition', when searching to exclude irrevelant results when searching for "to".
+ */
+- (NSString *)searchableDefinition;
+
 @end

@@ -75,4 +75,13 @@
 	return [userDefaults stringForKey:key];
 }
 
+- (NSString *)searchableDefinition
+{
+	if (self.definition.length > 2) {
+		NSString * definition = [self.definition substringFromIndex:2];
+		return [definition stringByReplacingOccurrencesOfString:@" to " withString:@""];
+	}
+	return self.definition;
+}
+
 @end

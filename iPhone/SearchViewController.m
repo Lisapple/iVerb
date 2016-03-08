@@ -46,13 +46,17 @@
 	searchResultsViewController.tableView.dataSource = self;
 	
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsViewController];
+	self.searchController.delegate = self;
+	self.searchController.searchResultsUpdater = self;
 	[self.searchController.searchBar sizeToFit];
+	self.tableView.tableHeaderView = self.searchController.searchBar;
 	
 	if (IOS_8_OR_EARLIER()) {
 		// Create opaque background view when searching to hide table view result under status bar
 		_statusBarBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width, 20)];
 		_statusBarBackgroundView.backgroundColor = [UIColor colorWithRed:201./255. green:201./255. blue:206./255. alpha:1];
 		_statusBarBackgroundView.hidden = YES;
+		_statusBarBackgroundView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
 		self.searchController.searchBar.subviews.firstObject.clipsToBounds = NO; // Search bar contains a single subview for content
 		[self.searchController.searchBar addSubview:_statusBarBackgroundView];
 	}
@@ -60,11 +64,6 @@
 	if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
 		[self registerForPreviewingWithDelegate:self sourceView:self.tableView];
 	}
-	
-	self.tableView.tableHeaderView = self.searchController.searchBar;
-	
-	self.searchController.delegate = self;
-	self.searchController.searchResultsUpdater = self;
 	
 	if /**/ (_playlist.isHistoryPlaylist) { // Show an "Trash" button to empty
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
@@ -471,7 +470,8 @@
 		[self toogleEditingAction:nil];
 	
 	SearchResultsViewController * searchResultsViewController = (SearchResultsViewController *)searchController.searchResultsController;
-	UIEdgeInsets insets = UIEdgeInsetsMake(self.topLayoutGuide.length + self.navigationController.navigationBar.frame.size.height, 0., 0., 0.);
+	const CGFloat topMargin = self.topLayoutGuide.length + self.navigationController.navigationBar.frame.size.height;
+	UIEdgeInsets insets = UIEdgeInsetsMake(topMargin, 0., 0., 0.);
 	searchResultsViewController.tableView.contentInset = insets;
 	searchResultsViewController.tableView.scrollIndicatorInsets = insets;
 	
@@ -487,7 +487,7 @@
 								   @"SELF.infinitif CONTAINS[cd] %@ "
 								   @"OR SELF.past CONTAINS[cd] %@ "
 								   @"OR SELF.pastParticiple CONTAINS[cd] %@ "
-								   @"OR SELF.definition CONTAINS[cd] %@",
+								   @"OR SELF.searchableDefinition CONTAINS[cd] %@",
 								   searchText, searchText, searchText, searchText];
 		filteredKeys = [sortedKeys filteredArrayUsingPredicate:predicate];
 	} else
@@ -504,6 +504,11 @@
 	filteredKeys = sortedKeys.copy;
 	[self.tableView reloadSectionIndexTitles];
 	[self.tableView reloadData];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+	[self.searchController.searchBar resignFirstResponder];
 }
 
 - (void)popoverPresentationControllerDidDismissPopover:(nonnull UIPopoverPresentationController *)popoverPresentationController
