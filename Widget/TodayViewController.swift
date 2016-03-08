@@ -58,23 +58,33 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 		
 		if (lastUpdated != nil && lastUpdated!.timeIntervalSinceNow < 10 * 60) {
 			completionHandler(NCUpdateResult.NoData)
+			return
+		}
+		
+		let sharedDefaults = NSUserDefaults(suiteName: "group.lisacintosh.iverb")
+		let dict = sharedDefaults?.dictionaryForKey(kSharedVerbsKey)!
+		if (dict == nil || dict!.keys.count == 0) {
+			completionHandler(NCUpdateResult.NoData)
+			return
 		}
 		
 		srand(UInt32(time(nil)))
 		let v = rand()
 		self.isQuizMode = ((v % 2) == 1)
 		
-		let sharedDefaults = NSUserDefaults(suiteName: "group.lisacintosh.iverb")
-		let dict = sharedDefaults?.dictionaryForKey(kSharedVerbsKey)
-		let index = dict?.startIndex.advancedBy(Int(rand() % Int32(dict!.keys.count)))
-		let (key, value) = dict![index!]
+		let index = dict!.startIndex.advancedBy(Int(rand() % Int32(dict!.keys.count)))
+		let (key, value) = dict![index]
 		self.infinitif = key
 		let comps = (value as! String).componentsSeparatedByString("|")
+		if (comps.count < 3) {
+			completionHandler(NCUpdateResult.NoData)
+			return
+		}
 		
 		var string = "To \(comps[0]), \(comps[1]), \(comps[2])\n"
 		
 		if (self.isQuizMode) {
-			let playlistName = sharedDefaults?.stringForKey(kLastUsedPlaylistKey)
+			let playlistName = sharedDefaults!.stringForKey(kLastUsedPlaylistKey)
 			// Ignore non-user playlist that starts and ends with "__"
 			self.lastUsedPlaylist = (playlistName != nil && !playlistName!.hasPrefix("_") && !playlistName!.hasSuffix("_")) ? playlistName : nil
 			
