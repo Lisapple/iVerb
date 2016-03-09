@@ -20,10 +20,7 @@
 	[Fabric with:@[ CrashlyticsKit ]];
 #endif
 	
-	MainViewController * mainViewController = [[MainViewController alloc] init];
-	_window.rootViewController = mainViewController;
-    _window.tintColor = [UIColor purpleColor];
-	[_window makeKeyAndVisible];
+    self.window.tintColor = [UIColor purpleColor];
 	
 	// On iOS 9+, index all verbs with Spotlight
 	[[Playlist allVerbsPlaylist] buildingSpolightIndexWithCompletionHandler:^(NSError * _Nullable error) {
@@ -37,9 +34,8 @@
 - (void)showVerbWithInfinitif:(NSString *)infinitif
 {
 	Verb * verb = [[Playlist allVerbsPlaylist] verbWithInfinitif:infinitif];
-	if (verb) {
+	if (verb)
 		[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
-	}
 }
 
 - (void)showQuizForPlaylist:(nonnull Playlist *)playlist firstVerbWithInfinitif:(nullable NSString *)infinitif tense:(nullable NSString *)tense

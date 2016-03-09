@@ -14,7 +14,7 @@
 
 #import "ManagedObjectContext.h"
 
-@interface AppDelegate_Pad : NSObject <UIApplicationDelegate, ManagedObjectContext>
+@interface AppDelegate_Pad : UIResponder <UIApplicationDelegate, ManagedObjectContext>
 {
 	NSManagedObjectModel *managedObjectModel;
 	NSManagedObjectContext *managedObjectContext;

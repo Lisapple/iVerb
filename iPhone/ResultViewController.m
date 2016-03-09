@@ -39,17 +39,27 @@
 					 baseURL:[NSURL fileURLWithPath:basePath]];
 	[_activityIndicatorView startAnimating];
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:ResultDidReloadNotification
-                                                                       object:nil queue:nil
-                                                                   usingBlock:^(NSNotification * notification) {
-                                                                       NSString * basePath = [NSBundle mainBundle].bundlePath;
-                                                                       [_webView loadHTMLString:_verb.HTMLFormat
-                                                                                        baseURL:[NSURL fileURLWithPath:basePath]];
-                                                                   }];
+	[[NSNotificationCenter defaultCenter] addObserverForName:ResultDidReloadNotification
+													  object:nil queue:nil
+												  usingBlock:^(NSNotification * notification) {
+													  NSString * basePath = [NSBundle mainBundle].bundlePath;
+													  [_webView loadHTMLString:_verb.HTMLFormat
+																	   baseURL:[NSURL fileURLWithPath:basePath]];
+												  }];
 	[[NSNotificationCenter defaultCenter] addObserverForName:PlaylistDidUpdatedNotification
 													  object:nil queue:nil
 												  usingBlock:^(NSNotification * notification) {
 													  [Playlist setPlaylist:notification.object forAction:PlaylistActionAddTo]; }];
+	if (TARGET_IS_IPAD()) {
+		[[NSNotificationCenter defaultCenter] addObserverForName:SearchTableViewDidSelectCellNotification
+														  object:nil queue:nil
+													  usingBlock:^(NSNotification *note) {
+														  self.verb = (Verb *)note.object;
+														  NSString * basePath = [NSBundle mainBundle].bundlePath;
+														  [_webView loadHTMLString:_verb.HTMLFormat
+																		   baseURL:[NSURL fileURLWithPath:basePath]];
+													  }];
+	}
 }
 
 - (void)setVerb:(Verb *)verb
@@ -148,6 +158,7 @@
 														  VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
 														  optionsViewController.verbs = @[ _verb ];
 														  UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
+														  if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 														  [self presentViewController:navigationController animated:YES completion:NULL];
 													  }]];
 	
@@ -159,6 +170,7 @@
 														  editNoteViewController.verb = _verb;
 														  
 														  UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
+														  if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 														  [self presentViewController:navigationController animated:YES completion:NULL];
 													  }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Listen" style:UIAlertActionStyleDefault
@@ -178,6 +190,12 @@
 														  }]];
 	}
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+	
+	if (TARGET_IS_IPAD()) {
+		alertController.modalPresentationStyle = UIModalPresentationPopover;
+		UIPopoverPresentationController * popController = alertController.popoverPresentationController;
+		popController.barButtonItem = self.navigationItem.rightBarButtonItem;
+	}
 	[self presentViewController:alertController animated:YES completion:NULL];
 }
 
@@ -210,6 +228,7 @@
             HelpViewController * helpViewController = [[HelpViewController alloc] init];
             helpViewController.anchor = request.URL.fragment;
             UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
+			if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
             [self presentViewController:navigationController animated:YES completion:NULL];
             
         } else if ([request.URL.fragment isEqualToString:@"edit-note"]) {
@@ -217,6 +236,7 @@
             editNoteViewController.verb = _verb;
             
             UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
+			if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
             [self presentViewController:navigationController animated:YES completion:NULL];
         }
         

@@ -51,8 +51,6 @@
 	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSMainNibFile~ipad</key>
-	<string>MainWindow_Pad</string>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
@@ -76,6 +74,8 @@
 	<string>Launch</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main~phone</string>
+	<key>UIMainStoryboardFile~ipad</key>
+	<string>Main~pad</string>
 	<key>UIPrerenderedIcon</key>
 	<true/>
 	<key>UIRequiresFullScreen</key>
