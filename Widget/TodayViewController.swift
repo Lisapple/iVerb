@@ -62,7 +62,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 		}
 		
 		let sharedDefaults = NSUserDefaults(suiteName: "group.lisacintosh.iverb")
-		let dict = sharedDefaults?.dictionaryForKey(kSharedVerbsKey)!
+		let dict = sharedDefaults?.dictionaryForKey(kSharedVerbsKey)
 		if (dict == nil || dict!.keys.count == 0) {
 			completionHandler(NCUpdateResult.NoData)
 			return
