@@ -33,7 +33,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "viewDidSelected:"))
+		self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(viewDidSelected(_:))))
     }
     
     override func didReceiveMemoryWarning() {
