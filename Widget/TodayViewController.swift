@@ -23,7 +23,21 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 	private let kLastUsedPlaylistKey = "Last Used Playlist";
 	private let kSharedVerbsKey = "Shared Verbs";
 	
-	private var lastUpdated: NSDate?
+	private var lastUpdated: NSDate? {
+		get {
+			let defaults = NSUserDefaults.standardUserDefaults()
+			return NSDate(timeIntervalSinceReferenceDate: defaults.doubleForKey("lastUpdated"))
+		}
+		set {
+			let defaults = NSUserDefaults.standardUserDefaults()
+			if (newValue != nil) {
+				defaults.setDouble(newValue!.timeIntervalSinceReferenceDate, forKey: "lastUpdated")
+			} else {
+				defaults.removeObjectForKey("lastUpdated")
+			}
+		}
+	}
+	
 	private var infinitif: String?
 	private var tense: String?
 	private var lastUsedPlaylist: String?
