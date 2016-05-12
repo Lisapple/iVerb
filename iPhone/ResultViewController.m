@@ -29,14 +29,18 @@
 	
 	NSString * infinitif = _verb.infinitif;
 	self.title = [@"To " stringByAppendingString:infinitif];
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                                                           target:self
-                                                                                           action:@selector(showOptionAction:)];
-	_webView.delegate = self;
+	
+	self.navigationItem.rightBarButtonItems = @[ [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+																							   target:self
+																							   action:@selector(showOptionAction:)],
+												 [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"favorite"]
+																				  style:UIBarButtonItemStylePlain
+																				 target:self action:@selector(tooggleFavoriteAction:)] ];
 	
 	NSString * basePath = [NSBundle mainBundle].bundlePath;
 	[_webView loadHTMLString:_verb.HTMLFormat
 					 baseURL:[NSURL fileURLWithPath:basePath]];
+	_webView.delegate = self;
 	[_activityIndicatorView startAnimating];
     
 	[[NSNotificationCenter defaultCenter] addObserverForName:ResultDidReloadNotification
@@ -62,6 +66,12 @@
 	}
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	[self updateUI];
+}
+
 - (void)setVerb:(Verb *)verb
 {
 	_verb = verb;
@@ -69,6 +79,24 @@
 	/* Update the verb from the history */
 	_verb.lastUse = [NSDate date];
 	[_verb addToPlaylist:[Playlist historyPlaylist]];
+	[self updateUI];
+}
+
+- (void)tooggleFavoriteAction:(id)sender
+{
+	if (_verb.isBookmarked) {
+		[[Playlist bookmarksPlaylist] removeVerb:_verb];
+	} else {
+		[[Playlist bookmarksPlaylist] addVerb:_verb];
+	}
+	[self updateUI];
+}
+
+- (void)updateUI
+{
+	UIBarButtonItem * favoriteItem = self.navigationItem.rightBarButtonItems.lastObject;
+	NSString * name = (_verb.isBookmarked) ? @"favorite-highlighted" : @"favorite";
+	favoriteItem.image = [UIImage imageNamed:name];
 }
 
 - (void)listenAction:(id)sender

@@ -73,8 +73,6 @@
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain
 																				 target:self action:@selector(toogleEditingAction:)];
 	}
-	
-	[self reloadData];
 }
 
 - (void)setPlaylist:(Playlist *)playlist
@@ -90,6 +88,22 @@
 		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Edit" style:UIBarButtonItemStylePlain
 																				 target:self action:@selector(toogleEditingAction:)];
 	}
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	
+	[self reloadData];
+	[[NSNotificationCenter defaultCenter] addObserverForName:PlaylistDidUpdatedNotification object:nil
+													   queue:nil usingBlock:^(NSNotification *note) { if (note.object == _playlist) { [self reloadData]; } }];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+	[super viewDidDisappear:animated];
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)updateToolbar
@@ -514,21 +528,6 @@
 - (void)popoverPresentationControllerDidDismissPopover:(nonnull UIPopoverPresentationController *)popoverPresentationController
 {
 	showingAddToPopover = NO;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-	[super viewWillAppear:animated];
-	
-	[[NSNotificationCenter defaultCenter] addObserverForName:PlaylistDidUpdatedNotification object:nil
-													   queue:nil usingBlock:^(NSNotification *note) { if (note.object == _playlist) { [self reloadData]; } }];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-	
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (BOOL)shouldAutorotate

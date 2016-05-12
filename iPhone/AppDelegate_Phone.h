@@ -15,9 +15,8 @@
 #import "Playlist+additions.h"
 
 @interface AppDelegate_Phone : UIResponder <UIApplicationDelegate, UITabBarDelegate, ManagedObjectContext>
-{
-    UIWindow * landscapeWindow;
-}
+ 
+@property (nonatomic, strong) UIWindow * landscapeWindow;
 
 @property (nonatomic, strong) NSManagedObjectModel * managedObjectModel;
 @property (nonatomic, strong) NSManagedObjectContext * managedObjectContext;

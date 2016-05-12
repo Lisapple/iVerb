@@ -10,12 +10,10 @@
 #import <CoreData/CoreData.h>
 #import <MessageUI/MessageUI.h>
 
-#import "IVTableViewController.h"
-
 #import "Playlist.h"
 
 @class Verb;
-@interface SearchViewController : IVTableViewController <UISearchBarDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate, UIPopoverPresentationControllerDelegate>
+@interface SearchViewController : UITableViewController <UISearchBarDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate, UIPopoverPresentationControllerDelegate>
 {
 	NSArray * sortedKeys, * filteredKeys;
 	

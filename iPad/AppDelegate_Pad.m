@@ -20,6 +20,10 @@
 	[Fabric with:@[ CrashlyticsKit ]];
 #endif
 	
+	NSDictionary * attributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:20.],
+								   NSForegroundColorAttributeName : [UIColor darkGrayColor] };
+	[UINavigationBar appearance].titleTextAttributes = attributes;
+	
     self.window.tintColor = [UIColor purpleColor];
 	
 	// On iOS 9+, index all verbs with Spotlight

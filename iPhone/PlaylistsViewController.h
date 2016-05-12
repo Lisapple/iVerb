@@ -8,13 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-#import "IVTableViewController.h"
-
 #import "Playlist.h"
 
 #import "EditableTableViewCell.h"
 
-@interface PlaylistsViewController : IVTableViewController <UINavigationControllerDelegate, EditableTableViewCellDelegate>
+@interface PlaylistsViewController : UITableViewController <UINavigationControllerDelegate, EditableTableViewCellDelegate>
 {
 @private
 	NSArray * defaultPlaylists;

@@ -28,6 +28,10 @@
 	[Fabric with:@[ CrashlyticsKit ]];
 #endif
 	
+	NSDictionary * attributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:20.],
+								   NSForegroundColorAttributeName : [UIColor darkGrayColor] };
+	[UINavigationBar appearance].titleTextAttributes = attributes;
+	
 	_window.backgroundColor = [UIColor blackColor];
 	_window.tintColor = [UIColor purpleColor];
 	_navigationController = (UINavigationController *)_window.rootViewController;
@@ -36,13 +40,7 @@
 	searchViewController.playlist = [Playlist playlistForAction:PlaylistActionSelect];
 	[_navigationController pushViewController:searchViewController animated:NO];
 	
-	/*** Hack: Disable the sending of notifications when the device rotate (enabled by default, should be set to one) to set the count to zero... ***/
-	while ([UIDevice currentDevice].generatesDeviceOrientationNotifications) {
-		[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-	}
-	
-	/* ... to set the count to one (to disable it by calling "-[UIDevice endGeneratingDeviceOrientationNotifications]") */
-	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+	[self enableDeviceRotation];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:)
 												 name:UIDeviceOrientationDidChangeNotification object:nil];
 	
@@ -53,6 +51,20 @@
 		} }];
 	
 	return YES;
+}
+
+- (void)disableDeviceRotation
+{
+	/*** Hack: Disable the sending of notifications when the device rotate (enabled by default, should be set to one) to set the count to zero... ***/
+	while ([UIDevice currentDevice].generatesDeviceOrientationNotifications)
+		[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+}
+
+- (void)enableDeviceRotation
+{
+	[self disableDeviceRotation];
+	/* ... to set the count to one (to disable it by calling "-[UIDevice endGeneratingDeviceOrientationNotifications]") */
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 }
 
 - (void)showVerbWithInfinitif:(NSString *)infinitif
@@ -172,93 +184,100 @@
 	static UIDeviceOrientation oldLandscapeOrientation = UIDeviceOrientationUnknown;
 	UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
 	
-	if (UIDeviceOrientationIsLandscape(orientation)) {
-		if (landscapeWindow) {
-			// If the "landscapeWindow" is showing and we are into the landscape mode,
-			//   that means we have change the orientation of the device (from landscape right/left to landscape left/right),
-			//   change the anchor and frame of the window to have a rotation on center effect
-			
-			landscapeWindow.layer.anchorPoint = CGPointMake(0.5, 0.5);
-			landscapeWindow.frame = CGRectMake(0., 0., screenSize.height, screenSize.width);
-			
-			CGAffineTransform transform = CGAffineTransformMakeRotation((orientation == UIDeviceOrientationLandscapeLeft)? M_PI_2 : -M_PI_2);
-			[UIView animateWithDuration:0.5
-							 animations:^{ landscapeWindow.transform = transform; }];
-			
-			if (orientation == UIDeviceOrientationLandscapeLeft) {
-				_window.transform = CGAffineTransformMakeRotation(M_PI_2);
-				_window.layer.anchorPoint = CGPointZero;
+	if (orientation == oldLandscapeOrientation)
+		return ;
+	
+	if (UIDeviceOrientationIsLandscape(orientation)) { // Rotating to landscape
+		if (UIDeviceOrientationIsPortrait(oldLandscapeOrientation)) {
+			if (_landscapeWindow) {
+				// If the "_landscapeWindow" is showing and we are into the landscape mode,
+				//   that means we have change the orientation of the device (from landscape right/left to landscape left/right),
+				//   change the anchor and frame of the window to have a rotation on center effect
+				
+				_landscapeWindow.layer.anchorPoint = CGPointMake(0.5, 0.5);
+				_landscapeWindow.frame = CGRectMake(0., 0., screenSize.height, screenSize.width);
+				
+				CGAffineTransform transform = CGAffineTransformMakeRotation((orientation == UIDeviceOrientationLandscapeLeft)? M_PI_2 : -M_PI_2);
+				[UIView animateWithDuration:0.5
+								 animations:^{ _landscapeWindow.transform = transform; }];
+				
+				if (orientation == UIDeviceOrientationLandscapeLeft) {
+					_window.transform = CGAffineTransformMakeRotation(M_PI_2);
+					_window.layer.anchorPoint = CGPointZero;
+				} else {
+					_window.transform = CGAffineTransformMakeRotation(-M_PI_2);
+					_window.layer.anchorPoint = CGPointMake(1., 0.);
+				}
 				_window.frame = CGRectMake(0., 0., screenSize.height, screenSize.width);
-			} else {
-				_window.transform = CGAffineTransformMakeRotation(-M_PI_2);
-				_window.layer.anchorPoint = CGPointMake(1., 0.);
-				
-				CGFloat x = (-screenSize.height / 2. + (-screenSize.height / 2. + 320));
-				_window.frame = CGRectMake(x, 0., screenSize.height, screenSize.width);
-			}
-			
-		} else {
-			CGRect frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
-			landscapeWindow = [[UIWindow alloc] initWithFrame:frame];
-			landscapeWindow.backgroundColor = [UIColor redColor];
-			
-			LandscapeViewController * landscapeViewController = [[LandscapeViewController alloc] init];
-			landscapeViewController.view.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
-			[landscapeWindow addSubview:landscapeViewController.view];
-			
-            landscapeWindow.windowLevel = UIWindowLevelAlert;
-			[landscapeWindow makeKeyAndVisible];
-			landscapeWindow.clipsToBounds = YES;
-			
-			CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI_2);
-			if (orientation == UIDeviceOrientationLandscapeLeft) {
-				landscapeWindow.layer.anchorPoint = CGPointMake(0., 1.);
-				landscapeWindow.frame = CGRectMake(0., -screenSize.width, screenSize.height, screenSize.width);
-				
-				_window.layer.anchorPoint = CGPointZero;
-				_window.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
 				
 			} else {
-				landscapeWindow.layer.anchorPoint = CGPointMake(1., 1.);
-				CGFloat x = (-screenSize.height / 2. + (-screenSize.height / 2. + 320));
-				landscapeWindow.frame = CGRectMake(x, -screenSize.width, screenSize.height, screenSize.width);
-				transform = CGAffineTransformMakeRotation(-M_PI_2);
+				CGRect frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
+				_landscapeWindow = [[UIWindow alloc] initWithFrame:frame];
+				_landscapeWindow.backgroundColor = [UIColor redColor];
 				
-				_window.layer.anchorPoint = CGPointMake(1., 0.);
+				LandscapeViewController * landscapeViewController = [[LandscapeViewController alloc] init];
+				landscapeViewController.view.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
+				[_landscapeWindow addSubview:landscapeViewController.view];
+				
+				_landscapeWindow.windowLevel = UIWindowLevelAlert;
+				[_landscapeWindow makeKeyAndVisible];
+				_landscapeWindow.clipsToBounds = YES;
+				
+				CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI_2);
+				if (orientation == UIDeviceOrientationLandscapeLeft) {
+					_landscapeWindow.layer.anchorPoint = CGPointMake(0., 1.);
+					_landscapeWindow.frame = CGRectMake(0., -screenSize.width, screenSize.height, screenSize.width);
+					_window.layer.anchorPoint = CGPointZero;
+				} else {
+					_landscapeWindow.layer.anchorPoint = CGPointMake(1., 1.);
+					CGFloat x = (-screenSize.height / 2. + (-screenSize.height / 2. + screenSize.width));
+					_landscapeWindow.frame = CGRectMake(x, -screenSize.width, screenSize.height, screenSize.width);
+					transform = CGAffineTransformMakeRotation(-M_PI_2);
+					_window.layer.anchorPoint = CGPointMake(1., 0.);
+				}
 				_window.frame = CGRectMake(0., 0., screenSize.width, screenSize.height);
+				
+				[UIApplication sharedApplication].statusBarHidden = YES;
+				
+				[UIView animateWithDuration:0.5 delay:0
+					 usingSpringWithDamping:0.85 initialSpringVelocity:0
+									options:0
+								 animations:^{
+									 _window.transform = transform;
+									 _landscapeWindow.transform = transform;
+									 [self disableDeviceRotation];
+								 }
+								 completion:^(BOOL finished) {
+									 dispatch_after_main(1, ^{ [self enableDeviceRotation]; });
+								 }];
 			}
-			
-            [UIApplication sharedApplication].statusBarHidden = YES;
-			
-			[UIView animateWithDuration:0.5
-							 animations:^{
-								 _window.transform = transform;
-								 landscapeWindow.transform = transform;
-							 }];
 		}
-		
 		oldLandscapeOrientation = orientation;
-		
-	} else if (orientation == UIDeviceOrientationPortrait) {
-		if (landscapeWindow) {
+	} else if (orientation == UIDeviceOrientationPortrait) { // Rotating to portrait
+		if (_landscapeWindow) {
 			// Make sure that we go back to the left/right top corner rotation effect if we have set the rotation on center effect.
 			if (oldLandscapeOrientation == UIDeviceOrientationLandscapeLeft) {
-				landscapeWindow.layer.anchorPoint = CGPointMake(0., 1.);
-				landscapeWindow.frame = CGRectMake(0., -screenSize.width, screenSize.height, screenSize.width);
-				landscapeWindow.transform = CGAffineTransformMakeRotation(M_PI_2);
+				_landscapeWindow.layer.anchorPoint = CGPointMake(0., 1.);
+				_landscapeWindow.frame = CGRectMake(0., -screenSize.height, screenSize.width, screenSize.height);
+				_landscapeWindow.transform = CGAffineTransformMakeRotation(M_PI_2);
 			} else if (oldLandscapeOrientation == UIDeviceOrientationLandscapeRight) {
-				landscapeWindow.layer.anchorPoint = CGPointMake(1., 1.);
-				CGFloat x = (-screenSize.height / 2. + (-screenSize.height / 2. + 320)); // @FIXME: 320px? The hard-coded width of the iPhone???
-				landscapeWindow.frame = CGRectMake(x, -screenSize.width, screenSize.height, screenSize.width);
-				landscapeWindow.transform = CGAffineTransformMakeRotation(-M_PI_2);
+				_landscapeWindow.layer.anchorPoint = CGPointMake(1., 1.);
+				CGFloat x = (-screenSize.width / 2. + (-screenSize.width / 2. + screenSize.width));
+				_landscapeWindow.frame = CGRectMake(x, -screenSize.height, screenSize.width, screenSize.height);
+				_landscapeWindow.transform = CGAffineTransformMakeRotation(-M_PI_2);
 			}
-			
 			[UIView animateWithDuration:0.5
 							 animations:^{
 								 _window.transform = CGAffineTransformIdentity;
-								 landscapeWindow.layer.transform = CATransform3DIdentity; }
-							 completion:^(BOOL finished) { landscapeWindow = nil; }];
+								 _landscapeWindow.layer.transform = CATransform3DIdentity;
+								 [self disableDeviceRotation];
+							 }
+							 completion:^(BOOL finished) {
+								 _landscapeWindow = nil;
+								 dispatch_after_main(1, ^{ [self enableDeviceRotation]; });
+							 }];
 		}
+		oldLandscapeOrientation = orientation;
 	}
 }
 

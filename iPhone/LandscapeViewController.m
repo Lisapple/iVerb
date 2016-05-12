@@ -33,6 +33,9 @@
     [super viewDidLoad];
 	
 	Playlist * currentPlaylist = [Playlist playlistForAction:PlaylistActionSelect];
+	if (currentPlaylist.verbs.count == 0) {
+		currentPlaylist = [Playlist bookmarksPlaylist];
+	}
 	NSString * source = [currentPlaylist HTMLFormat];
 	[_webView loadHTMLString:source
 					 baseURL:nil];

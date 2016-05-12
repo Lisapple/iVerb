@@ -22,8 +22,6 @@
 		5012072F164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5012072D164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib */; };
 		501BDB7B170B4A3100F7154F /* index.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 501BDB7A170B4A3100F7154F /* index.min.css */; };
 		501BDB7D170B4D6B00F7154F /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 501BDB7C170B4D6B00F7154F /* MessageUI.framework */; };
-		501CFFAA1986BB0200F8731D /* IVViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 501CFFA91986BB0200F8731D /* IVViewController.m */; };
-		501CFFAD1986BB1600F8731D /* IVTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 501CFFAC1986BB1600F8731D /* IVTableViewController.m */; };
 		501CFFB01986BB9800F8731D /* IVWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501CFFAF1986BB9800F8731D /* IVWebView.m */; };
 		502F5543170F34BE00E7B454 /* EditNoteViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 502F5542170F34BE00E7B454 /* EditNoteViewController_Pad.xib */; };
 		5033236E1C51AAD300CCCBF3 /* QuizResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5033236C1C51AAD300CCCBF3 /* QuizResultsViewController.m */; };
@@ -138,10 +136,6 @@
 		5012072D164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbOptionsViewController_Pad.xib; sourceTree = "<group>"; };
 		501BDB7A170B4A3100F7154F /* index.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.min.css; sourceTree = "<group>"; };
 		501BDB7C170B4D6B00F7154F /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		501CFFA81986BB0200F8731D /* IVViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IVViewController.h; sourceTree = "<group>"; };
-		501CFFA91986BB0200F8731D /* IVViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IVViewController.m; sourceTree = "<group>"; };
-		501CFFAB1986BB1600F8731D /* IVTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IVTableViewController.h; sourceTree = "<group>"; };
-		501CFFAC1986BB1600F8731D /* IVTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IVTableViewController.m; sourceTree = "<group>"; };
 		501CFFAE1986BB9800F8731D /* IVWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IVWebView.h; sourceTree = "<group>"; };
 		501CFFAF1986BB9800F8731D /* IVWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IVWebView.m; sourceTree = "<group>"; };
 		502F5542170F34BE00E7B454 /* EditNoteViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditNoteViewController_Pad.xib; sourceTree = "<group>"; };
@@ -364,6 +358,7 @@
 				506509D31C24AF7700A740B0 /* spotlight.png */,
 				506509D41C24AF7700A740B0 /* spotlight@2x.png */,
 				506509D71C24B21100A740B0 /* spotlight@3x.png */,
+				50F1014C1985610C005D852F /* Images.xcassets */,
 			);
 			name = Shared;
 			sourceTree = "<group>";
@@ -371,7 +366,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				50F1014C1985610C005D852F /* Images.xcassets */,
 				2860E32A111B888700E27156 /* iPad */,
 				2860E324111B887F00E27156 /* iPhone */,
 				28EEBF621118D79A00187D67 /* Shared */,
@@ -388,10 +382,6 @@
 			children = (
 				32CA4F630368D1EE00C91783 /* iVerb_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
-				501CFFA81986BB0200F8731D /* IVViewController.h */,
-				501CFFA91986BB0200F8731D /* IVViewController.m */,
-				501CFFAB1986BB1600F8731D /* IVTableViewController.h */,
-				501CFFAC1986BB1600F8731D /* IVTableViewController.m */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -638,7 +628,6 @@
 				500BD3A7123BF35000FC6947 /* SearchViewController.m in Sources */,
 				500B9F7319A4208100C91E39 /* NSMutableAttributedString+addition.m in Sources */,
 				50CD97E3123CFF0900E31BC8 /* ResultViewController.m in Sources */,
-				501CFFAD1986BB1600F8731D /* IVTableViewController.m in Sources */,
 				500C0C1E1C7497690033730B /* NSString+addition.m in Sources */,
 				5009FC1419A5518900CFB284 /* UINavigationController+addition.m in Sources */,
 				506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */,
@@ -660,7 +649,6 @@
 				50F5865F1C5510AE00E759E4 /* QuizResultsView.m in Sources */,
 				50E33F9916C1A9C30091AE21 /* QuizViewController.m in Sources */,
 				505D0FBC16C55CF3007B3A90 /* HelpViewController.m in Sources */,
-				501CFFAA1986BB0200F8731D /* IVViewController.m in Sources */,
 				50E343CB1C90761F00269851 /* WebViewController.m in Sources */,
 				505D0FCC16C5922D007B3A90 /* CloudView.m in Sources */,
 				508784E6170B6BBA00693C3C /* EditNoteViewController.m in Sources */,
@@ -727,7 +715,7 @@
 				GCC_PREFIX_HEADER = iVerb_Prefix.pch;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "iVerb-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;
@@ -755,7 +743,7 @@
 				GCC_PREFIX_HEADER = iVerb_Prefix.pch;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "iVerb-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;

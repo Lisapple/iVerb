@@ -22,3 +22,7 @@ static NSString * const SearchTableViewDidSelectCellNotification = @"SearchTable
 static NSString * const ResultDidReloadNotification = @"ResultDidReloadNotification"; // No object and no userInfo
 static NSString * const PlaylistDidUpdatedNotification = @"PlaylistDidUpdatedNotification"; // object is a Playlist
 static NSString * const CloudLabelDidSelectedNotification = @"CloudLabelDidSelectedNotification"; // object is a Verb
+
+static inline void dispatch_after_main(CFTimeInterval delay, dispatch_block_t block) {
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
+}

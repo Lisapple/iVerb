@@ -11,14 +11,13 @@
 #import <MessageUI/MessageUI.h>
 #import <AVFoundation/AVFoundation.h>
 
-#import "IVViewController.h"
 #import "IVWebView.h"
 
 #import "Playlist.h"
 #import "Verb.h"
 #import "Verb+additions.h"
 
-@interface ResultViewController : IVViewController <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface ResultViewController : UIViewController <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) NSString * verbString;
 @property (nonatomic, strong) Verb * verb;
