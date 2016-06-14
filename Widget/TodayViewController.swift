@@ -82,11 +82,12 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 			return
 		}
 		
-		srand(UInt32(time(nil)))
-		let v = rand()
+		let v = arc4random()
 		self.isQuizMode = ((v % 2) == 1)
 		
-		let index = dict!.startIndex.advancedBy(Int(rand() % Int32(dict!.keys.count)))
+		let offset = Int(arc4random() % UInt32(dict!.keys.count))
+		let index = dict!.startIndex.advancedBy(offset)
+		//let index = dict!.index(dict!.startIndex, offsetBy: offset) // Swift 3
 		let (key, value) = dict![index]
 		self.infinitif = key
 		let comps = (value as! String).componentsSeparatedByString("|")
@@ -103,7 +104,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 			self.lastUsedPlaylist = (playlistName != nil && !playlistName!.hasPrefix("_") && !playlistName!.hasSuffix("_")) ? playlistName : nil
 			
 			if (self.lastUsedPlaylist != nil) {
-				let index = Int(rand() % 2)
+				let index = Int(arc4random() % 2)
 				self.tense = [ "past", "past-participle" ][index]
 				string = "To \(comps[0]), "
 				
