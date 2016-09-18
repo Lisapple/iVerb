@@ -18,9 +18,90 @@
 #import "NSString+addition.h"
 #import <Crashlytics/Crashlytics.h>
 
+@implementation UISegmentedControl (Titles)
+
+- (NSArray <NSString *> *)titles
+{
+	NSMutableArray * titles = [[NSMutableArray alloc] initWithCapacity:self.numberOfSegments];
+	for (NSInteger i = 0; i < self.numberOfSegments; ++i)
+		[titles addObject:[self titleForSegmentAtIndex:i]];
+	return titles;
+}
+
+@end
+
+@implementation UIControl (Titles)
+
+- (void)setTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents
+{
+	NSArray <NSString *> * actions = [self actionsForTarget:target forControlEvent:controlEvents];
+	for (NSString * action in actions)
+		[self removeTarget:target action:NSSelectorFromString(action) forControlEvents:controlEvents];
+	[self addTarget:target action:action forControlEvents:controlEvents];
+}
+
+@end
+
+@interface SortTableViewCell : UITableViewCell
+
+@property (nonatomic, strong) UISegmentedControl * segmentedControl;
+@property (nonatomic, strong, nullable) Array(String) segmentedTitles;
+
+@end
+
+@implementation SortTableViewCell
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(nullable NSString *)reuseIdentifier {
+	if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+		self.selectionStyle = UITableViewCellSelectionStyleNone;
+		self.separatorInset = UIEdgeInsetsZero;
+		
+		_segmentedControl = [[UISegmentedControl alloc] initWithFrame:CGRectZero];
+		_segmentedControl.translatesAutoresizingMaskIntoConstraints = NO;
+		_segmentedControl.tintColor = [UIColor colorWithRed:201./255. green:201./255. blue:206./255. alpha:1];
+		[self.contentView addSubview:_segmentedControl];
+		[self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:_segmentedControl attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
+																			toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:5],
+											[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual
+																			toItem:_segmentedControl attribute:NSLayoutAttributeBottom multiplier:1 constant:5],
+											[NSLayoutConstraint constraintWithItem:_segmentedControl attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual
+																			toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:15],
+											[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual
+																			toItem:_segmentedControl attribute:NSLayoutAttributeRight multiplier:1 constant:15]
+											]];
+	}
+	return self;
+}
+
+- (void)setSegmentedTitles:(Array(String) _Nullable)segmentedTitles
+{
+	_segmentedTitles = segmentedTitles;
+	if (![segmentedTitles isEqualToArray:_segmentedControl.titles]) {
+		[_segmentedControl removeAllSegments];
+		for (NSString * title in segmentedTitles.reverseObjectEnumerator) {
+			[_segmentedControl insertSegmentWithTitle:title atIndex:0 animated:false];
+		}
+		if (segmentedTitles.count > 0)
+			_segmentedControl.selectedSegmentIndex = 0;
+	}
+}
+
+- (UIEdgeInsets)layoutMargins
+{
+	return UIEdgeInsetsZero;
+}
+
+@end
+
+typedef NS_ENUM(NSUInteger, HistorySorting) {
+	HistorySortingRecent,
+	HistorySortingViewed
+};
+
 @interface SearchViewController () <UISearchControllerDelegate, UISearchResultsUpdating, UIViewControllerPreviewingDelegate>
 {
 	BOOL showingAddToPopover; // Only on iPad
+	HistorySorting historySorting;
 }
 
 @property (nonatomic, strong) UISearchController * searchController;
@@ -44,6 +125,8 @@
 	SearchResultsViewController * searchResultsViewController = [[SearchResultsViewController alloc] init];
 	searchResultsViewController.tableView.delegate = self;
 	searchResultsViewController.tableView.dataSource = self;
+	[searchResultsViewController.tableView registerClass:UITableViewCell.class
+								  forCellReuseIdentifier:@"cellID"];
 	
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsViewController];
 	self.searchController.delegate = self;
@@ -60,6 +143,9 @@
 		self.searchController.searchBar.subviews.firstObject.clipsToBounds = NO; // Search bar contains a single subview for content
 		[self.searchController.searchBar addSubview:_statusBarBackgroundView];
 	}
+	
+	[self.tableView registerClass:UITableViewCell.class forCellReuseIdentifier:@"cellID"];
+	[self.tableView registerClass:SortTableViewCell.class forCellReuseIdentifier:@"sortCellID"];
 	
 	if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
 		[self registerForPreviewingWithDelegate:self sourceView:self.tableView];
@@ -115,11 +201,21 @@
 
 - (void)updateData
 {
-	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];
-	if (_playlist.isHistoryPlaylist)
-		sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
-	
-	sortedKeys = [_playlist.verbs sortedArrayUsingDescriptors:@[ sortDescriptor ]];
+	if (_playlist.isHistoryPlaylist) {
+		NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
+		sortedKeys = [_playlist.verbs sortedArrayUsingDescriptors:@[ sortDescriptor ]];
+		if (historySorting == HistorySortingViewed) {
+			Dictionary(String, Number) popularities = [[NSUserDefaults standardUserDefaults] dictionaryForKey:UserDefaultsVerbPopularitiesKey];
+			sortedKeys = [sortedKeys sortedArrayUsingComparator:^NSComparisonResult(Verb * verb1, Verb * verb2) {
+				NSInteger popularity1 = popularities[verb1.infinitif].integerValue;
+				NSInteger popularity2 = popularities[verb2.infinitif].integerValue;
+				return ComparisonResult(popularity1, popularity2);
+			}];
+		}
+	} else {
+		NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];
+		sortedKeys = [_playlist.verbs sortedArrayUsingDescriptors:@[ sortDescriptor ]];
+	}
 	filteredKeys = sortedKeys.copy;
 }
 
@@ -216,6 +312,13 @@
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:item
                                                                                            target:self action:@selector(toogleEditingAction:)];
 	[self.tableView reloadData];
+}
+
+- (IBAction)changeOrderAction:(id)sender
+{
+	UISegmentedControl * segmentedControl = (UISegmentedControl *)sender;
+	historySorting = segmentedControl.selectedSegmentIndex;
+	[self reloadData];
 }
 
 - (IBAction)addToAction:(id)sender
@@ -353,38 +456,59 @@
 	return newIndex;
 }
 
-- (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section
+- (BOOL)shouldShowSortingControlInTableView:(UITableView *)tableView
 {
-	return filteredKeys.count;
+	BOOL searching = (tableView != self.tableView);
+	return (_playlist.isHistoryPlaylist && !searching);
 }
 
-- (UITableViewCell *)tableView:(UITableView *)aTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	static NSString * cellID = @"cellID";
-	UITableViewCell * cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
-	if (!cell) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID];
-		cell.textLabel.textColor = [UIColor darkGrayColor];
+	return [self shouldShowSortingControlInTableView:tableView] + filteredKeys.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if (indexPath.row == 0 && [self shouldShowSortingControlInTableView:tableView]) {
+		return 36.;
 	}
-	
-	if (indexPath.row >= filteredKeys.count) { // Production debug code to catch a crash
-		CLSLog(@"Querying verb at index %ld of %ld from playlist %@ (%ld verbs), searching for: \"%@\"",
-			   (long)indexPath.row, (long)filteredKeys.count, _playlist.name, (long)_playlist.verbs.count, self.searchController.searchBar.text);
-	}
-	
-	Verb * verb = filteredKeys[indexPath.row];
-	NSString * search = self.searchController.searchBar.text;
-	if (isSearching && search.length > 0) {
-		NSString * title = [NSString stringWithFormat:@"%@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
-		cell.textLabel.attributedText = [title highlightOccurrencesOfString:search fontSize:17.];
-		cell.detailTextLabel.text = @""; // This line fix a bug on iOS 8 where the attributed detail text don't shows up on first letter searched
-		cell.detailTextLabel.attributedText = [verb.definition highlightOccurrencesOfString:search fontSize:12.];
+	return UITableViewAutomaticDimension;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if (indexPath.row == 0 && [self shouldShowSortingControlInTableView:tableView]) {
+		static NSString * cellID = @"sortCellID";
+		SortTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
+		cell.segmentedTitles = @[ @"More recent", @"More viewed" ];
+		[cell.segmentedControl setTarget:self action:@selector(changeOrderAction:) forControlEvents:UIControlEventValueChanged];
+		cell.segmentedControl.selectedSegmentIndex = historySorting;
+		return cell;
 	} else {
-		cell.textLabel.text = verb.infinitif;
-		cell.detailTextLabel.attributedText = nil;
+		static NSString * cellID = @"cellID";
+		UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
+		cell.textLabel.textColor = [UIColor darkGrayColor];
+		
+		NSInteger index = indexPath.row - ([self shouldShowSortingControlInTableView:tableView]);
+		if (index >= filteredKeys.count) { // Production debug code to catch a crash
+			CLSLog(@"Querying verb at index %ld of %ld from playlist %@ (%ld verbs), searching for: \"%@\"",
+				   (long)index, (long)filteredKeys.count, _playlist.name, (long)_playlist.verbs.count, self.searchController.searchBar.text);
+		}
+		
+		Verb * verb = filteredKeys[index];
+		NSString * search = self.searchController.searchBar.text;
+		if (isSearching && search.length > 0) {
+			NSString * title = [NSString stringWithFormat:@"%@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
+			cell.textLabel.attributedText = [title highlightOccurrencesOfString:search fontSize:17.];
+			cell.detailTextLabel.text = @""; // This line fix a bug on iOS 8 where the attributed detail text don't shows up on first letter searched
+			cell.detailTextLabel.attributedText = [verb.definition highlightOccurrencesOfString:search fontSize:12.];
+		} else {
+			cell.textLabel.text = verb.infinitif;
+			cell.detailTextLabel.attributedText = nil;
+		}
+		cell.accessoryType = ([checkedVerbs containsObject:verb] && editing) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+		return cell;
 	}
-	cell.accessoryType = ([checkedVerbs containsObject:verb] && editing) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
-	return cell;
 }
 
 #pragma mark - Table view delegate
@@ -410,11 +534,13 @@
 	[tableView endUpdates];
 }
 
-- (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	Verb * verb = filteredKeys[indexPath.row];
+	NSInteger index = indexPath.row - [self shouldShowSortingControlInTableView:tableView];
+	if (index == -1) return;
+	
+	Verb * verb = filteredKeys[index];
 	if (editing) {
-		
 		UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:indexPath];
 		if ([checkedVerbs containsObject:verb]) { // Show the checked image
 			[checkedVerbs removeObject:verb];
@@ -437,7 +563,7 @@
 				delayInSeconds += 0.15;
 			}
 			
-			if (self.navigationController.navigationBarHidden) {// If the navigation bar is hidden, re-show it (with animation) and wait before pushing the result view controller
+			if (self.navigationController.navigationBarHidden) { // If the navigation bar is hidden, re-show it (with animation) and wait before pushing the result view controller
 				delayInSeconds += UINavigationControllerHideShowBarDuration;
 				[self.navigationController setNavigationBarHidden:NO
 														 animated:YES];

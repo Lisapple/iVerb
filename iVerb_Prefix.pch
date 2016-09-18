@@ -13,6 +13,15 @@
 #  define NSDebugLog(format, ...)
 #endif
 
+#define ComparisonResult(A, B) \
+	((A > B) ? NSOrderedAscending : ((A < B) ? NSOrderedDescending : NSOrderedSame ))
+
+#define Dictionary(K,V) NSDictionary < NS##K *, NS##V * > *
+#define MDictionary(K,V) NSMutableDictionary < NS##K *, NS##V * > *
+
+#define Array(E) NSArray < NS##E * > *
+#define MArray(E) NSMutableArray < NS##E * > *
+
 #define TARGET_IS_IPAD()	(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
 #define IOS_8_OR_EARLIER()	([UIDevice currentDevice].systemVersion.floatValue < 9.0)
@@ -22,6 +31,9 @@ static NSString * const SearchTableViewDidSelectCellNotification = @"SearchTable
 static NSString * const ResultDidReloadNotification = @"ResultDidReloadNotification"; // No object and no userInfo
 static NSString * const PlaylistDidUpdatedNotification = @"PlaylistDidUpdatedNotification"; // object is a Playlist
 static NSString * const CloudLabelDidSelectedNotification = @"CloudLabelDidSelectedNotification"; // object is a Verb
+
+/// A key to a user defaults dictionary with infinitif as key and verb viewed count as value
+static NSString * const UserDefaultsVerbPopularitiesKey = @"verbs.popularities";
 
 static inline void dispatch_after_main(CFTimeInterval delay, dispatch_block_t block) {
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
