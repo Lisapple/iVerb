@@ -9,10 +9,10 @@
 #import "Playlist.h"
 #import "ManagedObjectContext.h"
 
-NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
-NSString * const kPlaylistBasicsVerbsName = @"_BASICS_VERBS_";
-NSString * const kPlaylistBookmarksName = @"_BOOKMARKS_";
+NSString * const kPlaylistCommonsName = @"_COMMONS_";
 NSString * const kPlaylistHistoryName = @"_HISTORY_";
+NSString * const kPlaylistBookmarksName = @"_BOOKMARKS_";
+NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
 
 @implementation Playlist
 
@@ -33,12 +33,12 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 	return __allVerbsPlaylist;
 }
 
-+ (Playlist *)basicVerbsPlaylist
++ (Playlist *)commonsVerbsPlaylist
 {
 	static Playlist * __basicVerbsPlaylist = nil;
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
-		__basicVerbsPlaylist = [self playlistWithName:kPlaylistBasicsVerbsName];
+		__basicVerbsPlaylist = [self playlistWithName:kPlaylistCommonsName];
 	});
 	return __basicVerbsPlaylist;
 }
@@ -107,12 +107,12 @@ NSString * const kPlaylistHistoryName = @"_HISTORY_";
 
 - (BOOL)canBeModified
 {
-	return (![self.name isEqualToString:kPlaylistAllVerbsName] && ![self.name isEqualToString:kPlaylistBasicsVerbsName]);
+	return (![self.name isEqualToString:kPlaylistAllVerbsName] && ![self.name isEqualToString:kPlaylistCommonsName]);
 }
 
-- (BOOL)isBasicPlaylist
+- (BOOL)isCommonsPlaylist
 {
-	return (self.isDefaultPlaylist && [self.name isEqualToString:kPlaylistBasicsVerbsName]);
+	return (self.isDefaultPlaylist && [self.name isEqualToString:kPlaylistCommonsName]);
 }
 
 - (BOOL)isAllVerbsPlaylist

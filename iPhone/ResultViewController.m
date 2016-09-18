@@ -64,6 +64,11 @@
 																		   baseURL:[NSURL fileURLWithPath:basePath]];
 													  }];
 	}
+	
+	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+	MDictionary(String, Number) popularities = ([userDefaults dictionaryForKey:UserDefaultsVerbPopularitiesKey] ?: @{}).mutableCopy;
+	popularities[_verb.infinitif] = @(popularities[_verb.infinitif].integerValue + 1);
+	[userDefaults setObject:popularities forKey:UserDefaultsVerbPopularitiesKey];
 }
 
 - (void)viewWillAppear:(BOOL)animated

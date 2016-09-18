@@ -335,8 +335,8 @@
     // Don't show the IndexBar: on iPad, if the playlist is not a ordered list or if searching is occuring
 	if (!_playlist.canBeModified && !isSearching) {
 		NSString * letters = @"A.B.C.D.E.F.G.H.K.L.M.P.Q.R.S.T.W";
-		if (_playlist.isBasicPlaylist)
-			letters = @"A.B.C.D.E.F.G.H.I.J.K.L.M.O.P.Q.R.S.T.U.W";
+		if (_playlist.isCommonsPlaylist)
+			letters = @"B.C.D.E.F.G.H.K.L.M.P.R.S.T.U.W";
 		return [@[ UITableViewIndexSearch ] arrayByAddingObjectsFromArray:[letters componentsSeparatedByString:@"."]];
 	}
     return nil;

@@ -13,10 +13,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString * const kPlaylistAllVerbsName;
-extern NSString * const kPlaylistBasicsVerbsName;
-extern NSString * const kPlaylistBookmarksName;
+extern NSString * const kPlaylistCommonsName;
 extern NSString * const kPlaylistHistoryName;
+extern NSString * const kPlaylistBookmarksName;
+extern NSString * const kPlaylistAllVerbsName;
 
 @interface Playlist : NSManagedObject // @TODO: Rename to "Verblist"
 
@@ -29,7 +29,7 @@ extern NSString * const kPlaylistHistoryName;
 @property (nonatomic, readonly) BOOL isDefaultPlaylist;
 
 + (Playlist *)allVerbsPlaylist;
-+ (Playlist *)basicVerbsPlaylist;
++ (Playlist *)commonsVerbsPlaylist;
 + (Playlist *)bookmarksPlaylist;
 + (Playlist *)historyPlaylist;
 
@@ -39,7 +39,7 @@ extern NSString * const kPlaylistHistoryName;
 + (nullable Playlist *)playlistWithName:(NSString *)name;
 
 - (BOOL)canBeModified;
-- (BOOL)isBasicPlaylist;
+- (BOOL)isCommonsPlaylist;
 - (BOOL)isAllVerbsPlaylist;
 - (BOOL)isHistoryPlaylist;
 - (BOOL)isBookmarksPlaylist;
