@@ -3,7 +3,7 @@
 //  CloudVerb
 //
 //  Created by Max on 06/02/13.
-//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2013 Lis@cintosh. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

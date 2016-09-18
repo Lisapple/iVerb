@@ -3,7 +3,7 @@
 //  CloudVerb
 //
 //  Created by Max on 06/02/13.
-//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2013 Lis@cintosh. All rights reserved.
 //
 
 #import "CloudView.h"
@@ -96,9 +96,9 @@
 	float delta = beginPosition.x - position.x;
 	
 	NSTimeInterval duration = touch.timestamp - beginTimestamp;
-	duration = (duration < 0.01)? 0.01: duration;
+	duration = MAX(0.01, duration);
 	
-	addedSpeed = (delta / 320.) / duration;
+	addedSpeed = (delta / self.frame.size.width) / duration;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -109,9 +109,9 @@
 	
 	NSTimeInterval duration = touch.timestamp - beginTimestamp;
 	duration *= duration;
-	duration = (duration < 0.05)? 0.05: duration;
+	duration = MAX(0.05, duration);
 	
-	addedSpeed = (delta / 320.) / duration;
+	addedSpeed = (delta / self.frame.size.width) / duration;
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event

@@ -3,7 +3,7 @@
 //  iVerb
 //
 //  Created by Max on 08/02/13.
-//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2013 Lis@cintosh. All rights reserved.
 //
 
 #import "HelpViewController.h"
