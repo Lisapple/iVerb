@@ -81,18 +81,25 @@
 		CGRect frame = CGRectMake(x, y, size.width, size.height);
 		CloudLabel * label = [[CloudLabel alloc] initWithFrame:frame];
 		label.origin = frame.origin;
-		
 		label.verb = (Verb *)obj;
 		
 		label.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
 		label.layer.cornerRadius = 4;
 		label.clipsToBounds = YES;
 		
-		label.textColor = colors[(index % 3)];
+		label.textColor = colors.firstObject;
 		label.textAlignment = NSTextAlignmentCenter;
 		label.font = font;
 		label.text = infinitif;
+		label.alpha = (3. - (index % 3)) / 3.;
 		
+		NSShadow * shadow = [[NSShadow alloc] init];
+		shadow.shadowBlurRadius = (index % 3) * 1.5;
+		shadow.shadowColor = [UIColor colorWithWhite:0 alpha:.5];
+		
+		NSDictionary * attributes = @{ NSShadowAttributeName : shadow };
+		label.attributedText = [[NSAttributedString alloc] initWithString:infinitif
+															   attributes:attributes];
 		[self.view addSubview:label];
 		
 		x += (int)(size.width / 2.);
