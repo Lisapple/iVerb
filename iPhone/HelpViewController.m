@@ -7,6 +7,7 @@
 //
 
 #import "HelpViewController.h"
+#import "UIApplication+addition.h"
 
 @implementation HelpViewController
 
@@ -43,7 +44,7 @@
 	if (navigationType == UIWebViewNavigationTypeLinkClicked) {
 		/* Open with Safari */
         if ([[UIApplication sharedApplication] canOpenURL:request.URL] && ![request.URL.scheme isEqualToString:@"file"]) {
-            [[UIApplication sharedApplication] openURL:request.URL];
+            [[UIApplication sharedApplication] openExternalURL:request.URL];
             return NO;
         }
 	}
@@ -62,7 +63,7 @@
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationPortrait;
+	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
 }
 
 @end

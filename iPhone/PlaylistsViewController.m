@@ -17,6 +17,7 @@
 
 #import "Playlist+additions.h"
 #import "NSDate+addition.h"
+#import "UIApplication+addition.h"
 
 @interface PlaylistsViewController ()
 
@@ -62,11 +63,11 @@
 		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil
 																		  preferredStyle:UIAlertControllerStyleActionSheet];
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Feedback & Support" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-			[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://support.lisacintosh.com/iVerb/"]]; }]];
+			[[UIApplication sharedApplication] openExternalURL:[NSURL URLWithString:@"http://support.lisacintosh.com/iVerb/"]]; }]];
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Go to my website" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-			[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://lisacintosh.com/"]]; }]];
+			[[UIApplication sharedApplication] openExternalURL:[NSURL URLWithString:@"http://lisacintosh.com/"]]; }]];
 		[alertController addAction:[UIAlertAction actionWithTitle:@"See all my application" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-			[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://applestore.com/lisacintosh"]]; }]];
+			[[UIApplication sharedApplication] openExternalURL:[NSURL URLWithString:@"http://applestore.com/lisacintosh"]]; }]];
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
 		
 		alertController.modalPresentationStyle = UIModalPresentationPopover;
@@ -353,7 +354,7 @@
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAllButUpsideDown : UIInterfaceOrientationPortrait;
+	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAllButUpsideDown : UIInterfaceOrientationMaskPortrait;
 }
 
 @end

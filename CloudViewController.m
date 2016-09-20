@@ -164,7 +164,7 @@
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationPortrait;
+	return (TARGET_IS_IPAD())? UIInterfaceOrientationMaskAll : UIInterfaceOrientationMaskPortrait;
 }
 
 - (void)dealloc

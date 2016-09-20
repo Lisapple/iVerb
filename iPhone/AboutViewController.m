@@ -11,6 +11,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 #import "NSDate+addition.h"
+#import "UIApplication+addition.h"
 
 @implementation AboutViewController
 
@@ -56,7 +57,7 @@
 		SFSafariViewController * viewController = [[SFSafariViewController alloc] initWithURL:url];
 		[self presentViewController:viewController animated:YES completion:nil];
 	} else {
-		[[UIApplication sharedApplication] openURL:url];
+		[[UIApplication sharedApplication] openExternalURL:url];
 	}
 	
 	[Answers logCustomEventWithName:@"open-about-url"
