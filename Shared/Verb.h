@@ -11,22 +11,24 @@
 @class Playlist;
 @class Quote;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface Verb : NSManagedObject
 
 @property (nonatomic, strong) NSString * infinitif, * past, * pastParticiple;
-@property (nonatomic, strong) NSString * definition, * example;
-@property (nonatomic, strong) NSString * note;
+@property (nonatomic, strong, nullable) NSString * definition, * example;
+@property (nonatomic, strong, nullable) NSString * note;
 
-@property (nonatomic, strong) NSString * components;
+@property (nonatomic, strong, nullable) NSString * components;
 
-@property (nonatomic, strong) NSDate * lastUse;
+@property (nonatomic, strong, nullable) NSDate * lastUse;
 
 @property (nonatomic, strong) NSSet <Playlist *> * playlists;
-@property (nonatomic, strong) Quote * quote;
+@property (nonatomic, strong, nullable) Quote * quote;
 
 @property (nonatomic, readonly) BOOL isBookmarked;
 
-+ (Verb *)lastUsedVerb;
++ (Verb * _Nullable)lastUsedVerb;
 
 - (BOOL)isBasicVerb;
 
@@ -40,3 +42,5 @@
 - (NSString *)searchableDefinition;
 
 @end
+
+NS_ASSUME_NONNULL_END

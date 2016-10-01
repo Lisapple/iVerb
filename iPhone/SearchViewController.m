@@ -16,6 +16,7 @@
 #import "Playlist+additions.h"
 
 #import "NSString+addition.h"
+#import "NSMutableAttributedString+addition.h"
 #import <Crashlytics/Crashlytics.h>
 
 @implementation UISegmentedControl (Titles)
@@ -192,6 +193,15 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)updateNavBar
+{
+	BOOL allSelected = (_playlist.verbs.count == checkedVerbs.count);
+	NSString * title = [NSString stringWithFormat:(allSelected) ? @"Unselect All (%ld)" : @"Select All (%ld)", _playlist.verbs.count];
+	UIBarButtonItem * selectAllItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain
+																	  target:self action:@selector(selectAllAction:)];
+	self.navigationItem.leftBarButtonItem = (editing) ? selectAllItem : nil;
+}
+
 - (void)updateToolbar
 {
 	BOOL buttonsEnabled = (checkedVerbs.count > 0);
@@ -306,11 +316,24 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	self.navigationItem.hidesBackButton = editing;
 	
 	[checkedVerbs removeAllObjects];
+	[self updateNavBar];
 	[self updateToolbar];
 	
     UIBarButtonSystemItem item = (editing) ? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit;
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:item
                                                                                            target:self action:@selector(toogleEditingAction:)];
+	[self.tableView reloadData];
+}
+
+- (IBAction)selectAllAction:(id)sender
+{
+	BOOL allSelected = (_playlist.verbs.count == checkedVerbs.count);
+	[checkedVerbs removeAllObjects];
+	if (!allSelected) {
+		[checkedVerbs addObjectsFromArray:_playlist.verbs.allObjects];
+	}
+	[self updateNavBar];
+	[self updateToolbar];
 	[self.tableView reloadData];
 }
 
@@ -350,47 +373,33 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 - (IBAction)shareAction:(id)sender
 {
 	if (checkedVerbs.count > 0) {
-		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil
-																		  preferredStyle:UIAlertControllerStyleActionSheet];
-		[alertController addAction:[UIAlertAction actionWithTitle:@"Copy to Pasteboard" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-			/* Copy to pasteboard ("Infinitif\nSimple Past\nPP\n\nDefinition\n\n") */
-			NSString * body = @"";
-			for (Verb * verb in checkedVerbs)
-				body = [body stringByAppendingFormat:@"%@, %@, %@\n%@\n\n", verb.infinitif, verb.past, verb.pastParticiple, verb.definition];
-			
-			UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
-			pasteboard.string = body;
-		}]];
 		
-		if ([MFMailComposeViewController canSendMail]) {
-			[alertController addAction:[UIAlertAction actionWithTitle:@"Send with Mail" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-				NSString * body = @"<table border=\"0\" style=\"border:1px solid #ccc;width:100%;text-align:center;border-collapse:collapse;\">";
-				int index = 0;
-				for (Verb * verb in checkedVerbs) {
-					body = [body stringByAppendingFormat:@"<tr%@><td>%@</td><td>%@</td><td>%@</td></tr>",
-							(index++ % 2 == 0)? @" style=\"background-color:#ddd\"" : @"",
-							verb.infinitif, verb.past, verb.pastParticiple];
-				}
-				body = [body stringByAppendingString:@"</table>"];
-				
-				MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
-				mailCompose.mailComposeDelegate = self;
-				[mailCompose setSubject:@"Some irregular verbs from iVerb"];
-				[mailCompose setMessageBody:body isHTML:YES];
-				[self presentViewController:mailCompose
-								   animated:YES
-								 completion:NULL];
-			}]];
+		Dictionary(String, Object) boldAttributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:12] };
+		Dictionary(String, Object) italicsAttributes = @{ NSFontAttributeName : [UIFont italicSystemFontOfSize:12] };
+		
+		NSMutableAttributedString * attrString = [[NSMutableAttributedString alloc] init];
+		for (Verb * verb in checkedVerbs) {
+			[attrString appendString:[NSString stringWithFormat:@"To %@", verb.infinitif] attributes:boldAttributes];
+			[attrString appendString:[NSString stringWithFormat:@", %@, %@", verb.past, verb.pastParticiple] attributes:@{}];
+			if (verb.definition) {
+				[attrString appendString:[@"\n" stringByAppendingString:verb.definition] attributes:@{}];
+			}
+			if (verb.note) {
+				[attrString appendString:[@"\n" stringByAppendingString:verb.note] attributes:italicsAttributes];
+			}
+			if (verb != checkedVerbs.lastObject) {
+				[attrString appendString:@"\n\n" attributes:@{}];
+			}
 		}
-		
-		[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+		UIActivityViewController * activityController = [[UIActivityViewController alloc] initWithActivityItems:@[ attrString ]
+																						  applicationActivities:nil];
 		
 		if (TARGET_IS_IPAD()) {
-			alertController.modalPresentationStyle = UIModalPresentationPopover;
-			UIPopoverPresentationController * popController = alertController.popoverPresentationController;
+			activityController.modalPresentationStyle = UIModalPresentationPopover;
+			UIPopoverPresentationController * popController = activityController.popoverPresentationController;
 			popController.barButtonItem = sender;
 		}
-		[self presentViewController:alertController animated:YES completion:NULL];
+		[self presentViewController:activityController animated:YES completion:NULL];
 	}
 }
 
@@ -551,6 +560,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 		}
 		
 		[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+		[self updateNavBar];
 		[self updateToolbar];
 		
 	} else {

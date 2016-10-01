@@ -10,3 +10,5 @@
 "_BOOKMARKS_" = "Favorites";
 "_HISTORY_" = "History";
 "_COMMONS_" = "Most Commons";
+
+"_BASICS_VERBS_" = "Basic Verbs"; // To support db migration, only
