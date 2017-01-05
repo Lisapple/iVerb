@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 Lis@cintosh. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 #import "Verb.h"
 
 @interface CloudLabel : UILabel

@@ -6,10 +6,9 @@
 //  Copyright 2010 Lisacintosh. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <CoreData/CoreData.h>
-#import <MessageUI/MessageUI.h>
-#import <AVFoundation/AVFoundation.h>
+@import CoreData;
+@import MessageUI;
+@import AVFoundation;
 
 #import "IVWebView.h"
 

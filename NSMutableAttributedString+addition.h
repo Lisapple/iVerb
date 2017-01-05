@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @interface NSMutableAttributedString (addition)
 
 - (void)appendString:(NSString *)string attributes:(NSDictionary *)attributes;

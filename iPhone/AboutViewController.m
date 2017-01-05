@@ -7,8 +7,6 @@
 //
 
 #import "AboutViewController.h"
-#import <SafariServices/SafariServices.h>
-#import <Crashlytics/Crashlytics.h>
 
 #import "NSDate+addition.h"
 #import "UIApplication+addition.h"

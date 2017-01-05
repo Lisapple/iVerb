@@ -6,8 +6,8 @@
 //  Copyright (c) 2012 Lis@cintosh. All rights reserved.
 //
 
-#import <CoreSpotlight/CoreSpotlight.h>
-#import <MobileCoreServices/MobileCoreServices.h>
+@import CoreSpotlight;
+@import MobileCoreServices;
 
 #import "Playlist.h"
 

@@ -6,10 +6,9 @@
 //  Copyright (c) 2012 Lis@cintosh. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <CoreData/CoreData.h>
-#import <MessageUI/MessageUI.h>
-#import <AVFoundation/AVFoundation.h>
+@import CoreData;
+@import MessageUI;
+@import AVFoundation;
 
 #import "IVWebView.h"
 
@@ -19,8 +18,6 @@
 #import "Playlist+additions.h"
 
 @interface MainViewController : UISplitViewController
-<UIPopoverControllerDelegate, UIPopoverPresentationControllerDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate>
-{
-}
+	<UIPopoverControllerDelegate, UIPopoverPresentationControllerDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate>
 
 @end

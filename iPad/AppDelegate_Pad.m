@@ -8,9 +8,9 @@
 
 #import "AppDelegate_Pad.h"
 #import "QuizViewController.h"
+#import "MainViewController.h"
 
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
+#import "ManagedObjectContext.h"
 
 @implementation AppDelegate_Pad
 

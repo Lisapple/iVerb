@@ -16,9 +16,6 @@
 #import "SearchViewController.h"
 #import "ResultViewController.h"
 
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-
 @implementation AppDelegate_Phone
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Lis@cintosh. All rights reserved.
 //
 
-#import <CoreData/CoreData.h>
+@import CoreData;
 
 @class Playlist;
 @class Quote;

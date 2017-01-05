@@ -6,7 +6,7 @@
 //
 //
 
-#import <CoreData/CoreData.h>
+@import CoreData;
 
 #import "Verb.h"
 

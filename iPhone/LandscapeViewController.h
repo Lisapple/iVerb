@@ -6,8 +6,6 @@
 //  Copyright (c) 2012 Lis@cintosh. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 @interface LandscapeViewController : UIViewController
 
 @property (nonatomic, assign) IBOutlet UIWebView * webView;

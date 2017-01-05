@@ -6,11 +6,10 @@
 //  Copyright Lisacintosh 2010. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <CoreData/CoreData.h>
-#import <CoreSpotlight/CoreSpotlight.h>
-
-#import "MainViewController.h"
+@import CoreData;
+@import CoreSpotlight;
+@import Fabric;
+@import Crashlytics;
 
 #import "ManagedObjectContext.h"
 

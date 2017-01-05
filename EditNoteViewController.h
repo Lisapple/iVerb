@@ -6,8 +6,6 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
 #import "Verb.h"
 
 @interface EditNoteViewController : UIViewController

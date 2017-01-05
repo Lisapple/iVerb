@@ -6,7 +6,8 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+@import SafariServices;
+@import Crashlytics;
 
 @interface AboutViewController : UITableViewController
 

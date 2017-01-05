@@ -6,9 +6,9 @@
 //  Copyright 2010 Lisacintosh. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <CoreData/CoreData.h>
-#import <MessageUI/MessageUI.h>
+@import CoreData;
+@import MessageUI;
+@import Crashlytics;
 
 #import "Playlist.h"
 

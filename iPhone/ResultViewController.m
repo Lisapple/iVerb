@@ -15,6 +15,9 @@
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
 
+#import "NSMutableAttributedString+addition.h"
+#import "UIFont+addition.h"
+
 @interface ResultViewController ()
 
 @property (nonatomic, strong) AVSpeechSynthesizer * synthesizer;

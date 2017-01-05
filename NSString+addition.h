@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @interface NSString (addition)
 
 - (NSAttributedString *)highlightOccurrencesOfString:(NSString *)occurence fontSize:(CGFloat)fontSize;

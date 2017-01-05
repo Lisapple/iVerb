@@ -6,13 +6,13 @@
 //  Copyright Lisacintosh 2010. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <CoreData/CoreData.h>
-#import <QuartzCore/QuartzCore.h>
-#import <CoreSpotlight/CoreSpotlight.h>
+@import CoreData;
+@import QuartzCore;
+@import CoreSpotlight;
+@import Fabric;
 
-#import "ManagedObjectContext.h"
 #import "Playlist+additions.h"
+#import "ManagedObjectContext.h"
 
 @interface AppDelegate_Phone : UIResponder <UIApplicationDelegate, UITabBarDelegate, ManagedObjectContext>
  
