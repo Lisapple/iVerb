@@ -13,23 +13,36 @@ extension String {
 	
 	var urlEncode: String? {
 		get {
-			return addingPercentEncoding(withAllowedCharacters: CharacterSet.alphanumerics)
+			return addingPercentEncoding(withAllowedCharacters: .alphanumerics)
 		}
 	}
 }
 
 extension TodayViewController {
+	
+	private var LastUpdatedKey: String { return "lastUpdated" }
 	fileprivate var lastUpdated: Date? {
 		get {
-			return Date(timeIntervalSinceReferenceDate: UserDefaults.standard.double(forKey: "lastUpdated"))
+			if let interval = UserDefaults.standard.object(forKey: LastUpdatedKey) as? Double {
+				return Date(timeIntervalSinceReferenceDate: interval)
+			}
+			return nil
 		}
 		set {
 			if let newValue = newValue {
-				UserDefaults.standard.set(newValue.timeIntervalSinceReferenceDate, forKey: "lastUpdated")
+				UserDefaults.standard.set(newValue.timeIntervalSinceReferenceDate, forKey: LastUpdatedKey)
 			} else {
-				UserDefaults.standard.removeObject(forKey: "lastUpdated")
+				UserDefaults.standard.removeObject(forKey: LastUpdatedKey)
 			}
+			UserDefaults.standard.synchronize()
 		}
+	}
+}
+
+extension String {
+	
+	var isUserPlaylist: Bool {
+		return !(hasPrefix("_") && hasSuffix("_"))
 	}
 }
 
@@ -40,8 +53,9 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 	
 	fileprivate var infinitif: String?
 	fileprivate var tense: String?
-	fileprivate var lastUsedPlaylist: String?
+	fileprivate var playlistName: String?
 	fileprivate var isQuizMode = false
+	fileprivate var needsUpdate = true // Force update for first load
 	
 	@IBOutlet var label: UILabel?
 	
@@ -52,9 +66,9 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 	
 	func viewDidSelected(_ gesture: UIGestureRecognizer) {
 		if let infinitif = self.infinitif {
-			if let lastUsedPlaylist = self.lastUsedPlaylist, let tense = self.tense, self.isQuizMode {
+			if let playlistName = self.playlistName, let tense = self.tense, self.isQuizMode, playlistName.isUserPlaylist {
 				self.lastUpdated = nil
-				let url = "iverb://quiz/\(lastUsedPlaylist.urlEncode!)/\(infinitif)#\(tense)"
+				let url = "iverb://quiz/\(playlistName.urlEncode!)/\(infinitif)#\(tense)"
 				self.extensionContext?.open(URL(string: url)!, completionHandler: nil)
 			} else {
 				let url = "iverb://verb#\(infinitif)"
@@ -64,20 +78,14 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 	}
 	
     func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
-		
-		if ((lastUpdated?.timeIntervalSinceNow ?? 0) < 10 * 60) {
-			completionHandler(NCUpdateResult.noData)
+		if let interval = lastUpdated?.timeIntervalSinceNow, abs(interval) < 10 * 60 && !needsUpdate { // Wait at leat 10 minutes to refresh
+			completionHandler(.noData)
 			return
-		}
-		
-		var textColor = UIColor.white
-		if #available(iOSApplicationExtension 10.0, *) {
-			textColor = .black
 		}
 		
 		let sharedDefaults = UserDefaults(suiteName: "group.lisacintosh.iverb")
 		guard let dict = sharedDefaults?.dictionary(forKey: kSharedVerbsKey), dict.keys.count > 0 else {
-			completionHandler(NCUpdateResult.noData)
+			completionHandler(.noData)
 			return
 		}
 		
@@ -90,18 +98,16 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 		self.infinitif = key
 		let comps = (value as! String).components(separatedBy: "|")
 		guard (comps.count >= 3) else {
-			completionHandler(NCUpdateResult.noData)
+			// @TODO: Should show an error, format is not valid 
+			completionHandler(.noData)
 			return
 		}
 		
 		var string = "To \(comps[0]), \(comps[1]), \(comps[2])\n"
 		
 		if (self.isQuizMode) {
-			let playlistName = sharedDefaults!.string(forKey: kLastUsedPlaylistKey)
-			// Ignore non-user playlist that starts and ends with "__"
-			self.lastUsedPlaylist = (playlistName != nil && !playlistName!.hasPrefix("_") && !playlistName!.hasSuffix("_")) ? playlistName : nil
-			
-			if (self.lastUsedPlaylist != nil) {
+			self.playlistName = sharedDefaults!.string(forKey: kLastUsedPlaylistKey)
+			if (self.playlistName?.isUserPlaylist == true) {
 				let index = Int(arc4random() % 2)
 				self.tense = ["past", "past-participle"][index]
 				string = "To \(comps[0]), "
@@ -123,19 +129,26 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 		}
 		
 		var text = comps.last!
-		var attributes: [String : Any]?
+		let bodyAttributes = [ NSFontAttributeName: UIFont.preferredFont(forTextStyle: .body) ]
+		let attrString = NSMutableAttributedString(string: text, attributes: bodyAttributes)
+		
+		var titleAttributes: [String : Any]?
 		if #available(iOSApplicationExtension 10.0, *) {
-			attributes = [ NSFontAttributeName: UIFont.boldSystemFont(ofSize: 17) ]
+			titleAttributes = [ NSFontAttributeName: UIFont.preferredFont(forTextStyle: .headline) ]
 			text = "\n" + text
 		}
-		let attrString = NSMutableAttributedString(string: text)
-		attrString.insert(NSAttributedString(string: string, attributes: attributes), at: 0)
+		attrString.insert(NSAttributedString(string: string, attributes: titleAttributes), at: 0)
 		label?.attributedText = attrString
-		label?.textColor = textColor
+		
+		label?.textColor = .lightText
+		if #available(iOSApplicationExtension 10.0, *) {
+			label?.textColor = .darkText
+		}
 		
 		lastUpdated = Date()
+		needsUpdate = false
 		
-        completionHandler(NCUpdateResult.newData)
+        completionHandler(.newData)
     }
 	
 	func widgetMarginInsets(forProposedMarginInsets defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
