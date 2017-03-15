@@ -17,6 +17,21 @@
 
 #import "NSString+addition.h"
 #import "NSMutableAttributedString+addition.h"
+#import "UIFont+addition.h"
+
+@interface ResultTableViewCell : UITableViewCell
+@end
+
+@implementation ResultTableViewCell
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+	if ((self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier])) { }
+	return self;
+}
+
+@end
+
 
 @implementation UISegmentedControl (Titles)
 
@@ -93,6 +108,9 @@
 
 @end
 
+
+const NSUInteger kToolbarDeleteItemKey = 'tdik';
+
 typedef NS_ENUM(NSUInteger, HistorySorting) {
 	HistorySortingRecent,
 	HistorySortingViewed
@@ -107,10 +125,17 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 @property (nonatomic, strong) UISearchController * searchController;
 @property (nonatomic, strong) UIPopoverPresentationController * popoverPresentationController;
 @property (nonatomic, strong) UIView * statusBarBackgroundView;
+@property (nonatomic, strong) AVSpeechSynthesizer * synthesizer;
+@property (nonatomic, assign) BOOL isMenuVisible;
 
 @end
 
 @implementation SearchViewController
+
+- (BOOL)canBecomeFirstResponder
+{
+	return YES; // For cell pop-up menu
+}
 
 - (void)viewDidLoad
 {
@@ -125,7 +150,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	SearchResultsViewController * searchResultsViewController = [[SearchResultsViewController alloc] init];
 	searchResultsViewController.tableView.delegate = self;
 	searchResultsViewController.tableView.dataSource = self;
-	[searchResultsViewController.tableView registerClass:UITableViewCell.class
+	[searchResultsViewController.tableView registerClass:ResultTableViewCell.class
 								  forCellReuseIdentifier:@"cellID"];
 	
 	self.searchController = [[UISearchController alloc] initWithSearchResultsController:searchResultsViewController];
@@ -181,8 +206,18 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	[super viewWillAppear:animated];
 	
 	[self reloadData];
-	[[NSNotificationCenter defaultCenter] addObserverForName:PlaylistDidUpdatedNotification object:nil
-													   queue:nil usingBlock:^(NSNotification *note) { if (note.object == _playlist) { [self reloadData]; } }];
+	[[NSNotificationCenter defaultCenter] addObserverForName:PlaylistDidUpdatedNotification object:nil queue:nil
+												  usingBlock:^(NSNotification * note) {
+													  if (note.object == _playlist) { [self reloadData]; } }];
+	
+	[[NSNotificationCenter defaultCenter] addObserverForName:UIMenuControllerWillHideMenuNotification object:nil queue:nil
+												  usingBlock:^(NSNotification * note) {
+													  [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+												  }];
+	[[NSNotificationCenter defaultCenter] addObserverForName:UIMenuControllerDidHideMenuNotification object:nil queue:nil
+												  usingBlock:^(NSNotification * note) {
+													  self.isMenuVisible = NO;
+												  }];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -237,6 +272,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 - (void)reloadData
 {
 	self.title = _playlist.localizedName;
+	[self updateNavBar];
 	[self updateToolbar];
 	[self updateData];
 	[self.tableView reloadData];
@@ -271,61 +307,72 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 - (IBAction)emptyHistoryAction:(id)sender
 {
 	if (_playlist.verbs.count > 0) {
-		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Would you really want to empty the history?" message:nil
-																		  preferredStyle:UIAlertControllerStyleActionSheet];
-		[alertController addAction:[UIAlertAction actionWithTitle:@"Empty" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * __nonnull action) {
+		
+		void (^handler)(UIAlertAction *) = ^(UIAlertAction * action) {
 			[[_playlist mutableSetValueForKey:@"verbs"] removeAllObjects];
 			[[ManagedObjectContext sharedContext] save:NULL];
 			[self reloadData];
-		}]];
+			[[NSUserDefaults standardUserDefaults] removeObjectForKey:UserDefaultsVerbPopularitiesKey];
+		};
 		
-		[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+		NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+		NSString * const key = UserDefaultsClearHistoryAlertCountKey;
+		NSInteger confirmationShownCount = [userDefaults integerForKey:key];
+		[userDefaults setInteger:++confirmationShownCount forKey:key];
 		
-		if (TARGET_IS_IPAD()) {
-			alertController.modalPresentationStyle = UIModalPresentationPopover;
-			UIPopoverPresentationController * popController = alertController.popoverPresentationController;
-			popController.barButtonItem = self.navigationItem.rightBarButtonItem;
+		BOOL shouldShowConfirmation = (confirmationShownCount <= 5); // Only show alert 5 times
+		if (shouldShowConfirmation) {
+			UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Clear history?" message:nil
+																			  preferredStyle:UIAlertControllerStyleAlert];
+			[alertController addAction:[UIAlertAction actionWithTitle:@"Clear" style:UIAlertActionStyleDestructive handler:handler]];
+			[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+			if (TARGET_IS_IPAD()) {
+				alertController.modalPresentationStyle = UIModalPresentationPopover;
+				UIPopoverPresentationController * popController = alertController.popoverPresentationController;
+				popController.barButtonItem = self.navigationItem.rightBarButtonItem;
+			}
+			[self presentViewController:alertController animated:YES completion:NULL];
+		} else {
+			handler(nil);
 		}
-		[self presentViewController:alertController animated:YES completion:NULL];
 	}
 }
 
 - (IBAction)toogleEditingAction:(id)sender
 {
 	editing = !editing;
-    
-    self.navigationController.toolbarHidden = !editing;
-    
-    UIBarButtonItem * removeItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash
-																				 target:self
-																				 action:@selector(removeAction:)];
+	
+	const BOOL animated = YES;
+	[self.navigationController setToolbarHidden:!editing animated:animated];
+	
+    UIBarButtonItem * removeItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain
+																   target:self action:@selector(removeAction:)];
     removeItem.tintColor = [UIColor redColor];
+	removeItem.tag = kToolbarDeleteItemKey;
 	
 	UIBarButtonItem * spaceItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
 																				target:nil action:NULL];
 	spaceItem.width = 20.;
     
     NSArray * toolbarItems = @[ [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-																			  target:self
-																			  action:@selector(shareAction:)],
+																			  target:self action:@selector(shareAction:)],
 								spaceItem,
-								[[UIBarButtonItem alloc] initWithTitle:@"Add to..."
-                                                                 style:UIBarButtonItemStylePlain
-                                                                target:self
-                                                                action:@selector(addToAction:)],
+								[[UIBarButtonItem alloc] initWithTitle:@"Add to..." style:UIBarButtonItemStylePlain
+                                                                target:self action:@selector(addToAction:)],
                                 [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL],
                                 removeItem ];
-    [self.navigationController.toolbar setItems:toolbarItems animated:YES];
+    [self.navigationController.toolbar setItems:toolbarItems animated:animated];
 	
-	self.navigationItem.hidesBackButton = editing;
+	[self.navigationItem setHidesBackButton:editing animated:animated];
 	
 	[checkedVerbs removeAllObjects];
 	[self updateNavBar];
 	[self updateToolbar];
 	
     UIBarButtonSystemItem item = (editing) ? UIBarButtonSystemItemDone : UIBarButtonSystemItemEdit;
-	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:item
-                                                                                           target:self action:@selector(toogleEditingAction:)];
+	UIBarButtonItem * rightBarItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:item target:self action:@selector(toogleEditingAction:)];
+	[self.navigationItem setRightBarButtonItem:rightBarItem animated:animated];
+	
 	[self.tableView reloadData];
 }
 
@@ -346,6 +393,38 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	UISegmentedControl * segmentedControl = (UISegmentedControl *)sender;
 	historySorting = segmentedControl.selectedSegmentIndex;
 	[self reloadData];
+}
+
+- (void)copyAction:(id)sender
+{
+	NSIndexPath * indexPath = self.tableView.indexPathForSelectedRow;
+	Verb * verb = filteredKeys[indexPath.row];
+	NSString * description = verb.attributedDescription.string;
+	[[UIPasteboard generalPasteboard] setValue:description forPasteboardType:@"public.text"]; // @TODO: Set as attrbuted string
+}
+
+- (void)listenAction:(id)sender
+{
+	NSIndexPath * indexPath = self.tableView.indexPathForSelectedRow;
+	Verb * verb = filteredKeys[indexPath.row];
+	
+	NSString * string = [NSString stringWithFormat:@"to %@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
+	if ([verb.infinitif isEqualToString:verb.past] && [verb.infinitif isEqualToString:verb.pastParticiple])
+		string = [NSString stringWithFormat:@"to %@", verb.infinitif];
+	
+	self.synthesizer = [[AVSpeechSynthesizer alloc] init];
+	AVSpeechUtterance * utterance = [AVSpeechUtterance speechUtteranceWithString:string];
+	utterance.rate = 0.1;
+	[_synthesizer speakUtterance:utterance];
+}
+
+- (void)addToFromMenuAction:(id)sender
+{
+	NSIndexPath * indexPath = self.tableView.indexPathForSelectedRow;
+	Verb * verb = filteredKeys[indexPath.row];
+	[checkedVerbs removeAllObjects];
+	[checkedVerbs addObject:verb];
+	[self addToAction:sender];
 }
 
 - (IBAction)addToAction:(id)sender
@@ -377,24 +456,18 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 - (IBAction)shareAction:(id)sender
 {
 	if (checkedVerbs.count > 0) {
-		
-		Dictionary(String, Object) boldAttributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:12] };
-		Dictionary(String, Object) italicsAttributes = @{ NSFontAttributeName : [UIFont italicSystemFontOfSize:12] };
+		NSMutableArray <NSAttributedString *> * attrStrings = [[NSMutableArray alloc] initWithCapacity:checkedVerbs.count];
+		for (Verb * verb in checkedVerbs) {
+			[attrStrings addObject:verb.attributedDescription];
+			if (verb != checkedVerbs.lastObject)
+				[attrStrings addObject:[[NSAttributedString alloc] initWithString:@"\n\n"]];
+		}
 		
 		NSMutableAttributedString * attrString = [[NSMutableAttributedString alloc] init];
-		for (Verb * verb in checkedVerbs) {
-			[attrString appendString:[NSString stringWithFormat:@"To %@", verb.infinitif] attributes:boldAttributes];
-			[attrString appendString:[NSString stringWithFormat:@", %@, %@", verb.past, verb.pastParticiple] attributes:@{}];
-			if (verb.definition) {
-				[attrString appendString:[@"\n" stringByAppendingString:verb.definition] attributes:@{}];
-			}
-			if (verb.note) {
-				[attrString appendString:[@"\n" stringByAppendingString:verb.note] attributes:italicsAttributes];
-			}
-			if (verb != checkedVerbs.lastObject) {
-				[attrString appendString:@"\n\n" attributes:@{}];
-			}
+		for (NSAttributedString * string in attrStrings) {
+			[attrString appendAttributedString:string];
 		}
+		
 		UIActivityViewController * activityController = [[UIActivityViewController alloc] initWithActivityItems:@[ attrString ]
 																						  applicationActivities:nil];
 		if (TARGET_IS_IPAD()) {
@@ -421,24 +494,31 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 - (IBAction)removeAction:(id)sender
 {
 	if (checkedVerbs.count > 0) {
-		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-		[alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove from \"%@\"", _playlist.localizedName]
-															style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
-																for (Verb * verb in checkedVerbs)
-																	[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
-																
-																[checkedVerbs removeAllObjects];
-																[self reloadData];
-															}]];
+		void (^handler)(UIAlertAction * action) = ^(UIAlertAction * action) {
+			for (Verb * verb in checkedVerbs)
+				[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
+			
+			[checkedVerbs removeAllObjects];
+			[self reloadData];
+			[self toogleEditingAction:nil];
+		};
 		
-		[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
-		
-		if (TARGET_IS_IPAD()) {
-			alertController.modalPresentationStyle = UIModalPresentationPopover;
-			UIPopoverPresentationController * popController = alertController.popoverPresentationController;
-			popController.barButtonItem = sender;
+		if (checkedVerbs.count > 1) {
+			NSString * title = [NSString stringWithFormat:@"Remove %ld verbs from \"%@\"?", (long)checkedVerbs.count, _playlist.localizedName];
+			UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil
+																			  preferredStyle:UIAlertControllerStyleActionSheet];
+			[alertController addAction:[UIAlertAction actionWithTitle:@"Remove" style:UIAlertActionStyleDestructive handler:handler]];
+			[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
+			
+			if (TARGET_IS_IPAD()) {
+				alertController.modalPresentationStyle = UIModalPresentationPopover;
+				UIPopoverPresentationController * popController = alertController.popoverPresentationController;
+				popController.barButtonItem = sender;
+			}
+			[self presentViewController:alertController animated:YES completion:NULL];
+		} else {
+			handler(nil);
 		}
-		[self presentViewController:alertController animated:YES completion:NULL];
 	}
 }
 
@@ -510,9 +590,12 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 		NSString * search = self.searchController.searchBar.text;
 		if (isSearching && search.length > 0) {
 			NSString * title = [NSString stringWithFormat:@"%@, %@, %@", verb.infinitif, verb.past, verb.pastParticiple];
-			cell.textLabel.attributedText = [title highlightOccurrencesOfString:search fontSize:17.];
+			CGFloat fontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
+			cell.textLabel.attributedText = [title highlightOccurrencesOfString:search fontSize: fontSize];
+			
 			cell.detailTextLabel.text = @""; // This line fix a bug on iOS 8 where the attributed detail text don't shows up on first letter searched
-			cell.detailTextLabel.attributedText = [verb.definition highlightOccurrencesOfString:search fontSize:12.];
+			CGFloat detailFontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote].pointSize;
+			cell.detailTextLabel.attributedText = [verb.definition highlightOccurrencesOfString:search fontSize:detailFontSize];
 		} else {
 			cell.textLabel.text = verb.infinitif;
 			cell.detailTextLabel.attributedText = nil;
@@ -521,6 +604,31 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 		return cell;
 	}
 }
+
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if (!editing && !isSearching) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+			UIMenuController * menu = [UIMenuController sharedMenuController];
+			NSMutableArray * menuItems = @[ [[UIMenuItem alloc] initWithTitle:@"Copy" action:@selector(copyAction:)],
+											[[UIMenuItem alloc] initWithTitle:@"Add to..." action:@selector(addToFromMenuAction:)],
+											[[UIMenuItem alloc] initWithTitle:@"Listen" action:@selector(listenAction:)] ].mutableCopy;
+			if (!_playlist.isDefaultPlaylist) {
+				[menuItems addObject:[[UIMenuItem alloc] initWithTitle:@"Remove" action:@selector(removeFromMenuAction:)]];
+			}
+			menu.menuItems = menuItems;
+			
+			UITableViewCell * cell = [tableView cellForRowAtIndexPath:indexPath];
+			[menu setTargetRect:CGRectMake(CGRectGetMidX(cell.bounds), CGRectGetMidY(cell.bounds), 1, 1) inView:cell];
+			[menu setMenuVisible:YES animated:YES];
+			_isMenuVisible = YES;
+		});
+	}
+	return NO;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender { return NO; }
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender { }
 
 #pragma mark - Table view delegate
 
@@ -545,8 +653,17 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	[tableView endUpdates];
 }
 
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return !(_isMenuVisible && ![UIMenuController sharedMenuController].isMenuVisible);
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	if (_isMenuVisible && [UIMenuController sharedMenuController].isMenuVisible) {
+		return ;
+	}
+	
 	NSInteger index = indexPath.row - [self shouldShowSortingControlInTableView:tableView];
 	if (index == -1) return;
 	
@@ -635,13 +752,22 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 {
 	NSString *searchText = searchController.searchBar.text;
 	if (searchText.length > 0) {
+		NSOrderedSet * allVerbs = [NSOrderedSet orderedSetWithArray:sortedKeys];
+		
 		NSPredicate * predicate = [NSPredicate predicateWithFormat:
 								   @"SELF.infinitif CONTAINS[cd] %@ "
 								   @"OR SELF.past CONTAINS[cd] %@ "
-								   @"OR SELF.pastParticiple CONTAINS[cd] %@ "
-								   @"OR SELF.searchableDefinition CONTAINS[cd] %@",
-								   searchText, searchText, searchText, searchText];
-		filteredKeys = [sortedKeys filteredArrayUsingPredicate:predicate];
+								   @"OR SELF.pastParticiple CONTAINS[cd] %@",
+								   searchText, searchText, searchText];
+		NSMutableOrderedSet * verbs = [allVerbs filteredOrderedSetUsingPredicate:predicate].mutableCopy;
+		
+		NSPredicate * definitionPredicate = [NSPredicate predicateWithFormat:
+											 @"SELF.searchableDefinition CONTAINS[cd] %@",
+											 searchText];
+		NSOrderedSet * definitionVerbs = [allVerbs filteredOrderedSetUsingPredicate:definitionPredicate];
+		
+		[verbs unionOrderedSet:definitionVerbs];
+		filteredKeys = verbs.array;
 	} else
 		filteredKeys = sortedKeys.copy;
 	
@@ -656,11 +782,14 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	filteredKeys = sortedKeys.copy;
 	[self.tableView reloadSectionIndexTitles];
 	[self.tableView reloadData];
+	
+	[self becomeFirstResponder];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
 	[self.searchController.searchBar resignFirstResponder];
+	[[UIMenuController sharedMenuController] setMenuVisible:NO]; // Force menu to hide event when scrolling from the cell presenting this menu
 }
 
 - (void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController
