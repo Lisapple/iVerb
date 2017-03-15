@@ -91,9 +91,21 @@
 		label.font = font;
 		label.text = infinitif;
 		
-		NSShadow * shadow = [[NSShadow alloc] init];
-		shadow.shadowBlurRadius = (index % 3) * 1.5;
-		shadow.shadowColor = [UIColor colorWithWhite:0 alpha:.5];
+		BOOL isIncreaseContrastEnabled = (UIAccessibilityIsReduceTransparencyEnabled() || UIAccessibilityDarkerSystemColorsEnabled());
+		if (!isIncreaseContrastEnabled) {
+			label.alpha = 1. - (index % 3) / 3.;
+			
+			NSShadow * shadow = [[NSShadow alloc] init];
+			shadow.shadowBlurRadius = (index % 3) * 1.5;
+			shadow.shadowColor = [UIColor colorWithWhite:0 alpha:.5];
+			
+			NSDictionary * attributes = @{ NSShadowAttributeName : shadow };
+			label.attributedText = [[NSAttributedString alloc] initWithString:infinitif
+																   attributes:attributes];
+		} else {
+			label.backgroundColor = [UIColor colorWithWhite:1 alpha:0.85];
+			label.text = infinitif;
+		}
 		
 		[_cloudView addSubview:label];
 		
