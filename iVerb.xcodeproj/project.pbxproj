@@ -62,7 +62,6 @@
 		50CD97E3123CFF0900E31BC8 /* ResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50CD97E1123CFF0900E31BC8 /* ResultViewController.m */; };
 		50CD97E4123CFF0900E31BC8 /* ResultViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50CD97E2123CFF0900E31BC8 /* ResultViewController.xib */; };
 		50D15B931C88D28200B2E49B /* Main~phone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50D15B921C88D28200B2E49B /* Main~phone.storyboard */; };
-		50D15B961C88D8B200B2E49B /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50D15B951C88D8B200B2E49B /* AboutViewController.m */; };
 		50D15B9C1C88DA1A00B2E49B /* NSDate+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 50D15B9B1C88DA1A00B2E49B /* NSDate+addition.m */; };
 		50D4402816CBEEEC00D4A5DC /* QuizViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50D4402716CBEEEC00D4A5DC /* QuizViewController_Pad.xib */; };
 		50D4402A16CBF9EE00D4A5DC /* CloudViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50D4402916CBF9EE00D4A5DC /* CloudViewController_Pad.xib */; };
@@ -85,6 +84,7 @@
 		50F314B31612214200B83030 /* LandscapeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F314B11612214100B83030 /* LandscapeViewController.m */; };
 		50F314B41612214200B83030 /* LandscapeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50F314B21612214200B83030 /* LandscapeViewController.xib */; };
 		50F5865F1C5510AE00E759E4 /* QuizResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F5865E1C5510AE00E759E4 /* QuizResultsView.m */; };
+		50FF56A91E4CDDC000C79586 /* AProposViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50FF56A81E4CDDC000C79586 /* AProposViewController.m */; };
 		9C51A90619D0650B00547659 /* Launch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9C51A90519D0650B00547659 /* Launch.xib */; };
 /* End PBXBuildFile section */
 
@@ -193,8 +193,6 @@
 		50CD97E1123CFF0900E31BC8 /* ResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ResultViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		50CD97E2123CFF0900E31BC8 /* ResultViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResultViewController.xib; sourceTree = "<group>"; };
 		50D15B921C88D28200B2E49B /* Main~phone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Main~phone.storyboard"; sourceTree = "<group>"; };
-		50D15B941C88D8B200B2E49B /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
-		50D15B951C88D8B200B2E49B /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
 		50D15B9A1C88DA1A00B2E49B /* NSDate+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+addition.h"; sourceTree = "<group>"; };
 		50D15B9B1C88DA1A00B2E49B /* NSDate+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+addition.m"; sourceTree = "<group>"; };
 		50D4402716CBEEEC00D4A5DC /* QuizViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuizViewController_Pad.xib; sourceTree = "<group>"; };
@@ -230,6 +228,8 @@
 		50F314B21612214200B83030 /* LandscapeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LandscapeViewController.xib; sourceTree = "<group>"; };
 		50F5865D1C5510AE00E759E4 /* QuizResultsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuizResultsView.h; sourceTree = "<group>"; };
 		50F5865E1C5510AE00E759E4 /* QuizResultsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuizResultsView.m; sourceTree = "<group>"; };
+		50FF56A71E4CDDC000C79586 /* AProposViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AProposViewController.h; path = "Carthage/Checkouts/a-propos/Classes/AProposViewController.h"; sourceTree = "<group>"; };
+		50FF56A81E4CDDC000C79586 /* AProposViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AProposViewController.m; path = "Carthage/Checkouts/a-propos/Classes/AProposViewController.m"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* iVerb-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iVerb-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		9C51A90519D0650B00547659 /* Launch.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Launch.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -284,8 +284,6 @@
 				50D15B921C88D28200B2E49B /* Main~phone.storyboard */,
 				506FE25B148E62280061045E /* PlaylistsViewController.h */,
 				506FE25C148E62280061045E /* PlaylistsViewController.m */,
-				50D15B941C88D8B200B2E49B /* AboutViewController.h */,
-				50D15B951C88D8B200B2E49B /* AboutViewController.m */,
 				500BD3A4123BF35000FC6947 /* SearchViewController.h */,
 				500BD3A5123BF35000FC6947 /* SearchViewController.m */,
 				507F9BDF1B38B0CD002B5CF4 /* SearchResultsViewController.h */,
@@ -383,6 +381,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				50FF56AA1E4CDDC500C79586 /* A Propos */,
 				32CA4F630368D1EE00C91783 /* iVerb_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
@@ -469,6 +468,15 @@
 				5075F9CC1BC4512500D32FCB /* verbs.xcdatamodeld */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		50FF56AA1E4CDDC500C79586 /* A Propos */ = {
+			isa = PBXGroup;
+			children = (
+				50FF56A71E4CDDC000C79586 /* AProposViewController.h */,
+				50FF56A81E4CDDC000C79586 /* AProposViewController.m */,
+			);
+			name = "A Propos";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -632,6 +640,7 @@
 				5055F4D61D915BEB00B0AF46 /* UIApplication+addition.m in Sources */,
 				5033236E1C51AAD300CCCBF3 /* QuizResultsViewController.m in Sources */,
 				2860E328111B887F00E27156 /* AppDelegate_Phone.m in Sources */,
+				50FF56A91E4CDDC000C79586 /* AProposViewController.m in Sources */,
 				2860E32E111B888700E27156 /* AppDelegate_Pad.m in Sources */,
 				500BD3A7123BF35000FC6947 /* SearchViewController.m in Sources */,
 				500B9F7319A4208100C91E39 /* NSMutableAttributedString+addition.m in Sources */,
@@ -653,7 +662,6 @@
 				5012072E164C2CE40036BA98 /* VerbOptionsViewController_Pad.m in Sources */,
 				50E31E1C16C150E10007FFBA /* CloudViewController.m in Sources */,
 				50746AFD1C52947800A35633 /* QuizResult.m in Sources */,
-				50D15B961C88D8B200B2E49B /* AboutViewController.m in Sources */,
 				50F5865F1C5510AE00E759E4 /* QuizResultsView.m in Sources */,
 				50E33F9916C1A9C30091AE21 /* QuizViewController.m in Sources */,
 				505D0FBC16C55CF3007B3A90 /* HelpViewController.m in Sources */,
