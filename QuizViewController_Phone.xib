@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="QuizViewController">
@@ -15,31 +19,31 @@
                 <outlet property="responseImageView" destination="21" id="60"/>
                 <outlet property="responseLabel" destination="121" id="122"/>
                 <outlet property="responseView" destination="20" id="61"/>
+                <outlet property="speechButton" destination="NaL-Dr-Fqe" id="Lhd-lp-esi"/>
                 <outlet property="textField" destination="4" id="62"/>
                 <outlet property="view" destination="115" id="116"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="115">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask"/>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <nil key="simulatedStatusBarMetrics"/>
-            <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
         </view>
         <view contentMode="scaleToFill" id="1">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="127">
-                    <rect key="frame" x="39" y="140" width="242" height="45"/>
+                    <rect key="frame" x="66.5" y="140" width="242" height="45"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="242" id="CcR-fc-cwC"/>
                         <constraint firstAttribute="height" constant="45" id="RWY-GP-C1A"/>
                     </constraints>
                 </imageView>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="misunderstood" adjustsFontSizeToFit="NO" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="4">
-                    <rect key="frame" x="47" y="148" width="226" height="30"/>
+                    <rect key="frame" x="74.5" y="148" width="226" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="q3s-u8-Ufd"/>
                         <constraint firstAttribute="width" constant="226" id="ylA-cO-9Wn"/>
@@ -48,31 +52,45 @@
                     <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="next"/>
                 </textField>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="To verb" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="12">
-                    <rect key="frame" x="119" y="72" width="82" height="30"/>
+                    <rect key="frame" x="146.5" y="72" width="82" height="30"/>
                     <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="asked form" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="15">
-                    <rect key="frame" x="8" y="110" width="304" height="22"/>
+                    <rect key="frame" x="8" y="110" width="359" height="22"/>
                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="remaining letters" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="123">
-                    <rect key="frame" x="92" y="193" width="136" height="22"/>
+                    <rect key="frame" x="119.5" y="193" width="136" height="22"/>
                     <fontDescription key="fontDescription" type="italicSystem" pointSize="18"/>
-                    <color key="textColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="textColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NaL-Dr-Fqe" customClass="SpeechRecognizerButton">
+                    <rect key="frame" x="157.5" y="235" width="60" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="60" id="3oQ-U5-pxr"/>
+                        <constraint firstAttribute="height" constant="60" id="jH6-LF-PyA"/>
+                    </constraints>
+                    <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    <state key="normal" image="dictate"/>
+                    <connections>
+                        <action selector="startRecognizingAction:" destination="-1" eventType="touchUpInside" id="Coe-bb-OG6"/>
+                    </connections>
+                </button>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="15" secondAttribute="trailing" constant="8" id="2jG-na-I6f"/>
                 <constraint firstItem="127" firstAttribute="centerX" secondItem="1" secondAttribute="centerX" id="6CR-Lb-EXr"/>
+                <constraint firstItem="NaL-Dr-Fqe" firstAttribute="centerX" secondItem="1" secondAttribute="centerX" id="6YP-mX-kku"/>
                 <constraint firstItem="123" firstAttribute="centerX" secondItem="1" secondAttribute="centerX" id="9dv-QM-ndf"/>
                 <constraint firstItem="15" firstAttribute="top" secondItem="12" secondAttribute="bottom" constant="8" id="Eaq-aq-70n"/>
                 <constraint firstItem="12" firstAttribute="centerX" secondItem="1" secondAttribute="centerX" id="Jvw-IJ-oAX"/>
+                <constraint firstItem="NaL-Dr-Fqe" firstAttribute="top" secondItem="123" secondAttribute="bottom" constant="20" id="NmR-dH-Ygz"/>
                 <constraint firstItem="127" firstAttribute="top" secondItem="15" secondAttribute="bottom" constant="8" id="OPS-xR-Bwf"/>
                 <constraint firstItem="123" firstAttribute="top" secondItem="127" secondAttribute="bottom" constant="8" id="bh0-oK-r2Y"/>
                 <constraint firstItem="4" firstAttribute="centerY" secondItem="127" secondAttribute="centerY" id="jFP-P9-AAO"/>
@@ -81,13 +99,12 @@
                 <constraint firstItem="4" firstAttribute="centerX" secondItem="127" secondAttribute="centerX" id="ttg-Z8-hAD"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
-            <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
         </view>
         <view contentMode="scaleToFill" id="20">
             <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="center" image="true.png" translatesAutoresizingMaskIntoConstraints="NO" id="21">
+                <imageView userInteractionEnabled="NO" contentMode="center" image="true" translatesAutoresizingMaskIntoConstraints="NO" id="21">
                     <rect key="frame" x="80" y="52" width="160" height="160"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="160" id="aYp-DU-xHq"/>
@@ -100,17 +117,17 @@
                         <constraint firstAttribute="width" constant="105" id="0te-UT-a9F"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="121">
-                    <rect key="frame" x="146" y="229" width="48" height="22"/>
+                    <rect key="frame" x="146" y="229" width="47" height="22"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
-                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="21" firstAttribute="top" secondItem="20" secondAttribute="top" constant="52" id="1uP-te-69R"/>
                 <constraint firstItem="120" firstAttribute="leading" secondItem="20" secondAttribute="leading" constant="37" id="Ugj-uc-imk"/>
@@ -124,6 +141,12 @@
         </view>
     </objects>
     <resources>
-        <image name="true.png" width="130" height="130"/>
+        <image name="dictate" width="15" height="24"/>
+        <image name="true" width="130" height="130"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
+    </simulatedMetricsContainer>
 </document>

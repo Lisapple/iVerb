@@ -13,6 +13,150 @@
 #import "Quote.h"
 #import "QuizResult.h"
 
+#import "UIFont+addition.h"
+
+@implementation SFSpeechRecognizer (Availability)
+
++ (BOOL)isAvailable
+{
+#if TARGET_OS_SIMULATOR
+	return YES;
+#else
+	if (!NSClassFromString(@"SFSpeechRecognizer")) return NO;
+	
+	SFSpeechRecognizerAuthorizationStatus status = [SFSpeechRecognizer authorizationStatus];
+	if (status != SFSpeechRecognizerAuthorizationStatusAuthorized &&
+		status != SFSpeechRecognizerAuthorizationStatusNotDetermined)
+		return NO;
+	
+	NSLocale * locale = [NSLocale localeWithLocaleIdentifier:@"en-US"];
+	SFSpeechRecognizer * recognizer = [[SFSpeechRecognizer alloc] initWithLocale:locale];
+	return (recognizer != nil); // @TODO: Should use [recognizer isAvailable], but this actually always returns NO
+#endif
+}
+
+@end
+
+
+typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
+	SpeechRecognizerButtonStateIdle, 
+	SpeechRecognizerButtonStateLoading,
+	SpeechRecognizerButtonStateMetering
+};
+
+@interface SpeechRecognizerButton ()
+
+@property (nonatomic, strong) CAShapeLayer * shapeLayer;
+@property (nonatomic, strong) CAShapeLayer * shapeLayerExtra;
+
+@property (nonatomic, assign) SpeechRecognizerButtonState buttonState;
+
+@end
+
+@implementation SpeechRecognizerButton
+
+#define kStrokeWidth 2
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+	if ((self = [super initWithCoder:aDecoder])) {
+		self.tintColor = [UIColor purpleColor];
+		
+		self.imageView.image = [[UIImage imageNamed:@"dictate"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+		self.adjustsImageWhenHighlighted = NO;
+		
+		self.layer.borderColor = [UIColor grayColor].CGColor;
+		self.layer.borderWidth = 1.;
+		self.layer.cornerRadius = self.frame.size.height / 2.;
+		
+		_shapeLayer = [[CAShapeLayer alloc] init];
+		_shapeLayer.frame = self.bounds;
+		_shapeLayer.fillColor = [UIColor clearColor].CGColor;
+		_shapeLayer.strokeColor = self.tintColor.CGColor;
+		_shapeLayer.lineWidth = kStrokeWidth;
+		_shapeLayer.lineCap = kCALineJoinRound;
+		[self.layer addSublayer:_shapeLayer];
+		
+		_shapeLayerExtra = [[CAShapeLayer alloc] initWithLayer:_shapeLayer];
+		_shapeLayerExtra.frame = _shapeLayer.frame;
+		_shapeLayerExtra.fillColor = _shapeLayer.fillColor;
+		_shapeLayerExtra.strokeColor = _shapeLayer.strokeColor;
+		_shapeLayerExtra.lineWidth = kStrokeWidth;
+		_shapeLayerExtra.lineCap = _shapeLayer.lineCap;
+		[self.layer addSublayer:_shapeLayerExtra];
+	}
+	return self;
+}
+
+- (void)setLoading:(BOOL)loading
+{
+	BOOL needsUpdate = (loading != _loading);
+	_loading = loading;
+	_buttonState = (loading) ? SpeechRecognizerButtonStateLoading : SpeechRecognizerButtonStateIdle;
+	if (needsUpdate) [self updateUI];
+}
+
+- (void)setLeftChannelLevel:(CGFloat)level
+{
+	_leftChannelLevel = level;
+	if (!_loading) {
+		_buttonState = SpeechRecognizerButtonStateMetering;
+		[self updateUI];
+	}
+}
+
+- (void)setRightChannelLevel:(CGFloat)level
+{
+	_rightChannelLevel = level;
+	if (!_loading) {
+		_buttonState = SpeechRecognizerButtonStateMetering;
+		[self updateUI];
+	}
+}
+
+- (void)updateUI
+{
+	[_shapeLayer removeAllAnimations];
+	_shapeLayerExtra.hidden = YES;
+	self.enabled = (_buttonState != SpeechRecognizerButtonStateLoading);
+	
+	const CGFloat radius = _shapeLayer.frame.size.height / 2 - kStrokeWidth;
+	if (_buttonState == SpeechRecognizerButtonStateLoading) {
+		CGMutablePathRef mPath = CGPathCreateMutable();
+		CGPathAddArc(mPath, NULL,
+					 CGRectGetMidX(_shapeLayer.frame), CGRectGetMidY(_shapeLayer.frame),
+					 radius, 0, M_PI_2, NO);
+		_shapeLayer.path = mPath;
+		
+		CABasicAnimation * animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+		animation.repeatCount = FLT_MAX;
+		animation.duration = 1;
+		animation.fromValue = @0;
+		animation.toValue = @(2 * M_PI);
+		[_shapeLayer addAnimation:animation forKey:@"animation"];
+		_shapeLayer.hidden = NO;
+	} else if (_buttonState == SpeechRecognizerButtonStateMetering) {
+		CGMutablePathRef mPath = CGPathCreateMutable();
+		CGPathAddArc(mPath, NULL,
+					 CGRectGetMidX(_shapeLayer.frame), CGRectGetMidY(_shapeLayer.frame),
+					 radius, M_PI_2 - 0.05*M_PI, M_PI_2 - 0.95*M_PI * _leftChannelLevel, YES);
+		_shapeLayer.path = mPath;
+		_shapeLayer.hidden = NO;
+		
+		mPath = CGPathCreateMutable();
+		CGPathAddArc(mPath, NULL,
+					 CGRectGetMidX(_shapeLayerExtra.frame), CGRectGetMidY(_shapeLayerExtra.frame),
+					 radius, M_PI_2 + 0.05*M_PI, M_PI_2 + 0.95*M_PI * _rightChannelLevel, NO);
+		_shapeLayerExtra.path = mPath;
+		_shapeLayerExtra.hidden = NO;
+	} else {
+		_shapeLayer.hidden = YES;
+	}
+}
+
+@end
+
+
 @interface QuizViewController ()
 
 @property (nonatomic, strong) NSArray * allVerbs;
@@ -88,20 +232,33 @@
     [super viewDidLoad];
 	
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                          target:self
-                                                                                          action:@selector(cancelAction:)];
+                                                                                          target:self action:@selector(cancelAction:)];
 	
 	// @TODO: add a "Details" button on result to show a list with good and bad responses
 	
+	NSLocale * locale = [NSLocale localeWithLocaleIdentifier:@"en-US"];
+	_recognizer = [[SFSpeechRecognizer alloc] initWithLocale:locale];
+	
+	NSError * error = nil;
+	NSURL * const outputURL = [NSURL fileURLWithPathComponents:@[ NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject,
+																  @"recording.caf" ]];
+	NSDictionary * const settings = @{ AVFormatIDKey : @(kAudioFormatLinearPCM),
+									   AVSampleRateKey : @22050,
+									   AVNumberOfChannelsKey : @1 };
+	_recorder = [[AVAudioRecorder alloc] initWithURL:outputURL settings:settings error:&error];
+	_recorder.meteringEnabled = YES;
+	
 	self.view.backgroundColor = [UIColor colorWithWhite:0.96 alpha:1.];
 	
-	allVerbs = self.playlist.verbs.allObjects;
+	_allVerbs = self.playlist.verbs.allObjects;
 	
 	_responseView.hidden = YES;
 	[self.view addSubview:_responseView];
 	
 	_textField.delegate = self;
 	_backgroundFieldImageView.image = [[UIImage imageNamed:@"quiz-field"] stretchableImageWithLeftCapWidth:25. topCapHeight:0.];
+	
+	_speechButton.hidden = !([SFSpeechRecognizer isAvailable]);
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(textFieldDidChange:)
@@ -113,6 +270,13 @@
         /* Disallow the landscape mode of the application */
         [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 	}
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear:animated];
+	
+	[_textField resignFirstResponder];
 }
 
 - (IBAction)cancelAction:(id)sender
@@ -137,53 +301,57 @@
 
 - (IBAction)skipAction:(id)sender
 {
-	[responses addObject:@""];
-	[responsesCorrect addObject:@NO];
-	
 	[self pushNewVerbAction:sender];
 }
 
 - (void)start
 {
-	BOOL animated = (goodResponseCount + badResponseCount); // Don't animate the first try
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+																						  target:self action:@selector(cancelAction:)];
+	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Skip" style:UIBarButtonItemStylePlain
+																			 target:self action:@selector(skipAction:)];
 	
-	[self.navigationItem setLeftBarButtonItem:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                            target:self action:@selector(cancelAction:)]
-                                     animated:animated];
-	[self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"Skip"
-                                                                                style:UIBarButtonItemStylePlain
-                                                                               target:self action:@selector(skipAction:)]
-                                      animated:animated];
+	_goodResponseCount = 0, _badResponseCount = 0;
 	
-	goodResponseCount = 0, badResponseCount = 0;
+	_responses = [[NSMutableArray alloc] initWithCapacity:_allVerbs.count];
+	_responsesCorrect = [[NSMutableArray alloc] initWithCapacity:_allVerbs.count];
+	_forms = [[NSMutableArray alloc] initWithCapacity:_allVerbs.count];
 	
-	responses = [[NSMutableArray alloc] initWithCapacity:allVerbs.count];
-	responsesCorrect = [[NSMutableArray alloc] initWithCapacity:allVerbs.count];
-	forms = [[NSMutableArray alloc] initWithCapacity:allVerbs.count];
-	
-	currentIndex = 0;
+	_askedVerbs = [NSMutableArray arrayWithCapacity:_allVerbs.count];
+	_currentIndex = 0;
 	if (!_firstVerb)
-		_firstVerb = allVerbs.firstObject;
+		_firstVerb = _allVerbs.firstObject;
 	
 	if (_firstVerbForm == VerbFormUnspecified)
-		_firstVerbForm = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
+		_firstVerbForm = (arc4random() % 2) ? VerbFormPastSimple : VerbFormPastParticiple;
 	
-	[self pushVerb:_firstVerb form:_firstVerbForm animated:animated];
+	[self pushVerb:_firstVerb form:_firstVerbForm animated:NO];
+}
+
+- (Verb * _Nullable)nextVerb
+{
+	NSMutableArray <Verb *> * remainingVerbs = _allVerbs.mutableCopy;
+	[remainingVerbs removeObjectsInArray:_askedVerbs];
+	if (remainingVerbs > 0) {
+		NSInteger index = arc4random() % remainingVerbs.count;
+		return remainingVerbs[index];
+	}
+	return nil;
 }
 
 - (void)pushView:(UIView *)view animated:(BOOL)animated
 {
 	// "Pop" the previous pushed view (if exists)
-	if (previousPushedView && previousPushedView != view) {
-		CGRect frame = previousPushedView.frame;
+	if (_previousPushedView && _previousPushedView != view) {
+		CGRect frame = _previousPushedView.frame;
 		frame.origin.x = 0;
-		previousPushedView.frame = frame;
+		_previousPushedView.frame = frame;
 		
 		[UIView animateWithDuration:(animated)? 0.25 : 0.
 						 animations:^{
-							 CGRect frame = previousPushedView.frame;
+							 CGRect frame = _previousPushedView.frame;
 							 frame.origin.x = -self.view.frame.size.width;
-							 previousPushedView.frame = frame;
+							 _previousPushedView.frame = frame;
 						 }];
 	}
 	
@@ -203,97 +371,153 @@
 						 view.frame = frame;
 					 }
 					 completion:^(BOOL finished) {
-						 if (previousPushedView != view)
-							 previousPushedView.hidden = YES;
+						 if (_previousPushedView != view)
+							 _previousPushedView.hidden = YES;
 							 
-						 previousPushedView = view;
+						 _previousPushedView = view;
 					 }];
 }
 
-#pragma mark Next Verb Management
+- (IBAction)startRecognizingAction:(id)sender
+{
+	[SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus status) {
+		if (status == SFSpeechRecognizerAuthorizationStatusAuthorized) {
+			dispatch_async(dispatch_get_main_queue(), ^{
+				if (_speechButton.state == SpeechRecognizerButtonStateIdle) {
+					[self speechRecognizeResponse:_currentResponse];
+				}
+			});
+		}
+	}];
+}
+
+- (void)speechRecognizeResponse:(NSString *)response
+{
+	NSAssert([SFSpeechRecognizer isAvailable], @"");
+	
+	AVAudioSession * session = [AVAudioSession sharedInstance];
+	[session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+	
+	_speechButton.loading = NO;
+	
+	NSTimeInterval const kRecordingDuration = 5;
+	[_recorder recordForDuration:kRecordingDuration];
+	_updateMetersTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * timer) {
+		[self.recorder updateMeters];
+#define CLIP(X) (MAX(0, MIN(X, 1)))
+		float level = CLIP(logf(-160/[self.recorder averagePowerForChannel:0]) / expf(1.5));
+#undef CLIP
+		_speechButton.leftChannelLevel = level;
+		_speechButton.rightChannelLevel = level;
+	}];
+	
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kRecordingDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+		[_recorder stop];
+		_speechButton.loading = YES;
+		
+		NSURL * const outputURL = [NSURL fileURLWithPathComponents:@[ NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject,
+																	  @"recording.caf" ]];
+		SFSpeechURLRecognitionRequest * request = [[SFSpeechURLRecognitionRequest alloc] initWithURL:outputURL];
+		request.taskHint = SFSpeechRecognitionTaskHintDictation;
+		request.contextualStrings = @[ response ];
+		[_recognizer recognitionTaskWithRequest:request
+								  resultHandler:^(SFSpeechRecognitionResult * result, NSError * error) {
+									  if (error) {
+										  // @TODO: Display error
+										  [_updateMetersTimer invalidate]; _updateMetersTimer = nil;
+										  [self.recorder deleteRecording];
+										  self.speechButton.loading = NO;
+										  return ;
+									  }
+									  if (result) {
+										  BOOL found = NO;
+										  NSArray * transcriptions = @[ result.bestTranscription ];
+										  [transcriptions arrayByAddingObjectsFromArray:result.transcriptions];
+										  for (SFTranscription * transcription in transcriptions) {
+											  if ([transcription.formattedString containsString:response]) {
+												  found = YES; break;
+											  }
+										  }
+										  if (found) {
+											  self.textField.text = response;
+											  // @TODO: Validate the quizz
+										  } else {
+											  self.textField.text = result.bestTranscription.formattedString.lowercaseString;
+										  }
+										  if (result.final) {
+											  [_updateMetersTimer invalidate]; _updateMetersTimer = nil;
+											  [self.recorder deleteRecording];
+											  self.speechButton.loading = NO;
+										  }
+									  }
+								  }];
+	});
+}
+
+#pragma mark - Next Verb Management
 
 - (IBAction)pushNewVerbAction:(id)sender
 {
-	currentIndex++;
-	if (currentIndex < allVerbs.count) {// If we have verb to show, push the next verb
-		Verb * verb = allVerbs[currentIndex];
-		
-		srand((unsigned int)time(NULL));
-		VerbForm form = (rand() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
+	_currentIndex++;
+	if (_currentIndex < _allVerbs.count) { // Push the next verb
+		Verb * verb = [self nextVerb];
+		VerbForm form = (arc4random() % 2)? VerbFormPastSimple : VerbFormPastParticiple;
 		[self pushVerb:verb form:form animated:YES];
 		
-	} else // Else, show results
+	} else // Show results
 		[self pushResultAnimated:YES];
 }
 
 - (void)pushVerb:(Verb *)verb form:(VerbForm)form animated:(BOOL)animated
 {
-	[forms addObject:@(form)];
+	[_askedVerbs addObject:verb];
+	[_forms addObject:@(form)];
 	
-	self.title = [NSString stringWithFormat:@"%ld of %ld", (long)currentIndex + 1, (long)allVerbs.count];
-	
-	NSMutableParagraphStyle * style = [[NSMutableParagraphStyle alloc] init];
-	style.hyphenationFactor = 0.5; style.alignment = NSTextAlignmentCenter;
-	NSDictionary * const attributes = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
-										 NSFontAttributeName : [UIFont systemFontOfSize:18.],
-										 NSParagraphStyleAttributeName : style };
+	self.title = [NSString stringWithFormat:@"%ld of %ld", (long)_currentIndex + 1, (long)_allVerbs.count];
 	
 	_infinitifLabel.text = [@"To " stringByAppendingString:verb.infinitif];
-	// @TODO: Need refactoring
-	if (form == VerbFormPastSimple) { // past
-		if (verb.quote.pastDescription.length > 0) {
-			NSMutableAttributedString * string = [[NSMutableAttributedString alloc] init];
-			
-			NSMutableString * placeholder = [[NSMutableString alloc] initWithCapacity:verb.past.length];
-			for (int i = 0; i < verb.past.length; i++) { [placeholder appendString:@"_"]; }
-			// Replace all occurrences (only for the whole word)
-			NSMutableArray * words = [verb.quote.pastDescription componentsSeparatedByString:@" "].mutableCopy;
-			for (NSInteger index = 0; index < words.count; ++index) {
-				NSString * word = [words[index] stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]]; // Remove ",;-" (and so on) to compare occurrence
-				if ([word isEqualToString:verb.past]) {
-					words[index] = [words[index] stringByReplacingOccurrencesOfString:verb.past withString:placeholder]; }
-			}
-			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"« %@ »", [words componentsJoinedByString:@" "]]
-																		   attributes:attributes]];
-			
-			NSDictionary * italics = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
-										NSFontAttributeName : [UIFont italicSystemFontOfSize:16.] };
-			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", verb.quote.pastAuthor]
-																		   attributes:italics]];
-			_formLabel.attributedText = string;
-		} else
-			_formLabel.text = @"Past Simple Form:";
+	_infinitifLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+	
+	NSString * response = verb.past, * quote = verb.quote.pastDescription, * author = verb.quote.pastAuthor;
+	if (form == VerbFormPastParticiple) {
+		response = verb.pastParticiple; quote = verb.quote.pastParticipleDescription; author = verb.quote.pastParticipleAuthor; }
+	
+	if (quote.length > 0) {
+		NSMutableAttributedString * string = [[NSMutableAttributedString alloc] init];
 		
-	} else { // past participle
-		if (verb.quote.pastParticipleDescription.length > 0) {
-			NSMutableAttributedString * string = [[NSMutableAttributedString alloc] init];
-			NSMutableString * placeholder = [[NSMutableString alloc] initWithCapacity:verb.pastParticiple.length];
-			for (int i = 0; i < verb.pastParticiple.length; i++) { [placeholder appendString:@"_"]; }
-			// Replace all occurrences (only for the whole word)
-			NSMutableArray * words = [verb.quote.pastParticipleDescription componentsSeparatedByString:@" "].mutableCopy;
-			for (NSInteger index = 0; index < words.count; ++index) {
-				NSString * word = [words[index] stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]]; // Remove ",;-" (and so on) to compare occurrence
-				if ([word isEqualToString:verb.pastParticiple]) {
-					words[index] = [words[index] stringByReplacingOccurrencesOfString:verb.pastParticiple withString:placeholder]; }
-			}
-			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"« %@ »", [words componentsJoinedByString:@" "]]
-																		   attributes:attributes]];
-			
-			NSDictionary * italics = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
-										NSFontAttributeName : [UIFont italicSystemFontOfSize:16.] };
-			[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", verb.quote.pastParticipleAuthor]
-																		   attributes:italics]];
-			_formLabel.attributedText = string;
-		} else
-			_formLabel.text = @"Past Participle Form:";
+		NSMutableString * placeholder = [[NSMutableString alloc] initWithCapacity:response.length];
+		for (int i = 0; i < response.length; i++) { [placeholder appendString:@"_"]; }
+		// Replace all occurrences (only for the whole word)
+		NSMutableArray * words = [quote componentsSeparatedByString:@" "].mutableCopy;
+		for (NSInteger index = 0; index < words.count; ++index) {
+			NSString * word = [words[index] stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]]; // Remove ",;-" (and so on) to compare occurrence
+			if ([word isEqualToString:response])
+				words[index] = [words[index] stringByReplacingOccurrencesOfString:response withString:placeholder];
+		}
+		
+		NSMutableParagraphStyle * style = [[NSMutableParagraphStyle alloc] init];
+		style.hyphenationFactor = 0.5; style.alignment = NSTextAlignmentCenter;
+		NSDictionary * const attributes = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
+											 NSFontAttributeName : [UIFont preferredFontForTextStyle:UIFontTextStyleBody],
+											 NSParagraphStyleAttributeName : style };
+		NSString * quote = [NSString stringWithFormat:@"« %@ »", [words componentsJoinedByString:@" "]];
+		[string appendAttributedString:[[NSAttributedString alloc] initWithString:quote attributes:attributes]];
+		
+		NSDictionary * italics = @{ NSForegroundColorAttributeName : [UIColor darkGrayColor],
+									NSFontAttributeName : [UIFont preferredItalicFontForTextStyle:UIFontTextStyleFootnote] };
+		[string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@", author]
+																	   attributes:italics]];
+		_formLabel.attributedText = string;
+	} else {
+		_formLabel.text = (form == VerbFormPastParticiple) ? @"Past Participle Form:" : @"Past Simple Form:";
 	}
 	
-	currentResponse = (form == VerbFormPastSimple)? (verb.past) : (verb.pastParticiple);
+	_currentResponse = response;
 	
 	/* Update the label with the number of remaining letters */
-	_remainingCount.text = [NSString stringWithFormat:@"%ld remaining letters", (long)currentResponse.length];
+	_remainingCount.text = [NSString stringWithFormat:@"%ld remaining letters", (long)_currentResponse.length];
 	
-	CGSize size = [currentResponse sizeWithAttributes:@{ NSFontAttributeName : [UIFont boldSystemFontOfSize:24.] }];
+	CGSize size = [_currentResponse sizeWithAttributes:@{ NSFontAttributeName : _textField.font }];
  	
 	/* Fit "_backgroundFieldImageView" from "size.width" + 50px + 2 x 8px */
 	CGRect frame = _backgroundFieldImageView.frame;
@@ -307,14 +531,11 @@
 	frame.origin.x = ceilf((self.view.frame.size.width - frame.size.width) / 2.);
 	_textField.frame = frame;
 	
-	_textField.text = @"";
+	_textField.text = nil;
 	[self pushView:_quizView animated:animated];
 	
-	double delayInSeconds = (animated)? 0.25 : 0.;
-	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-		[_textField becomeFirstResponder];
-	});
+	[_textField performSelector:@selector(becomeFirstResponder) withObject:nil
+					 afterDelay:(animated)? 0.25 : 0.];
 }
 
 #pragma mark Result Management
@@ -324,7 +545,7 @@
     [_textField becomeFirstResponder];
 	[_textField resignFirstResponder];
 	
-	if (goodResponseCount + badResponseCount > 0) {
+	if (_goodResponseCount + _badResponseCount > 0) {
 		NSManagedObjectContext * context = _playlist.managedObjectContext;
 		NSEntityDescription * entity = [NSEntityDescription entityForName:NSStringFromClass(QuizResult.class)
 												   inManagedObjectContext:context];
@@ -332,8 +553,8 @@
 									insertIntoManagedObjectContext:context];
 		result.playlist = _playlist;
 		result.date = [NSDate date];
-		result.rightResponses = @(goodResponseCount);
-		result.wrongResponses = @(badResponseCount);
+		result.rightResponses = @(_goodResponseCount);
+		result.wrongResponses = @(_badResponseCount);
 		[context save:NULL];
 	}
 	
@@ -347,7 +568,7 @@
 - (void)pushResponse:(ResponseState)response animated:(BOOL)animated
 {
 	_responseImageView.image = [UIImage imageNamed:(response == ResponseStateTrue) ? @"true" : @"false"];
-	_responseLabel.text = currentResponse;
+	_responseLabel.text = _currentResponse;
 	
 	_responseView.frame = self.view.bounds;
 	[self pushView:_responseView animated:animated];
@@ -366,7 +587,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return allVerbs.count;
+	return _allVerbs.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -376,11 +597,11 @@
 	if (!cell)
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CellID"];
 	
-	NSString * response = responses[indexPath.row];
-	Verb * verb = allVerbs[indexPath.row];
-	NSString * verbString = (forms[indexPath.row].unsignedIntegerValue == VerbFormPastSimple) ? (verb.past) : (verb.pastParticiple);
+	NSString * response = _responses[indexPath.row];
+	Verb * verb = _allVerbs[indexPath.row];
+	NSString * verbString = (_forms[indexPath.row].unsignedIntegerValue == VerbFormPastSimple) ? (verb.past) : (verb.pastParticiple);
 	if (response.length > 0) {
-		BOOL correct = responsesCorrect[indexPath.row].boolValue;
+		BOOL correct = _responsesCorrect[indexPath.row].boolValue;
 		if (correct)
 			cell.textLabel.text = [NSString stringWithFormat:@"%@", response];
 		else
@@ -398,7 +619,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	Verb * verb = allVerbs[indexPath.row];
+	Verb * verb = _allVerbs[indexPath.row];
 	if (TARGET_IS_IPAD()) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
 		[self dismissViewControllerAnimated:YES completion:NULL];
@@ -414,18 +635,18 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-	if (textField.text.length == currentResponse.length) {
-		BOOL goodResponse = [textField.text isEqualToString:currentResponse];
+	if (textField.text.length == _currentResponse.length) {
+		BOOL goodResponse = [textField.text isEqualToString:_currentResponse];
 		if (goodResponse) {
-			goodResponseCount++;
+			_goodResponseCount++;
 			[self pushResponse:ResponseStateTrue animated:YES];
 		} else {
-			badResponseCount++;
+			_badResponseCount++;
 			[self pushResponse:ResponseStateFalse animated:YES];
 		}
 		
-		[responses addObject:textField.text];
-		[responsesCorrect addObject:@(goodResponse)];
+		[_responses addObject:textField.text];
+		[_responsesCorrect addObject:@(goodResponse)];
 		return YES;
 		
 	} else
@@ -436,29 +657,26 @@
 
 - (void)textFieldDidChange:(NSNotification *)notification
 {
-	static NSUInteger oldLenght = 0;
+	static NSUInteger oldLength = 0;
 	
-	NSUInteger location = [currentResponse rangeOfString:@"-"].location;
+	NSUInteger location = [_currentResponse rangeOfString:@"-"].location;
 	if (location != NSNotFound) {
-		if (oldLenght > _textField.text.length) {// If the old lenght is greated than the actual, the user is deleting
-			
-			/* Remove "-" if needed */
+		if (oldLength > _textField.text.length) { // If the old lenght is greated than the actual, the user is deleting
+			// Remove "-" if needed
 			if (_textField.text.length == (location + 1)) {
-				_textField.text = [_textField.text stringByReplacingCharactersInRange:NSMakeRange(location - 1, 2) withString:@""];// Remove the two last caracters (as if we delete the last caracter with the "-")
+				// Remove the two last caracters (as if we delete the last caracter with the "-")
+				_textField.text = [_textField.text stringByReplacingCharactersInRange:NSMakeRange(location - 1, 2) withString:@""];
 			}
-			
 		} else {
-			/* Add "-" if needed */
-			if (_textField.text.length == location) {
+			// Add "-" if needed
+			if (_textField.text.length == location)
 				_textField.text = [_textField.text stringByAppendingString:@"-"];
-			}
 		}
 	}
+	oldLength = _textField.text.length;
 	
-	oldLenght = _textField.text.length;
-	
-	/* Update the label with the number of remaining letters */
-	NSInteger rem = currentResponse.length - _textField.text.length;
+	// Update the label with the number of remaining letters
+	NSInteger rem = _currentResponse.length - _textField.text.length;
 	_remainingCount.text = [NSString stringWithFormat:@"%ld remaining letters", (long)rem];
 	_remainingCount.textColor = (rem < 0) ? [UIColor redColor] : [UIColor grayColor];
 }

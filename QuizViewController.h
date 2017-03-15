@@ -12,6 +12,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface SpeechRecognizerButton: UIButton
+
+@property (nonatomic, assign) BOOL loading;
+@property (nonatomic, assign) CGFloat leftChannelLevel, rightChannelLevel;
+
+@end
+
+
 typedef NS_ENUM(NSUInteger, ResponseState) {
 	ResponseStateTrue,
 	ResponseStateFalse
@@ -30,6 +38,7 @@ typedef NS_ENUM(NSInteger, VerbForm) {
 @property (nonatomic, weak) IBOutlet UILabel * infinitifLabel, * formLabel, * remainingCount;
 @property (nonatomic, weak) IBOutlet UITextField * textField;
 @property (nonatomic, weak) IBOutlet UIImageView * backgroundFieldImageView;
+@property (nonatomic, weak) IBOutlet SpeechRecognizerButton * speechButton;
 
 @property (nonatomic, weak) IBOutlet UIImageView * responseImageView;
 @property (nonatomic, weak) IBOutlet UILabel * responseLabel;

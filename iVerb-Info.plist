@@ -51,6 +51,10 @@
 	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Authorize access to the microphone to allow you to dictate response for the quiz.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Authorize access to speech recognition to allow you to dictate response for the quiz.</string>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
