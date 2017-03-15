@@ -114,7 +114,7 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 	return [template stringByReplacingOccurrencesOfString:@"{{@}}" withString:content];
 }
 
-- (void)buildingSpolightIndexWithCompletionHandler:(void (^ __nullable)(NSError * __nullable error))completionHandler
+- (void)buildingSpolightIndexWithCompletionHandler:(void (^)(NSError * error))completionHandler
 {
 	if (NSClassFromString(@"CSSearchableIndex")) {
 		dispatch_async(dispatch_get_main_queue(), ^{
@@ -123,7 +123,7 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 				CSSearchableItemAttributeSet * attributeSet = [[CSSearchableItemAttributeSet alloc] initWithItemContentType:(NSString *)kUTTypeItem];
 				attributeSet.title = [@"To " stringByAppendingString:verb.infinitif];
 				attributeSet.contentDescription = [NSString stringWithFormat:@"%@, %@\n%@", verb.past, verb.pastParticiple, verb.definition];
-				attributeSet.keywords = @[ verb.infinitif, [attributeSet.contentDescription componentsSeparatedByString:@" "] ];
+				attributeSet.keywords = [[attributeSet.contentDescription componentsSeparatedByString:@" "] arrayByAddingObject:verb.infinitif];
 				
 				CGFloat scale = [UIScreen mainScreen].scale;
 				NSString * imageName = (scale > 1) ? [NSString stringWithFormat:@"spotlight@%.0fx", scale] : @"spotlight";
