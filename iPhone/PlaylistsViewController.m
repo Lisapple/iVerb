@@ -11,7 +11,7 @@
 #import "SearchViewController.h"
 #import "CloudViewController.h"
 #import "QuizViewController.h"
-#import "AboutViewController.h"
+#import "AProposViewController.h"
 
 #import "ManagedObjectContext.h"
 
