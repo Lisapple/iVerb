@@ -14,4 +14,6 @@
 
 - (NSString *)HTMLFormat;
 
+- (NSAttributedString *)attributedDescription;
+
 @end

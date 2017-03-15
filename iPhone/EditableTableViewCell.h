@@ -19,4 +19,6 @@
 @property (nonatomic, strong) NSObject <EditableTableViewCellDelegate> * delegate;
 @property (nonatomic, strong) NSString * fieldValue;
 
+- (void)setFirstResponder;
+
 @end

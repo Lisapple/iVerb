@@ -112,11 +112,18 @@
 																				options:NSRegularExpressionCaseInsensitive
 																				  error:nil];
 		if ([regex matchesInString:urlString options:0 range:NSMakeRange(0, urlString.length)]) {
-			NSString * playlistName = [regex stringByReplacingMatchesInString:urlString options:0 range:NSMakeRange(0, urlString.length) withTemplate:@"$1"];
-			NSString * infinitif = [regex stringByReplacingMatchesInString:urlString options:0 range:NSMakeRange(0, urlString.length) withTemplate:@"$2"];
-			NSString * tense = [regex stringByReplacingMatchesInString:urlString options:0 range:NSMakeRange(0, urlString.length) withTemplate:@"$3"];
-			[self showQuizForPlaylist:[Playlist playlistWithName:playlistName] firstVerbWithInfinitif:infinitif tense:tense];
-			return YES;
+			NSString * playlistName = [regex stringByReplacingMatchesInString:urlString options:0
+																		range:NSMakeRange(0, urlString.length) withTemplate:@"$1"];
+			Playlist * playlist = [Playlist playlistWithName:playlistName];
+			if (playlist) {
+				NSString * infinitif = [regex stringByReplacingMatchesInString:urlString options:0
+																		 range:NSMakeRange(0, urlString.length) withTemplate:@"$2"];
+				NSString * tense = [regex stringByReplacingMatchesInString:urlString options:0
+																	 range:NSMakeRange(0, urlString.length) withTemplate:@"$3"];
+				[self showQuizForPlaylist:playlist firstVerbWithInfinitif:infinitif tense:tense];
+				return YES;
+			}
+			return NO;
 		}
 	}
 	return NO;
@@ -308,19 +315,22 @@
 		NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
 		request.predicate = [NSPredicate predicateWithFormat:@"SELF.quote == nil"];
 		NSArray * verbs = [_managedObjectContext executeFetchRequest:request error:NULL];
-		if (verbs.count > 0) {
+		if (verbs.count > 0) { // Add quotes from default database if user db doesn't contains all // @FIXME: Not all verbs contain quote, this executed at every launch
 			
 			NSPersistentStoreCoordinator * applicationStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
 			NSURL * applicationStoreURL = [[NSBundle mainBundle] URLForResource:@"verbs" withExtension:@"sqlite"];
-			if ([applicationStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:applicationStoreURL options:@{} error:NULL]) {
+			
+			NSDictionary * options = @{ NSReadOnlyPersistentStoreOption : @YES };
+			if ([applicationStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil
+																	URL:applicationStoreURL options:options error:NULL]) {
 				NSManagedObjectContext * appContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
 				appContext.persistentStoreCoordinator = applicationStoreCoordinator;
-				
-				__block NSMutableDictionary <NSString *, NSDictionary <NSString *, NSString *> *> * infinitivesAndQuotes = [[NSMutableDictionary alloc] initWithCapacity:verbs.count];
+
+				__block NSMutableDictionary <NSString *, Dictionary(String, String)> * infinitivesAndQuotes = [[NSMutableDictionary alloc] initWithCapacity:verbs.count];
 				NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Quote"];
-				[[appContext executeFetchRequest:request error:NULL] enumerateObjectsUsingBlock:^(Quote * _Nonnull quote, NSUInteger idx, BOOL * _Nonnull stop) {
+				[[appContext executeFetchRequest:request error:NULL] enumerateObjectsUsingBlock:^(Quote * quote, NSUInteger idx, BOOL * stop) {
 					NSString * infinitif = quote.verb.infinitif;
-					NSMutableDictionary <NSString *, NSString *> * quoteDictionary = [[NSMutableDictionary alloc] initWithCapacity:3];
+					MDictionary(String, String) quoteDictionary = [[NSMutableDictionary alloc] initWithCapacity:3];
 					if (quote.infinitif) {
 						quoteDictionary[@"i"] = quote.infinitif; }
 					if (quote.past) {

@@ -22,10 +22,9 @@
 #define Array(E) NSArray < NS##E * > *
 #define MArray(E) NSMutableArray < NS##E * > *
 
-#define TARGET_IS_IPAD()	(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define TARGET_IS_IPAD() (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
-#define IOS_8_OR_EARLIER()	([UIDevice currentDevice].systemVersion.floatValue < 9.0)
-#define IOS_9_OR_LATER()	([UIDevice currentDevice].systemVersion.floatValue >= 9.0)
+#define TARGET_IOS_8() ([UIDevice currentDevice].systemVersion.floatValue < 9.0)
 
 static NSString * const SearchTableViewDidSelectCellNotification = @"SearchTableViewDidSelectCellNotification"; // object is a Verb
 static NSString * const ResultDidReloadNotification = @"ResultDidReloadNotification"; // No object and no userInfo
@@ -34,6 +33,18 @@ static NSString * const CloudLabelDidSelectedNotification = @"CloudLabelDidSelec
 
 /// A key to a user defaults dictionary with infinitif as key and verb viewed count as value
 static NSString * const UserDefaultsVerbPopularitiesKey = @"verbs.popularities";
+
+/// Number of times a confirmation alert was shown when clearing history
+static NSString * const UserDefaultsClearHistoryAlertCountKey = @"clear-history.confirmation.count";
+
+/// Last select playlist name
+static NSString * const UserDefaultsLastUsedPlaylistKey = @"Last Used Playlist";
+
+/**
+ A dictionary with all verbs from the current playlist.
+ The format is [infinitif] = "infinitif|past|pastParticiple|definition"
+ */
+static NSString * const UserDefaultsSharedVerbsKey = @"Shared Verbs";
 
 static inline void dispatch_after_main(CFTimeInterval delay, dispatch_block_t block) {
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), block);

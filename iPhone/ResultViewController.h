@@ -22,11 +22,4 @@
 @property (nonatomic, strong) NSString * verbString;
 @property (nonatomic, strong) Verb * verb;
 
-@property (nonatomic, assign) IBOutlet IVWebView * webView;
-
-@property (nonatomic, assign) IBOutlet UILabel * infinitiveLabel, * pastLabel, * participleLabel, * translationLabel;
-@property (nonatomic, assign) IBOutlet UIImageView * bookmarkImageView;
-
-@property (nonatomic, assign) IBOutlet UIActivityIndicatorView * activityIndicatorView;
-
 @end

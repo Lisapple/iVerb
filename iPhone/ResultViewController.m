@@ -22,6 +22,8 @@
 
 @interface ResultViewController ()
 
+@property (nonatomic, strong) IVWebView * webView;
+@property (nonatomic, strong) UIActivityIndicatorView * activityIndicatorView;
 @property (nonatomic, strong) AVSpeechSynthesizer * synthesizer;
 
 @end
@@ -36,8 +38,7 @@
 	self.title = [@"To " stringByAppendingString:infinitif];
 	
 	self.navigationItem.rightBarButtonItems = @[ [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-																							   target:self
-																							   action:@selector(showOptionAction:)],
+																							   target:self action:@selector(showOptionAction:)],
 												 [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"favorite"]
 																				  style:UIBarButtonItemStylePlain
 																				 target:self action:@selector(tooggleFavoriteAction:)] ];
@@ -237,7 +238,7 @@
 														  [self presentViewController:navigationController animated:YES completion:NULL];
 													  }]];
 	
-	NSString * noteButton = (_verb.note.length > 0) ? @"Edit Note" : @"Add Note";
+	NSString * noteButton = (_verb.note.length > 0) ? @"Edit Note..." : @"Add Note";
 	[alertController addAction:[UIAlertAction actionWithTitle:noteButton style:UIAlertActionStyleDefault
 													  handler:^(UIAlertAction * action) {
 														  // Show the panel to add/edit note

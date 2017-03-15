@@ -17,7 +17,6 @@
 
 #import "Playlist+additions.h"
 
-@interface MainViewController : UISplitViewController
-	<UIPopoverControllerDelegate, UIPopoverPresentationControllerDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate>
+@interface MainViewController : UISplitViewController <UIPopoverControllerDelegate, UIPopoverPresentationControllerDelegate>
 
 @end

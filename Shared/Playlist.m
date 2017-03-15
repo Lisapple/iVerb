@@ -145,12 +145,20 @@ NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
 	if (!infinitif)
 		return nil;
 	
-	infinitif = [infinitif stringByReplacingOccurrencesOfString:@"To " withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, infinitif.length - 1)];
+	infinitif = [infinitif stringByReplacingOccurrencesOfString:@"To " withString:@""
+														options:NSCaseInsensitiveSearch
+														  range:NSMakeRange(0, infinitif.length - 1)];
 	[infinitif stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
 	request.fetchLimit = 1;
-	request.predicate = [NSPredicate predicateWithFormat:@"infinitif CONTAINS[cd] %@", infinitif];
-	return [self.managedObjectContext executeFetchRequest:request error:NULL].firstObject;
+	request.predicate = [NSPredicate predicateWithFormat:@"infinitif LIKE[cd] %@", infinitif];
+	Verb * verb = [self.managedObjectContext executeFetchRequest:request error:NULL].firstObject;
+	if (!verb) {
+		request.predicate = [NSPredicate predicateWithFormat:@"infinitif CONTAINS[cd] %@", infinitif];
+		verb = [self.managedObjectContext executeFetchRequest:request error:NULL].firstObject;
+	}
+	return verb;
 }
 
 - (void)addVerb:(Verb *)verb

@@ -10,14 +10,6 @@
 
 #import "Verb.h"
 
-NSString * const LastUsedPlaylistKey = @"Last Used Playlist";
-
-/**
- A dictionary with all verbs from the current playlist.
- The format is [infinitif] = "infinitif|past|pastParticiple|definition"
- */
-NSString * const SharedVerbsKey = @"Shared Verbs";
-
 @implementation Playlist (additions)
 
 static Playlist * _lastSelectedPlaylist = nil;
@@ -29,11 +21,10 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 		case PlaylistActionSelect: {
 			if (!_lastSelectedPlaylist) {
 				NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-				NSString * name = [userDefaults stringForKey:LastUsedPlaylistKey];
+				NSString * name = [userDefaults stringForKey:UserDefaultsLastUsedPlaylistKey];
 				_lastSelectedPlaylist = [Playlist playlistWithName:name];
-				if (!_lastSelectedPlaylist) {
+				if (!_lastSelectedPlaylist)
 					_lastSelectedPlaylist = [Playlist allVerbsPlaylist];
-				}
 			}
 			return _lastSelectedPlaylist;
 		}
@@ -46,33 +37,36 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 
 + (void)setPlaylist:(nullable Playlist *)playlist forAction:(PlaylistAction)action
 {
-	if /**/ (action == PlaylistActionSelect) {
+	if (action == PlaylistActionSelect) {
 		_lastSelectedPlaylist = playlist;
 		
-		NSString * name = playlist.name;
-		if (name) {
-			NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-			[userDefaults setObject:name forKey:LastUsedPlaylistKey];
-			
-			NSMutableDictionary * verbs = [[NSMutableDictionary alloc] initWithCapacity:playlist.verbs.count];
-			for (Verb * verb in playlist.verbs) {
-				verbs[verb.infinitif] = [NSString stringWithFormat:@"%@|%@|%@|%@",
-										 verb.infinitif, verb.past, verb.pastParticiple, verb.definition];
-			}
-			NSUserDefaults * sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.lisacintosh.iverb"];
-			[sharedDefaults setObject:verbs forKey:SharedVerbsKey];
-			[sharedDefaults setObject:name forKey:LastUsedPlaylistKey];
-		}
+		NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+		[userDefaults setObject:playlist.name forKey:UserDefaultsLastUsedPlaylistKey];
+		[userDefaults synchronize];
 		
+		// Update shared default playlist content
+		Playlist * sharedPlaylist = (playlist.verbs.count) ? playlist : [Playlist commonsVerbsPlaylist];
+		NSMutableDictionary * verbs = [[NSMutableDictionary alloc] initWithCapacity:sharedPlaylist.verbs.count];
+		for (Verb * verb in sharedPlaylist.verbs) {
+			verbs[verb.infinitif] = [NSString stringWithFormat:@"%@|%@|%@|%@",
+									 verb.infinitif, verb.past, verb.pastParticiple, verb.definition];
+		}
+		NSUserDefaults * sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.lisacintosh.iverb"];
+		[sharedDefaults setObject:verbs forKey:UserDefaultsSharedVerbsKey];
+		[sharedDefaults setObject:(playlist.isUserPlaylist) ? playlist.name : nil
+						   forKey:UserDefaultsLastUsedPlaylistKey]; // Share playlist only from user playlist (these can launch quiz)
+		[sharedDefaults synchronize];
+		
+		// Update shortcut items
 		UIApplication * app = [UIApplication sharedApplication];
 		if ([app respondsToSelector:@selector(shortcutItems)] && app.shortcutItems.count >= 2) {
 			NSMutableArray * shortcutItems = [app.shortcutItems subarrayWithRange:NSMakeRange(0, 2)].mutableCopy;
-			if (name && playlist.isUserPlaylist) {
+			if (playlist.name && playlist.isUserPlaylist && playlist.verbs.count > 0) {
 				UIApplicationShortcutItem * shortcutItem = [[UIApplicationShortcutItem alloc] initWithType:@"com.lisacintosh.iverb.launch.quiz"
 																							localizedTitle:@"Launch Quiz"
-																						 localizedSubtitle:name
+																						 localizedSubtitle:playlist.name
 																									  icon:[UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypePlay]
-																								  userInfo:@{ @"playlist" : name }];
+																								  userInfo:@{ @"playlist" : playlist.name }];
 				[shortcutItems addObject:shortcutItem];
 			}
 			app.shortcutItems = shortcutItems;
@@ -85,7 +79,10 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 
 - (NSString *)localizedName
 {
-	return NSLocalizedString(self.name, nil); // Convert "_ALL_VERBS_", "_BASICS_VERBS_", "_BOOKMARKS_", "_HISTORY_" to correct title, skip user's playlists title
+	if (self.isDefaultPlaylist)
+		return NSLocalizedString(self.name, nil); // Translate "_ALL_VERBS_", "_COMMONS_", "_BOOKMARKS_" or "_HISTORY_"
+	
+	return self.name;
 }
 
 - (NSString *)HTMLFormat

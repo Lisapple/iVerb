@@ -60,15 +60,15 @@
 		_segmentedControl.translatesAutoresizingMaskIntoConstraints = NO;
 		_segmentedControl.tintColor = [UIColor colorWithRed:201./255. green:201./255. blue:206./255. alpha:1];
 		[self.contentView addSubview:_segmentedControl];
-		[self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:_segmentedControl attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
-																			toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:5],
-											[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual
-																			toItem:_segmentedControl attribute:NSLayoutAttributeBottom multiplier:1 constant:5],
-											[NSLayoutConstraint constraintWithItem:_segmentedControl attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual
-																			toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:15],
-											[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual
-																			toItem:_segmentedControl attribute:NSLayoutAttributeRight multiplier:1 constant:15]
-											]];
+		[self.contentView addConstraints:
+		 @[ [NSLayoutConstraint constraintWithItem:_segmentedControl attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
+											toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:7],
+			[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual
+											toItem:_segmentedControl attribute:NSLayoutAttributeBottom multiplier:1 constant:7],
+			[NSLayoutConstraint constraintWithItem:_segmentedControl attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual
+											toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:8],
+			[NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual
+											toItem:_segmentedControl attribute:NSLayoutAttributeRight multiplier:1 constant:8] ]];
 	}
 	return self;
 }
@@ -134,7 +134,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	[self.searchController.searchBar sizeToFit];
 	self.tableView.tableHeaderView = self.searchController.searchBar;
 	
-	if (IOS_8_OR_EARLIER()) {
+	if (TARGET_IOS_8()) {
 		// Create opaque background view when searching to hide table view result under status bar
 		_statusBarBackgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width, 20)];
 		_statusBarBackgroundView.backgroundColor = [UIColor colorWithRed:201./255. green:201./255. blue:206./255. alpha:1];
@@ -194,18 +194,24 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 
 - (void)updateNavBar
 {
+	self.navigationItem.rightBarButtonItem.enabled = (_playlist.verbs.count > 0);
+	
 	BOOL allSelected = (_playlist.verbs.count == checkedVerbs.count);
-	NSString * title = [NSString stringWithFormat:(allSelected) ? @"Unselect All (%ld)" : @"Select All (%ld)", _playlist.verbs.count];
+	NSString * title = [NSString stringWithFormat:(allSelected) ? @"Unselect All (%ld)" : @"Select All (%ld)", (unsigned long)_playlist.verbs.count];
 	UIBarButtonItem * selectAllItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain
 																	  target:self action:@selector(selectAllAction:)];
-	self.navigationItem.leftBarButtonItem = (editing) ? selectAllItem : nil;
+	[self.navigationItem setLeftBarButtonItem:(editing) ? selectAllItem : nil
+									 animated:YES];
 }
 
 - (void)updateToolbar
 {
 	BOOL buttonsEnabled = (checkedVerbs.count > 0);
-	for (UIBarButtonItem * buttonItem in self.navigationController.toolbar.items)
+	for (UIBarButtonItem * buttonItem in self.navigationController.toolbar.items) {
 		buttonItem.enabled = buttonsEnabled;
+		if (buttonItem.tag == kToolbarDeleteItemKey)
+			buttonItem.title = (checkedVerbs.count > 1) ? @"Remove..." : @"Remove"; // No confirmation if only one verb selected
+	}
 }
 
 - (void)updateData
@@ -245,11 +251,10 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 
 - (NSInteger)indexOfObjectBeginingWith:(NSString *)beginString
 {
-    if ([beginString isEqualToString:UITableViewIndexSearch]) {
+    if ([beginString isEqualToString:UITableViewIndexSearch])
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
 							  atScrollPosition:UITableViewScrollPositionBottom
 									  animated:NO];
-    }
     
 	NSInteger index = 0;
 	for (Verb * verb in filteredKeys) {
@@ -392,7 +397,6 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 		}
 		UIActivityViewController * activityController = [[UIActivityViewController alloc] initWithActivityItems:@[ attrString ]
 																						  applicationActivities:nil];
-		
 		if (TARGET_IS_IPAD()) {
 			activityController.modalPresentationStyle = UIModalPresentationPopover;
 			UIPopoverPresentationController * popController = activityController.popoverPresentationController;
@@ -402,17 +406,16 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	}
 }
 
-- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
+- (IBAction)removeFromMenuAction:(id)sender
 {
-	if (error) {
-		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error when sending mail"
-																				 message:error.localizedDescription
-																		  preferredStyle:UIAlertControllerStyleAlert];
-		[alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:NULL]];
-		[self presentViewController:alertController animated:YES completion:NULL];
-	}
+	NSIndexPath * indexPath = self.tableView.indexPathForSelectedRow;
+	Verb * verb = filteredKeys[indexPath.row];
 	
-	[controller dismissViewControllerAnimated:YES completion:NULL];
+	[self.tableView beginUpdates];
+	[self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
+	[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
+	[self updateData];
+	[self.tableView endUpdates];
 }
 
 - (IBAction)removeAction:(id)sender
@@ -477,9 +480,9 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (indexPath.row == 0 && [self shouldShowSortingControlInTableView:tableView]) {
+	if (indexPath.row == 0 && [self shouldShowSortingControlInTableView:tableView])
 		return 36.;
-	}
+	
 	return UITableViewAutomaticDimension;
 }
 
@@ -488,7 +491,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	if (indexPath.row == 0 && [self shouldShowSortingControlInTableView:tableView]) {
 		static NSString * cellID = @"sortCellID";
 		SortTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellID forIndexPath:indexPath];
-		cell.segmentedTitles = @[ @"More recent", @"More viewed" ];
+		cell.segmentedTitles = @[ @"More recent", @"Most viewed" ];
 		[cell.segmentedControl setTarget:self action:@selector(changeOrderAction:) forControlEvents:UIControlEventValueChanged];
 		cell.segmentedControl.selectedSegmentIndex = historySorting;
 		return cell;
@@ -646,7 +649,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	[searchResultsViewController.tableView reloadData];
 }
 
-- (void)willDismissSearchController:(nonnull UISearchController *)searchController
+- (void)willDismissSearchController:(UISearchController *)searchController
 {
 	isSearching = NO;
 	_statusBarBackgroundView.hidden = YES;
@@ -660,7 +663,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	[self.searchController.searchBar resignFirstResponder];
 }
 
-- (void)popoverPresentationControllerDidDismissPopover:(nonnull UIPopoverPresentationController *)popoverPresentationController
+- (void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController
 {
 	showingAddToPopover = NO;
 }

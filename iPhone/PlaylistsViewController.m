@@ -19,6 +19,32 @@
 #import "NSDate+addition.h"
 #import "UIApplication+addition.h"
 
+const NSUInteger kRenamingTextFieldTag = 'rtft';
+
+@interface TableViewCell : UITableViewCell
+
++ (NSString *)identifier;
+
+@end
+
+@implementation TableViewCell
+
++ (NSString *)identifier
+{
+	return @"CellID";
+}
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+	if ((self = [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier])) {
+		self.selectionStyle = UITableViewCellSelectionStyleGray;
+	}
+	return self;
+}
+
+@end
+
+
 @interface PlaylistsViewController ()
 
 @property (nonatomic, strong) NSIndexPath * indexPathForActionSheet;
@@ -111,6 +137,8 @@
 	[Playlist setPlaylist:nil forAction:PlaylistActionSelect];
 }
 
+#pragma mark - Editable table view cell delegate
+
 - (void)editableCellDidBeginEditing:(EditableTableViewCell *)cell
 {
 	[self.tableView scrollToRowAtIndexPath:[self.tableView indexPathForCell:cell]
@@ -148,33 +176,21 @@
 {
 	UITableViewCell * cell = nil;
 	
-	static NSString * cellID = @"CellID";
 	if (indexPath.section == 0) { // Default lists
-		
-		cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
-		if (!cell) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        }
+		cell = [aTableView dequeueReusableCellWithIdentifier:TableViewCell.identifier forIndexPath:indexPath];
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 		
 		Playlist * playlist = defaultPlaylists[indexPath.row];
 		cell.textLabel.text = playlist.localizedName;
         
-        cell.detailTextLabel.text = (playlist.isBookmarksPlaylist && playlist.verbs.count > 0) ? [NSString stringWithFormat:@"%lu", (unsigned long)playlist.verbs.count] : @"";
+        cell.detailTextLabel.text = (playlist.isBookmarksPlaylist && playlist.verbs.count > 0) ? [NSString stringWithFormat:@"%lu", (unsigned long)playlist.verbs.count] : nil;
 		
 	} else if (indexPath.section == 1) { // Cloud
-		
-		cell = [aTableView dequeueReusableCellWithIdentifier:cellID];
-		if (!cell) {
-			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        }
+		cell = [aTableView dequeueReusableCellWithIdentifier:TableViewCell.identifier forIndexPath:indexPath];
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 		cell.textLabel.text = @"Cloud";
 		
-	} else { // User list
-		
+	} else if (indexPath.section == 2) { // User lists
 		if (indexPath.row > (NSInteger)(userPlaylists.count - 1)) { // Cell to create a new playlist
 			static NSString * newCellID = @"NewCellID";
 			cell = (EditableTableViewCell *)[aTableView dequeueReusableCellWithIdentifier:newCellID];
@@ -182,18 +198,16 @@
 				cell = [[EditableTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:newCellID];
 				((EditableTableViewCell *)cell).delegate = self;
 			}
+			cell.selectionStyle = UITableViewCellSelectionStyleNone;
 			((EditableTableViewCell *)cell).fieldValue = nil;
 			
 		} else { // Existing user lists
-			static NSString * userCellID = @"UserCellID";
-			cell = [aTableView dequeueReusableCellWithIdentifier:userCellID];
-			if (!cell)
-				cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:userCellID];
+			cell = [aTableView dequeueReusableCellWithIdentifier:TableViewCell.identifier forIndexPath:indexPath];
 			
 			Playlist * playlist = userPlaylists[indexPath.row];
 			cell.textLabel.text = playlist.localizedName;
 			
-			/* If the playlist is not empty, show the number of verbs */
+			// If the playlist is not empty, show the number of verbs
 			cell.detailTextLabel.text = (playlist.verbs.count > 0)? [NSString stringWithFormat:@"%lu", (unsigned long)playlist.verbs.count] : nil;
             
             cell.accessoryType = (playlist.verbs.count > 0) ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
@@ -220,18 +234,7 @@
 - (void)tableView:(UITableView *)aTableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	Playlist * playlist = userPlaylists[indexPath.row];
-	
-	/* Delete the playlist from Core Data */
-	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
-	[context deleteObject:playlist];
-	[context save:NULL];
-	
-	/* Reload the TableView */
-	[aTableView beginUpdates];
-	[aTableView deleteRowsAtIndexPaths:@[indexPath]
-                      withRowAnimation:UITableViewRowAnimationFade];
-	userPlaylists = [[NSArray alloc] initWithArray:[Playlist userPlaylists]];
-	[aTableView endUpdates];
+	[self deletePlaylist:playlist];
 }
 
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -257,8 +260,8 @@
 {
 	_selectedPlaylist = userPlaylists[indexPath.row];
 	
-	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil
-																	  preferredStyle:UIAlertControllerStyleActionSheet];
+	UIAlertController * alertController = [UIAlertController alertControllerWithTitle:nil message:nil
+																	   preferredStyle:UIAlertControllerStyleActionSheet];
 	if (_selectedPlaylist.verbs.count > 0) {
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Launch the Quiz" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 			[self launchQuizForPlaylist:_selectedPlaylist]; }]];
@@ -340,15 +343,17 @@
 
 - (void)deletePlaylist:(Playlist *)playlist
 {
+	if ([Playlist playlistForAction:PlaylistActionSelect] == playlist)
+		[Playlist setPlaylist:nil forAction:PlaylistActionSelect];
+	
 	NSIndexPath * indexPath = [NSIndexPath indexPathForRow:[[Playlist userPlaylists] indexOfObject:playlist]
 												 inSection:2];
-	
-    /* Delete the playlist from Core Data */
+    // Delete the playlist
     NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
     [context deleteObject:playlist];
     [context save:NULL];
     
-    /* Reload the TableView */
+    // Reload the TableView
     [self.tableView beginUpdates];
     [self.tableView deleteRowsAtIndexPaths:@[ indexPath ]
                           withRowAnimation:UITableViewRowAnimationFade];
