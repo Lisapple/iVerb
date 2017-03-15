@@ -47,6 +47,7 @@ const NSUInteger kRenamingTextFieldTag = 'rtft';
 
 @interface PlaylistsViewController ()
 
+@property (nonatomic, weak, nullable) UIAlertAction * renameAlertDefaultAction;
 @property (nonatomic, strong) NSIndexPath * indexPathForActionSheet;
 @property (nonatomic, strong) Playlist * selectedPlaylist;
 
@@ -128,6 +129,11 @@ const NSUInteger kRenamingTextFieldTag = 'rtft';
     [super viewWillAppear:animated];
 	
 	[self.tableView reloadData];
+	[[NSNotificationCenter defaultCenter] addObserverForName:UITextFieldTextDidChangeNotification object:nil queue:nil usingBlock:^(NSNotification * notification) {
+		UITextField * sender = (UITextField *)notification.object;
+		if (sender.tag == kRenamingTextFieldTag)
+			self.renameAlertDefaultAction.enabled = (sender.text.length > 0);
+	}];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -135,6 +141,7 @@ const NSUInteger kRenamingTextFieldTag = 'rtft';
     [super viewDidAppear:animated];
 	
 	[Playlist setPlaylist:nil forAction:PlaylistActionSelect];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UITextFieldTextDidChangeNotification object:nil];
 }
 
 #pragma mark - Editable table view cell delegate
@@ -266,6 +273,8 @@ const NSUInteger kRenamingTextFieldTag = 'rtft';
 		[alertController addAction:[UIAlertAction actionWithTitle:@"Launch the Quiz" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
 			[self launchQuizForPlaylist:_selectedPlaylist]; }]];
 	}
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Rename..." style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+		[self renamePlaylist:_selectedPlaylist]; }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
 		[self deletePlaylist:_selectedPlaylist]; }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
@@ -339,6 +348,34 @@ const NSUInteger kRenamingTextFieldTag = 'rtft';
         [self.view.window.rootViewController presentViewController:navigationController animated:YES completion:NULL];
     } else // iPhone
         [self presentViewController:navigationController animated:YES completion:NULL];
+}
+
+- (void)renamePlaylist:(Playlist *)playlist
+{
+	UIAlertController * alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Rename \"%@\"", playlist.name]
+																	message:nil preferredStyle:UIAlertControllerStyleAlert];
+	[alert addTextFieldWithConfigurationHandler:^(UITextField * textField) {
+		textField.tag = kRenamingTextFieldTag;
+		textField.text = playlist.name;
+	}];
+	
+	[alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+	_renameAlertDefaultAction = [UIAlertAction actionWithTitle:@"Rename" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+		playlist.name = alert.textFields.firstObject.text;
+		assert(playlist.name);
+		[playlist.managedObjectContext save:NULL];
+		
+		// Update the TableView
+		[self.tableView beginUpdates];
+		NSIndexPath * indexPath = [NSIndexPath indexPathForRow:[[Playlist userPlaylists] indexOfObject:playlist]
+													 inSection:2];
+		[self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+							  withRowAnimation:UITableViewRowAnimationFade];
+		[self.tableView endUpdates];
+	}];
+	[alert addAction:_renameAlertDefaultAction];
+	
+	[self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)deletePlaylist:(Playlist *)playlist
