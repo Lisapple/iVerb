@@ -11,6 +11,6 @@
 @interface QuizResultsView : UIView
 
 @property (nonatomic, strong) NSString * leftText, * rightText;
-@property (nonatomic, strong) NSArray <NSValue /* CGPoint */ *> * points; // (x, y) | x,y E (0,1)
+@property (nonatomic, strong) Array(Value/*CGPoint*/) points; // (x, y) | x,y E (0,1)
 
 @end

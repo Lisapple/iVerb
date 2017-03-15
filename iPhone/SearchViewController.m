@@ -17,11 +17,10 @@
 
 #import "NSString+addition.h"
 #import "NSMutableAttributedString+addition.h"
-#import <Crashlytics/Crashlytics.h>
 
 @implementation UISegmentedControl (Titles)
 
-- (NSArray <NSString *> *)titles
+- (Array(String))titles
 {
 	NSMutableArray * titles = [[NSMutableArray alloc] initWithCapacity:self.numberOfSegments];
 	for (NSInteger i = 0; i < self.numberOfSegments; ++i)
@@ -35,7 +34,7 @@
 
 - (void)setTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents
 {
-	NSArray <NSString *> * actions = [self actionsForTarget:target forControlEvent:controlEvents];
+	Array(String) actions = [self actionsForTarget:target forControlEvent:controlEvents];
 	for (NSString * action in actions)
 		[self removeTarget:target action:NSSelectorFromString(action) forControlEvents:controlEvents];
 	[self addTarget:target action:action forControlEvents:controlEvents];

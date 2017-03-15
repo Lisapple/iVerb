@@ -94,7 +94,7 @@
 	return [self openDeeplinkURL:url];
 }
 
-- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray * _Nullable))restorationHandler
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler
 {
 	if ([userActivity.activityType isEqualToString:CSSearchableItemActionType]) {
 		NSString * infinitif = userActivity.userInfo[CSSearchableItemActivityIdentifier];

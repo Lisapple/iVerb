@@ -15,10 +15,7 @@
 @end
 
 @interface EditableTableViewCell : UITableViewCell <UITextFieldDelegate>
-{
-	@private
-	UITextField * _textField;
-}
+
 @property (nonatomic, strong) NSObject <EditableTableViewCellDelegate> * delegate;
 @property (nonatomic, strong) NSString * fieldValue;
 

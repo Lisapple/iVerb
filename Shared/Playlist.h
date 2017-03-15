@@ -33,8 +33,8 @@ extern NSString * const kPlaylistAllVerbsName;
 + (Playlist *)bookmarksPlaylist;
 + (Playlist *)historyPlaylist;
 
-+ (NSArray *)defaultPlaylists;
-+ (NSArray *)userPlaylists;
++ (NSArray <Playlist *> *)defaultPlaylists;
++ (NSArray <Playlist *> *)userPlaylists;
 
 + (nullable Playlist *)playlistWithName:(NSString *)name;
 

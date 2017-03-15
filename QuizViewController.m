@@ -15,9 +15,24 @@
 
 @interface QuizViewController ()
 
+@property (nonatomic, strong) NSArray * allVerbs;
+@property (nonatomic, assign) NSInteger currentIndex;
+@property (nonatomic, assign) NSInteger goodResponseCount, badResponseCount;
+@property (nonatomic, strong) MArray(String) responses;
+@property (nonatomic, strong) MArray(Number/*BOOL*/) responsesCorrect;
+@property (nonatomic, strong) MArray(Number/*VerbForm*/) forms;
+
+@property (nonatomic, strong) UIView * previousPushedView;
+
+@property (nonatomic, strong) NSString * currentResponse;
+
 @property (nonatomic, strong) Playlist * playlist;
 @property (nonatomic, strong) Verb * firstVerb;
+@property (nonatomic, strong) NSMutableArray <Verb *> * askedVerbs;
 @property (nonatomic, assign) VerbForm firstVerbForm;
+@property (nonatomic, strong) SFSpeechRecognizer * recognizer;
+@property (nonatomic, strong) AVAudioRecorder * recorder;
+@property (nonatomic, strong) NSTimer * updateMetersTimer;
 
 - (void)start;
 

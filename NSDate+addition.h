@@ -8,19 +8,8 @@
 
 @interface NSDate(addition)
 
-- (NSInteger)second;
-- (NSInteger)minute;
-- (NSString *)minuteString;
-- (NSInteger)hour;
-
-- (NSInteger)day;
-- (NSInteger)month;
 - (NSInteger)year;
 
 - (NSString *)naturalTimeString;
-- (NSString *)naturalDateString;
-
-- (NSString *)rfc5545Format;
-- (NSString *)SQLDateTime;
 
 @end

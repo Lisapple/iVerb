@@ -17,24 +17,13 @@ typedef NS_ENUM(NSUInteger, ResponseState) {
 	ResponseStateFalse
 };
 
-typedef NS_ENUM(NSUInteger, VerbForm) {
+typedef NS_ENUM(NSInteger, VerbForm) {
 	VerbFormUnspecified = -1,
 	VerbFormPastSimple = 0,
 	VerbFormPastParticiple
 };
 
 @interface QuizViewController : UIViewController <UITextFieldDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
-{
-	NSArray * allVerbs;
-	NSInteger currentIndex;
-	NSString * currentResponse;
-	NSInteger goodResponseCount, badResponseCount;
-	NSMutableArray <NSString *> * responses;
-	NSMutableArray <NSNumber /* BOOL */ *> * responsesCorrect;
-	NSMutableArray <NSNumber /* VerbForm */ *> * forms;
-	
-	UIView * previousPushedView;
-}
 
 @property (nonatomic, weak) IBOutlet UIView * quizView, * responseView;
 

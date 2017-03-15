@@ -8,6 +8,12 @@
 
 #import "EditableTableViewCell.h"
 
+@interface EditableTableViewCell ()
+
+@property (nonatomic, strong) UITextField * textField;
+
+@end
+
 @implementation EditableTableViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier

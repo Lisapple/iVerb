@@ -105,7 +105,7 @@
 	_results = [_playlist.quizResults sortedArrayUsingDescriptors:@[ descriptor ]];
 	
 	if (_results.count >= 2) {
-		NSMutableArray <NSValue *> * points = [[NSMutableArray alloc] initWithCapacity:_results.count];
+		MArray(Value) points = [[NSMutableArray alloc] initWithCapacity:_results.count];
 		for (QuizResult * result in _results) {
 			// x : date (1 for older on left, 0 for today on right), y : percent of success (0% on bottom, 100% on top)
 			const CGFloat totalDuration = [_results.lastObject.date timeIntervalSinceDate:_results.firstObject.date];
@@ -120,7 +120,7 @@
 		view.points = points;
 		
 		NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
-		formatter.dateFormat = @"MMM yyyy";
+		[formatter setLocalizedDateFormatFromTemplate:@"MMMyyyy"];
 		view.leftText = [formatter stringFromDate:_results.lastObject.date];
 		view.rightText = [formatter stringFromDate:_results.firstObject.date];
 		

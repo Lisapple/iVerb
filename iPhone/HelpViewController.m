@@ -21,9 +21,7 @@
     
 	self.title = @"Help";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                                                                           target:self
-                                                                                           action:@selector(doneAction:)];
-	_webView.delegate = self;
+                                                                                           target:self action:@selector(doneAction:)];
 	
 	NSString * path = [[NSBundle mainBundle] pathForResource:@"help" ofType:@"html"];
 	NSString * content = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];

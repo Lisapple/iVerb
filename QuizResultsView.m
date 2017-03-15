@@ -88,7 +88,7 @@
 	[self setNeedsDisplay];
 }
 
-- (void)setPoints:(NSArray<NSValue *> *)points
+- (void)setPoints:(Array(Value))points
 {
 	_points = points;
 	[self updateUI];
