@@ -7,9 +7,6 @@
 //
 
 @interface CloudViewController : UIViewController <UINavigationControllerDelegate>
-{
-	NSArray * verbs;
-}
 
 - (IBAction)doneAction:(id)sender;
 
