@@ -9,6 +9,7 @@
 @import CoreData;
 @import MessageUI;
 @import AVFoundation;
+@import WebKit;
 
 #import "IVWebView.h"
 
@@ -16,7 +17,7 @@
 #import "Verb.h"
 #import "Verb+additions.h"
 
-@interface ResultViewController : UIViewController <UIWebViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
+@interface ResultViewController : UIViewController <WKNavigationDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSString * verbString;
 @property (nonatomic, strong) Verb * verb;

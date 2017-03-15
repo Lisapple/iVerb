@@ -9,148 +9,76 @@
 #import "Verb+additions.h"
 #import "Quote.h"
 
-@implementation Verb (additions)
+#import "UIFont+addition.h"
+#import "NSMutableAttributedString+addition.h"
 
-- (NSString *)HTMLFormatInlineCSS
-{
-	NSMutableString * content = [NSMutableString stringWithCapacity:1000];
-	
-	/* <span class="section">Infinitif</span><br>
-	 * <div class="verb-form">%@</div>
-	 * <span class="section">Simple Past</span><br>
-	 * <div class="verb-form">%@</div>
-	 * <span class="section">Past Participle</span><br>
-	 * <div class="verb-form">%@</div>
-	 */
-	
-	[content appendFormat:@"\
-	 <span style=\"color:#aaa\">Infinitif</span><br>\
-	 <div style=\"font-weight:bold;font-size:20px;padding:15px\">%@</div>\
-	 <span style=\"color:#aaa\">Simple Past</span><br>\
-	 <div style=\"font-weight:bold;font-size:20px;padding:15px\">%@</div>\
-	 <span style=\"color:#aaa\">Past Participle</span><br>\
-	 <div style=\"font-weight:bold;font-size:20px;padding:15px\">%@</div>", self.infinitif, self.past, self.pastParticiple];
-	
-	if (self.definition) {
-		/* <span class="section">Definition</span><br>
-		 * <div class="verb-definition">%@</div>
-		 */
-		[content appendFormat:@"<span style=\"color:#aaa\">Definition</span><br>\
-		 <div style=\"font-weight:bold;font-size:16px;padding:15px\">%@</div>", self.definition];
-	}
-	
-	if (self.example) {
-		/* <span class="section">Example</span><br>
-		 * <div class="verb-example">%@</div>
-		 */
-		[content appendFormat:@"<span style=\"color:#aaa\">Example</span><br>\
-		 <div style=\"font-weight:bold;font-size:16px;padding:15px\">%@</div>", self.example];
-	}
-	
-	NSArray * components = [self.components componentsSeparatedByString:@"."];
-	if (components.count > 1) {
-		/* <span class="section">Composition</span><br>
-		 * <div class="verb-composition">%@</div>
-		 */
-		[content appendFormat:@"<span style=\"color:#aaa\">Composition</span><br>\
-		 <div style=\"font-weight:bold;font-size:16px;padding:15px\">%@</div>", [components componentsJoinedByString:@"&bull;"]];
-	}
-	
-	/* Retreive the note from userDefaults */
-	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-	NSString * key = [NSString stringWithFormat:@"note_%@", self.infinitif];
-	NSString * note = [userDefaults stringForKey:key];
-	if (note.length > 0) {
-		[content appendFormat:@"<span style=\"color:#aaa\">Notes</span><br>\
-		 <div style=\"font-weight:bold;font-size:16px;padding:15px\">%@</div>", note];
-	}
-	
-	if (self.quote.infinitif.length > 0) {
-		[content appendFormat:@"<span style=\"color:#aaa\">Quote</span><br>\
-		 <div style=\"font-weight:bold;font-size:16px;padding:15px;padding-bottom:8\">&laquo; %@ &raquo;</div>\
-		 <div style=\"font-style:italic;font-size:16px;padding:15px;padding-top:0\">%@</div>", self.quote.infinitifDescription, self.quote.infinitifAuthor];
-	}
-	
-	NSString * path = [[NSBundle mainBundle] pathForResource:@"index" ofType:@"html"];
-	NSString * template = [NSString stringWithContentsOfFile:path
-													encoding:NSUTF8StringEncoding
-													   error:NULL];
-	return [template stringByReplacingOccurrencesOfString:@"{{@}}" withString:content];
-}
+@implementation Verb (additions)
 
 - (NSString *)HTMLFormat
 {
 	NSMutableString * content = [NSMutableString stringWithCapacity:1000];
-	
-	/* <a href="#help">Infinitif</span><br>
-	 * <div class="verb-form">%@</div>
-	 * <a href="#help">Simple Past</span><br>
-	 * <div class="verb-form">%@</div>
-	 * <a href="#help">Past Participle</span><br>
-	 * <div class="verb-form">%@</div>
-	 */
-	
-	[content appendFormat:@"\
-	 <a href=\"#help-infinitive\">Infinitif</a><br>\
-	 <div class=\"verb-form\">%@</div>\
-	 <a href=\"#help-simple-past\">Simple Past</a><br>\
-	 <div class=\"verb-form\">%@</div>\
-	 <a href=\"#help-past-participle\">Past Participle</a><br>\
-	 <div class=\"verb-form\">%@</div>", self.infinitif, self.past, self.pastParticiple];
+	[content appendFormat:
+	 @"<a href=\"#help-infinitive\">Infinitive</a>" @"<br>"
+	 @"<p class=\"verb-form\">%@</p>"
+	 @"<a href=\"#help-simple-past\">Simple Past</a>" @"<br>"
+	 @"<p class=\"verb-form\">%@</p>"
+	 @"<a href=\"#help-past-participle\">Past Participle</a>" @"<br>"
+	 @"<p class=\"verb-form\">%@</p>", self.infinitif, self.past, self.pastParticiple];
 	
 	if (self.definition) {
-		/* <a href="#help">Definition</span><br>
-		 * <div class="verb-definition">%@</div>
-		 */
-		[content appendFormat:@"<a href=\"#help-definition\">Definition</a><br>\
-		 <div class=\"verb-definition\">%@</div>", self.definition];
+		[content appendFormat:
+		 @"<a href=\"#help-definition\">Definition</a>" @"<br>"
+		 @"<p class=\"verb-definition\">%@</p>", self.definition];
 	}
 	
 	if (self.example) {
-		/* <a href="#help">Example</span><br>
-		 * <div class="verb-example">%@</div>
-		 */
-		[content appendFormat:@"<a href=\"#help-example\">Example</a><br>\
-		 <div class=\"verb-example\">%@</div>", self.example];
+		[content appendFormat:
+		 @"<a href=\"#help-example\">Example</a>" @"<br>"
+		 @"<p class=\"verb-example\">%@</p>", self.example];
 	}
 	
 	NSArray * components = [self.components componentsSeparatedByString:@"."];
 	if (components.count > 1) {
-		/* <a href="#help">Composition</span><br>
-		 * <div class="verb-composition">%@</div>
-		 */
-		[content appendFormat:@"<a href=\"#help-composition\">Composition</a><br>\
-		 <div class=\"verb-composition\">%@</div>", [components componentsJoinedByString:@"&bull;"]];
+		[content appendFormat:
+		 @"<a href=\"#help-composition\">Composition</a>" @"<br>"
+		 @"<p class=\"verb-composition\">%@</p>", [components componentsJoinedByString:@"&bull;"]];
 	}
 	
-	/* Retreive the note from userDefaults */
-	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-	NSString * key = [NSString stringWithFormat:@"note_%@", self.infinitif];
-	NSString * note = [userDefaults stringForKey:key];
-	if (note.length > 0) {
-		[content appendFormat:@"<a href=\"#edit-note\">Notes</a><br>\
-		 <div class=\"verb-notes\">%@</div>", note];
+	if (self.note.length > 0) {
+		[content appendFormat:
+		 @"<a href=\"#edit-note\">Notes</a>" @"<br>"
+		 @"<p class=\"verb-notes\">%@</p>", self.note];
 	}
 	
 	if (self.quote.infinitif.length > 0) {
-		
-		// Add some CSS to avoid the quote "« Alea jacta est »" to be become "« Alea jacta est\n »", but instead "« Alea jacta\n est »"
 		NSString * quote = self.quote.infinitifDescription;
-		NSMutableArray * words = [quote componentsSeparatedByString:@" "].mutableCopy;
-		NSString * lastWord = words.lastObject;
-		[words removeLastObject];
-		quote = [[words componentsJoinedByString:@" "] stringByAppendingFormat:@" <span class=\".non-hyphen\">%@ &raquo;</span>", lastWord];
-		
-		[content appendFormat:@"<a href=\"#help-quote\">Quote</a><br>\
-		 <div class=\"verb-notes\" style=\"padding-bottom:8\">&laquo; %@</div>\
-		 <div class=\"verb-notes\" style=\"font-style:italic;padding-top:0\">%@</div>", quote, self.quote.infinitifAuthor];
+		[content appendFormat:
+		 @"<a href=\"#help-quote\">Quote</a>" @"<br>"
+		 @"<p class=\"verb-notes\" style=\"padding-bottom:8px\">&laquo;&nbsp;%@&nbsp;&raquo;</p>"
+		 @"<p class=\"verb-notes\" style=\"font-style:italic;padding-top:0px\">%@</p>", quote, self.quote.infinitifAuthor];
 	}
 	
 	NSString * path = [[NSBundle mainBundle] pathForResource:@"index" ofType:@"html"];
-	NSString * template = [NSString stringWithContentsOfFile:path
-													encoding:NSUTF8StringEncoding
-													   error:NULL];
+	NSString * template = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
 	return [template stringByReplacingOccurrencesOfString:@"{{@}}" withString:content];
+}
+
+- (NSAttributedString *)attributedDescription
+{
+	Dictionary(String, Object) boldAttributes = @{ NSFontAttributeName : [UIFont preferredBoldFontForTextStyle:UIFontTextStyleBody] };
+	Dictionary(String, Object) italicsAttributes = @{ NSFontAttributeName : [UIFont preferredItalicFontForTextStyle:UIFontTextStyleBody] };
+	
+	NSMutableAttributedString * attrString = [[NSMutableAttributedString alloc] init];
+	
+	[attrString appendString:[NSString stringWithFormat:@"To %@", self.infinitif] attributes:boldAttributes];
+	[attrString appendString:[NSString stringWithFormat:@", %@, %@", self.past, self.pastParticiple] attributes:@{}];
+	if (self.definition) {
+		[attrString appendString:[@"\n" stringByAppendingString:self.definition] attributes:@{}];
+	}
+	if (self.note) {
+		[attrString appendString:[@"\n" stringByAppendingString:self.note] attributes:italicsAttributes];
+	}
+	return attrString;
 }
 
 @end

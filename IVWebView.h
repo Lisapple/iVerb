@@ -6,6 +6,8 @@
 //
 //
 
-@interface IVWebView : UIWebView
+@import WebKit;
+
+@interface IVWebView : WKWebView
 
 @end

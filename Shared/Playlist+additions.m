@@ -98,19 +98,20 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 	// @TODO: check "verbs" count, if equal to zero, show a message
 	int index = 0;
 	for (Verb * verb in verbs) {
-		/* <tr class="(white|gray)">
-		 * <td>(infinitif)</td>
-		 * <td>(past)</td>
-		 * <td>(past participle)</td>
-		 * </tr>
-		 */
-		[content appendFormat:@"<tr class=\"%@\"><td>%@</td><td>%@</td><td>%@</td></tr>", (index & 1)? @"gray": @"white", verb.infinitif, verb.past, verb.pastParticiple];
+		[content appendFormat:
+		 @"<tr class=\"%@\">"
+			@"<td>%@</td>" @"<td>%@</td>" @"<td>%@</td>"
+		 @"</tr>",
+		 (index & 1)? @"gray": @"white", verb.infinitif, verb.past, verb.pastParticiple];
 		index++;
 	}
 	
-	NSString * template = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"verbs_lists_template" ofType:@"html"]
-													encoding:NSUTF8StringEncoding
-													   error:NULL];
+	NSMutableString * template = [NSMutableString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"verbs_lists_template" ofType:@"html"]
+																  encoding:NSUTF8StringEncoding error:NULL];
+	
+	CGFloat fontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
+	[template replaceOccurrencesOfString:@"{{font-size}}" withString:[NSString stringWithFormat:@"%ldpx", (long)fontSize]
+								options:0 range: NSMakeRange(0, template.length)];
 	return [template stringByReplacingOccurrencesOfString:@"{{@}}" withString:content];
 }
 

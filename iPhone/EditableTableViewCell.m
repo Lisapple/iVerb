@@ -29,7 +29,7 @@
 		_textField.borderStyle = UITextBorderStyleNone;
 		_textField.placeholder = @"New List";
 		_textField.textColor = [UIColor darkGrayColor];
-		_textField.font = [UIFont systemFontOfSize:17.];
+		_textField.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 		_textField.returnKeyType = UIReturnKeyDone;
 		_textField.autocorrectionType = UITextAutocorrectionTypeNo;
 		_textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -46,11 +46,22 @@
     return self;
 }
 
+- (void)prepareForReuse
+{
+	[super prepareForReuse];
+	_textField.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+}
+
 - (void)setFieldValue:(NSString *)fieldValue
 {
 	_fieldValue = fieldValue;
 	
 	_textField.text = _fieldValue;
+}
+
+- (void)setFirstResponder
+{
+	[_textField becomeFirstResponder];
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField

@@ -16,7 +16,7 @@
 	NSMutableAttributedString * attrString = [[NSMutableAttributedString alloc] init];
 	
 	NSDictionary * const attributes = @{ NSFontAttributeName : [UIFont systemFontOfSize:fontSize] };
-	NSDictionary * const boldAttributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:fontSize] };
+	NSDictionary * const boldAttributes = @{ NSFontAttributeName : [UIFont systemFontOfSize:fontSize weight:UIFontWeightHeavy] };
 	
 	NSInteger index = 0;
 	NSRange range;

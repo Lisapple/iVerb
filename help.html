@@ -1,133 +1,66 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <style>
-            
-            body {
-                font-family:"SanFancisco", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-                font-weight:normal;
-                font-size:16px;
-                color:#555555;
-                
-                margin:0px;
-                width:100%;
-            }
-        
-        #header {
-            position:fixed;
-            
-            text-align:center;
-            
-            border-bottom:1px solid #aaa;
-            
-            font-size:24px;
-            
-            padding:8px;
-            
-            width:100%;
-            background-color:#eee;
-        }
-        
-        #header span {
-            font-weight:normal;
-        }
-        
-        #header a {
-            border:1px solid #aaa;
-            position:absolute;
-            right:10px;
-            
-            padding:6px 8px;
-            border-radius:4px;
-            
-            font-size:14px;
-            margin-right:20px;
-            
-            color:#555555;
-            text-decoration:none;
-        }
-        
-        #header a:active {
-            border:1px solid #777;
-            
-            background-color:#ccc;
-        }
-        
-        span.form {
-            background-color:#ddd;
-            //border:1px solid #aaa;
-            padding:1px 4px;
-            border-radius:3px;
-            
-            white-space:nowrap;
-            
-            line-height:140%;
-        }
-        
-        li {
-            margin:4px;
-        }
-        
-        #content {
-            background-color:#fff;
-            
-            padding:10px;
-        }
-        
-        a {
-            color:#888;
-        }
-        
-        #footer {
-        }
-        
-        b {
-            font-weight:400;
-        }
-        
-        .section-title {
-            color:#aaa;
-            text-decoration:none;
-        }
-            </style>
-    </head>
-    <body>
-        <div id="content">
-            
-            <a name="help-infinitive" class="section-title">Infinitive Form</a>
-            <p>The infinitive form is used in:<br>
-            &bull; Simple Present: <span class="form">Subject (S) + verb</span><br>
-            Note: A <b><i>s</i></b> is added at the end of the verb for third person of singular <i>(he, she</i></b> and <i>it)</i>.<br>
-            &bull; Simple Future: <span class="form">S + will + verb</span><br>
-            &bull; And all continuous forms finish with: <span class="form">verb+ing</span>, as <b><i>I'm eating</i></b>.
-            </ul>
-            </p>
-            
-            <a name="help-simple-past" class="section-title">Simple Past Form</a>
-            <p>The simple past (SP) form is used in used only for simple past: <span class="form">S + SP</span>, as <b><i>we came</i></b>.<br>
-            Note: For regular verbs, just add <b><i>-ed</i></b> at the end, as <b><i>they talked</i></b>.<br>
-            </p>
-            
-            <a name="help-past-participle" class="section-title">Past Participle</a>
-            <p>The past participle (PP) is used in:<br>
-            &bull; Present Perfect Simple: <span class="form">S + have/has + PP</span><br>
-            &bull; Past Perfect Simple: <span class="form">S + had + PP</span><br>
-            &bull; Future Perfect Continuous: <span class="form">S + will + have/has + PP</span>
-            </p>
-            
-            <a name="help-definition" class="section-title">Definition</a>
-            <p>Definitions have been, for the most of them, fetched from <a href="http://wordnik.com">Wordnik.com</a>. Any word could be have several definition, the given definition is one of the common meaning of the verb, it could be inappropriate in some context.</p>
-            
-            <a name="help-composition" class="section-title">Composition</a>
-            <p>The composition of verbs have been added to easily understand the structure of composed verbs, and should not be used for the global meaning. The last part of the composition is always an irregular verb, more common in general.</p>
-			
-			<a name="help-quote" class="section-title">Quotes</a>
-			<p>Quotes have been fetched from <a href="http://www.quotes.net/">Quotes.net</a> and have been manually filtered for simplicity and relevance.</p>
-			
-        </div>
-        
-        <div id="footer">
-        </div>
-        
-    </body>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width">
+		<style type="text/css">
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "SanFancisco", "Helvetica Neue", Helvetica;
+				font-size: {{font-size}};
+				color: #555555;
+				margin: 0px;
+				width: 100%;
+			}
+			span.form {
+				background-color: #ddd;
+				padding: 1px 4px;
+				border-radius: 3px;
+				white-space: nowrap;
+				line-height: 140%;
+			}
+			li { margin: 4px; }
+			#content {
+				background-color: #fff;
+				padding: 10px;
+			}
+			a { color: #888; }
+			b { font-weight: 400; }
+			.section-title {
+				color: #aaa;
+				text-decoration: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+				<a name="help-infinitive" class="section-title">Infinitive Form</a>
+				<p>The infinitive form is used in:<br>
+				&bull; Simple Present: <span class="form">Subject (S) + verb</span><br>
+				Note: A <b><i>s</i></b> is added at the end of the verb for third person of singular <i>(he, she</i></b> and <i>it)</i>.<br>
+				&bull; Simple Future: <span class="form">S + will + verb</span><br>
+				&bull; And all continuous forms finish with: <span class="form">verb+ing</span>, as <b><i>I'm eating</i></b>.
+				</p>
+
+				<a name="help-simple-past" class="section-title">Simple Past Form</a>
+				<p>The simple past (SP) form is used in used only for simple past: <span class="form">S + SP</span>, as <b><i>we came</i></b>.<br>
+				Note: For regular verbs, just add <b><i>-ed</i></b> at the end, as <b><i>they talked</i></b>.<br>
+				</p>
+
+				<a name="help-past-participle" class="section-title">Past Participle</a>
+				<p>The past participle (PP) is used in:<br>
+				&bull; Present Perfect Simple: <span class="form">S + have/has + PP</span><br>
+				&bull; Past Perfect Simple: <span class="form">S + had + PP</span><br>
+				&bull; Future Perfect Continuous: <span class="form">S + will + have/has + PP</span>
+				</p>
+
+				<a name="help-definition" class="section-title">Definition</a>
+				<p>Definitions have been, for the most of them, fetched from <a href="http://wordnik.com">Wordnik.com</a>. Any word could be have several definition, the given definition is one of the common meaning of the verb, it could be inappropriate in some context.</p>
+
+				<a name="help-composition" class="section-title">Composition</a>
+				<p>The composition of verbs have been added to easily understand the structure of composed verbs, and should not be used for the global meaning. The last part of the composition is always an irregular verb, more common in general.</p>
+
+				<a name="help-quote" class="section-title">Quotes</a>
+				<p>Quotes have been fetched from <a href="http://www.quotes.net/">Quotes.net</a> and have been manually filtered for simplicity and relevance.</p>
+		</div>
+	</body>
 </html>

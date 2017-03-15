@@ -6,11 +6,12 @@
 //  Copyright (c) 2012 Lis@cintosh. All rights reserved.
 //
 
+@import UIKit;
+
 #import "Verb.h"
 
 @interface Verb (additions)
 
 - (NSString *)HTMLFormat;
-- (NSString *)HTMLFormatInlineCSS;
 
 @end

@@ -3,51 +3,39 @@
 	<head>
 		<meta charset="utf-8">
 		<style type="text/css">
-			
 			body {
-				font-family:"SanFancisco", "Helvetica Neue";
-				color:#555555;
-				
-				margin:0px;
-				//margin-top:600px;
-				//margin-bottom:600px;
-				
-				//background-color:#000;
-				
-				width:100%;
+				font-family: -apple-system, BlinkMacSystemFont, "SanFancisco", "Helvetica Neue", Helvetica;
+				font-size: {{font-size}};
+				color: #555555;
+				margin: 0px;
+				width: 100%;
 			}
-			
 			#content {
-				//background-color:#e5e5e5;
-				
-				padding:0px;
-				
-				min-height:320px;
+				padding: 0px;
+				min-height: 320px;
 			}
-			
 			table {
-				text-align:center;
-				width:100%;
-				border-collapse:collapse;
-                border:0px solid #fff;
-			}
-			td {
-				font-size:14pt;
+				text-align: center;
+				width: 100%;
+				border-collapse: collapse;
+				border: 1px solid #fff;
 			}
 			tr.white {
-				background-color:#fff;
-			} 
+				background-color: #fff;
+				border: 1px solid #fff;
+			}
 			tr.gray {
-				background-color:#eee;
+				background-color: #eee;
+				border: 1px solid #eee;
 			}
 			</style>
 	</head>
 	<body>
 		<div id="header">
 		</div>
-		
+
 		<div id="content">
-			<table border="1">
+			<table>
 				{{@}}
 				<!--
 				 <tr class="white">
@@ -63,7 +51,7 @@
 				 -->
 			</table>
 		</div>
-		
+
 		<div id="footer">
 		</div>
 	</body>

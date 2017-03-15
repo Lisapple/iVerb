@@ -15,6 +15,8 @@
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
 
+#import "IVWebView.h"
+
 #import "NSMutableAttributedString+addition.h"
 #import "UIFont+addition.h"
 
@@ -40,18 +42,41 @@
 																				  style:UIBarButtonItemStylePlain
 																				 target:self action:@selector(tooggleFavoriteAction:)] ];
 	
-	NSString * basePath = [NSBundle mainBundle].bundlePath;
-	[_webView loadHTMLString:_verb.HTMLFormat
-					 baseURL:[NSURL fileURLWithPath:basePath]];
-	_webView.delegate = self;
+	WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc] init];
+	_webView = [[IVWebView alloc] initWithFrame:CGRectZero configuration:configuration];
+	_webView.translatesAutoresizingMaskIntoConstraints = NO;
+	_webView.navigationDelegate = self;
+	_webView.scrollView.delegate = self;
+	[self.view addSubview:_webView];
+	[self.view addConstraints:
+  @[ [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
+									 toItem:_webView attribute:NSLayoutAttributeTop multiplier:1 constant:0],
+	 [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual
+									 toItem:_webView attribute:NSLayoutAttributeLeft multiplier:1 constant:0],
+	 [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual
+									 toItem:_webView attribute:NSLayoutAttributeRight multiplier:1 constant:0],
+	 [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual
+									 toItem:_webView attribute:NSLayoutAttributeBottom multiplier:1 constant:0] ]];
+	
+	
+	_activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectZero];
+	_activityIndicatorView.translatesAutoresizingMaskIntoConstraints = NO;
+	_activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+	[self.view addSubview:_activityIndicatorView];
+	[self.view addConstraints:
+	 @[ [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual
+										toItem:_activityIndicatorView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0],
+		[NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual
+										toItem:_activityIndicatorView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0] ]];
+	
 	[_activityIndicatorView startAnimating];
+	
+	[self loadResults];
     
 	[[NSNotificationCenter defaultCenter] addObserverForName:ResultDidReloadNotification
 													  object:nil queue:nil
 												  usingBlock:^(NSNotification * notification) {
-													  NSString * basePath = [NSBundle mainBundle].bundlePath;
-													  [_webView loadHTMLString:_verb.HTMLFormat
-																	   baseURL:[NSURL fileURLWithPath:basePath]];
+													  [self loadResults];
 												  }];
 	[[NSNotificationCenter defaultCenter] addObserverForName:PlaylistDidUpdatedNotification
 													  object:nil queue:nil
@@ -62,9 +87,7 @@
 														  object:nil queue:nil
 													  usingBlock:^(NSNotification *note) {
 														  self.verb = (Verb *)note.object;
-														  NSString * basePath = [NSBundle mainBundle].bundlePath;
-														  [_webView loadHTMLString:_verb.HTMLFormat
-																		   baseURL:[NSURL fileURLWithPath:basePath]];
+														  [self loadResults];
 													  }];
 	}
 	
@@ -78,6 +101,20 @@
 {
 	[super viewWillAppear:animated];
 	[self updateUI];
+}
+
+- (void)loadResults
+{
+	NSMutableString * content = _verb.HTMLFormat.mutableCopy;
+	CGFloat fontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
+	[content replaceOccurrencesOfString:@"{{font-size}}" withString:[NSString stringWithFormat:@"%ldpx", (long)fontSize]
+								options:0 range: NSMakeRange(0, content.length)];
+	
+	NSString * basePath = [NSBundle mainBundle].bundlePath;
+	[_webView loadHTMLString:content baseURL:[NSURL fileURLWithPath:basePath]];
+	
+	_webView.scrollView.showsVerticalScrollIndicator = YES;
+	_webView.scrollView.scrollEnabled = YES;
 }
 
 - (void)setVerb:(Verb *)verb
@@ -119,14 +156,16 @@
 	[_synthesizer speakUtterance:utterance];
 }
 
-- (void)copyAction:(id)sender
+- (void)shareAction:(id)sender
 {
-	// Copy to pasteboard: "Infinitif\nSimple Past\nPP\nDefinition\nNote"
-	NSString * note = (_verb.note.length > 0)? [NSString stringWithFormat:@"\n%@\n", _verb.note] : @"";
-	NSString * body = [NSString stringWithFormat:@"%@\n%@\n%@\n%@%@", _verb.infinitif, _verb.past, _verb.pastParticiple, _verb.definition, note];
-	
-	UIPasteboard * pasteboard = [UIPasteboard generalPasteboard];
-	pasteboard.string = body;
+	UIActivityViewController * activityController = [[UIActivityViewController alloc] initWithActivityItems:@[ _verb.attributedDescription ]
+																					  applicationActivities:nil];
+	if (TARGET_IS_IPAD()) {
+		activityController.modalPresentationStyle = UIModalPresentationPopover;
+		UIPopoverPresentationController * popController = activityController.popoverPresentationController;
+		popController.barButtonItem = sender;
+	}
+	[self presentViewController:activityController animated:YES completion:NULL];
 }
 
 - (NSArray <id <UIPreviewActionItem>> *)previewActionItems
@@ -148,11 +187,11 @@
 															  handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
 																  [self listenAction:nil]; }];
 	
-	UIPreviewAction * copyAction = [UIPreviewAction actionWithTitle:@"Copy" style:UIPreviewActionStyleDefault
-															  handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
-																  [self copyAction:nil]; }];
+	UIPreviewAction * shareAction = [UIPreviewAction actionWithTitle:@"Share..." style:UIPreviewActionStyleDefault
+															 handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
+																 [self shareAction:nil]; }];
 	
-	NSMutableArray <id <UIPreviewActionItem>> * actions = @[ listenAction, copyAction ].mutableCopy;
+	NSMutableArray <id <UIPreviewActionItem>> * actions = @[ listenAction, shareAction ].mutableCopy;
 	if (addActions.count) { // Show the "Add to list..." if the verb is not in all list (the action will not remove any verb, only add to list)
 		UIPreviewActionGroup * addToAction = [UIPreviewActionGroup actionGroupWithTitle:@"Add to list..."
 																				  style:UIPreviewActionStyleDefault
@@ -209,22 +248,11 @@
 														  if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 														  [self presentViewController:navigationController animated:YES completion:NULL];
 													  }]];
+	[alertController addAction:[UIAlertAction actionWithTitle:@"Share..." style:UIAlertActionStyleDefault
+													  handler:^(UIAlertAction * action) { [self shareAction:nil]; }]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Listen" style:UIAlertActionStyleDefault
 													  handler:^(UIAlertAction * action) { [self listenAction:nil]; }]];
 	
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault
-													  handler:^(UIAlertAction * action) { [self copyAction:nil]; }]];
-	
-	if ([MFMailComposeViewController canSendMail]) {
-		[alertController addAction:[UIAlertAction actionWithTitle:@"Send with Mail" style:UIAlertActionStyleDefault
-														  handler:^(UIAlertAction * action) {
-															  MFMailComposeViewController * mailCompose = [[MFMailComposeViewController alloc] init];
-															  mailCompose.mailComposeDelegate = self;
-															  [mailCompose setSubject:[NSString stringWithFormat:@"Forms of \"%@\" from iVerb", _verb.infinitif]];
-															  [mailCompose setMessageBody:_verb.HTMLFormatInlineCSS isHTML:YES];
-															  [self presentViewController:mailCompose animated:YES completion:NULL];
-														  }]];
-	}
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
 	
 	if (TARGET_IS_IPAD()) {
@@ -235,68 +263,65 @@
 	[self presentViewController:alertController animated:YES completion:NULL];
 }
 
-- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
-{
-	if (error) {
-		UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error when sending mail"
-																				 message:error.localizedDescription
-																		  preferredStyle:UIAlertControllerStyleActionSheet];
-		[alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:NULL]];
-		[self presentViewController:alertController animated:YES completion:NULL];
-	}
-	
-	[controller dismissViewControllerAnimated:YES completion:NULL];
-}
-
 #pragma mark - Web view delegate
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        if ([request.URL.fragment isEqualToString:@"help-infinitive"] ||
-            [request.URL.fragment isEqualToString:@"help-simple-past"] ||
-            [request.URL.fragment isEqualToString:@"help-past-participle"] ||
-            [request.URL.fragment isEqualToString:@"help-definition"] ||
-            [request.URL.fragment isEqualToString:@"help-example"] ||
-            [request.URL.fragment isEqualToString:@"help-composition"] ||
-			[request.URL.fragment isEqualToString:@"help-quote"]) {
-            
-            HelpViewController * helpViewController = [[HelpViewController alloc] init];
-            helpViewController.anchor = request.URL.fragment;
-            UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
+	if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+		NSURLRequest * const request = navigationAction.request;
+		NSString * const fragment = request.URL.fragment;
+		if ([fragment isEqualToString:@"help-infinitive"] ||
+			[fragment isEqualToString:@"help-simple-past"] ||
+			[fragment isEqualToString:@"help-past-participle"] ||
+			[fragment isEqualToString:@"help-definition"] ||
+			[fragment isEqualToString:@"help-example"] ||
+			[fragment isEqualToString:@"help-composition"] ||
+			[fragment isEqualToString:@"help-quote"]) {
+			
+			HelpViewController * helpViewController = [[HelpViewController alloc] init];
+			helpViewController.anchor = fragment;
+			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
 			if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-            [self presentViewController:navigationController animated:YES completion:NULL];
-            
-        } else if ([request.URL.fragment isEqualToString:@"edit-note"]) {
-            EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
-            editNoteViewController.verb = _verb;
-            
-            UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
+			[self presentViewController:navigationController animated:YES completion:NULL];
+			
+		} else if ([fragment isEqualToString:@"edit-note"]) {
+			EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
+			editNoteViewController.verb = _verb;
+			
+			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
 			if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-            [self presentViewController:navigationController animated:YES completion:NULL];
-        }
-        
-        // Reload the webView from stratch (not by calling "-[UIWebView reload]")
-		double delayInSeconds = 1.;
-		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-			NSString * basePath = [NSBundle mainBundle].bundlePath;
-			[_webView loadHTMLString:_verb.HTMLFormat
-							 baseURL:[NSURL fileURLWithPath:basePath]];
-		});
-        return NO;
-    }
-    
-	return YES;
+			[self presentViewController:navigationController animated:YES completion:NULL];
+		}
+		decisionHandler(WKNavigationActionPolicyCancel);
+	} else {
+		decisionHandler(WKNavigationActionPolicyAllow);
+	}
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
 	[_activityIndicatorView stopAnimating];
 }
 
+#pragma mark - Scroll view delegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+	if (scrollView.contentSize.height > 0 && scrollView.contentSize.height <= _webView.frame.size.height) {
+		scrollView.showsVerticalScrollIndicator = NO;
+		scrollView.scrollEnabled = NO; // Disable scrolling when no need (because of top inset, it always scrolls; 2 hours spent finding that...)
+		scrollView.contentOffset = CGPointMake(0, -scrollView.contentInset.top);
+	}
+}
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+	return nil; // Disable zooming
+}
+
 - (void)dealloc
 {
+	_webView.scrollView.delegate = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

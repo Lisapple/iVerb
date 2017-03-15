@@ -6,11 +6,10 @@
 //  Copyright (c) 2013 Lis@cintosh. All rights reserved.
 //
 
-@interface HelpViewController : UIViewController <UIWebViewDelegate>
+@import WebKit;
 
-@property (nonatomic, assign) IBOutlet UIWebView * webView;
+@interface HelpViewController : UIViewController <WKNavigationDelegate, UIScrollViewDelegate>
+
 @property (nonatomic, strong) NSString * anchor;
-
-- (IBAction)doneAction:(id)sender;
 
 @end
