@@ -10,11 +10,19 @@
 
 @implementation CloudLabel
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+	if ((self = [super initWithFrame:frame])) {
+		self.userInteractionEnabled = YES;
+	}
+	return self;
+}
+
 - (BOOL)canBecomeFirstResponder
 {
 	return YES;
 }
-
+/*
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	self.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.3];
@@ -33,9 +41,9 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	self.backgroundColor = [UIColor clearColor];
-	
 	[[NSNotificationCenter defaultCenter] postNotificationName:CloudLabelDidSelectedNotification object:_verb];
 }
+*/
 
 @end
 
@@ -54,7 +62,6 @@
 - (void)drawRect:(CGRect)rect
 {
 	[super drawRect:rect];
-	
     [self update];
 }
 
@@ -92,7 +99,6 @@
 {
 	UITouch * touch = touches.anyObject;
 	CGPoint position = [touch locationInView:self];
-	
 	float delta = beginPosition.x - position.x;
 	
 	NSTimeInterval duration = touch.timestamp - beginTimestamp;
@@ -104,6 +110,11 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
 	UITouch * touch = touches.anyObject;
+	if ([touch.view isKindOfClass:CloudLabel.class]) {
+		CloudLabel * label = (CloudLabel *)touch.view;
+		[[NSNotificationCenter defaultCenter] postNotificationName:CloudLabelDidSelectedNotification object:label.verb];
+	}
+	
 	CGPoint position = [touch locationInView:self];
 	float delta = beginPosition.x - position.x;
 	
@@ -112,16 +123,6 @@
 	duration = MAX(0.05, duration);
 	
 	addedSpeed = (delta / self.frame.size.width) / duration;
-}
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-	for (CloudLabel * label in self.subviews) {
-		if (CGRectContainsPoint(label.frame, point))
-			return label;
-	}
-	
-	return [super hitTest:point withEvent:event];
 }
 
 @end
