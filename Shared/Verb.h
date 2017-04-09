@@ -16,7 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface Verb : NSManagedObject
 
 @property (nonatomic, strong) NSString * infinitif, * past, * pastParticiple;
-@property (nonatomic, strong, nullable) NSString * definition, * example;
+@property (nonatomic, strong, nullable) NSString * definition;
+@property (nonatomic, strong, nullable) NSString * example DEPRECATED_ATTRIBUTE;
 @property (nonatomic, strong, nullable) NSString * note;
 
 @property (nonatomic, strong, nullable) NSString * components;

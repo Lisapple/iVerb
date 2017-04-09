@@ -11,13 +11,13 @@
 @import AVFoundation;
 @import WebKit;
 
-#import "IVWebView.h"
+#import "ResultView.h"
 
 #import "Playlist.h"
 #import "Verb.h"
 #import "Verb+additions.h"
 
-@interface ResultViewController : UIViewController <WKNavigationDelegate, UIScrollViewDelegate>
+@interface ResultViewController : UIViewController <ResultViewDelegate>
 
 @property (nonatomic, strong) NSString * verbString;
 @property (nonatomic, strong) Verb * verb;

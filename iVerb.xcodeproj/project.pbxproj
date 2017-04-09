@@ -70,6 +70,7 @@
 		50E33F9916C1A9C30091AE21 /* QuizViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E33F9716C1A9C30091AE21 /* QuizViewController.m */; };
 		50E33F9A16C1A9C30091AE21 /* QuizViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50E33F9816C1A9C30091AE21 /* QuizViewController_Phone.xib */; };
 		50E343CB1C90761F00269851 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E343CA1C90761F00269851 /* WebViewController.m */; };
+		50E4D9EB1E99791F007B87E8 /* ResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E4D9EA1E99791F007B87E8 /* ResultView.m */; };
 		50E507F61614B24600B6915D /* verbs_lists_template.html in Resources */ = {isa = PBXBuildFile; fileRef = 50E507F51614B24600B6915D /* verbs_lists_template.html */; };
 		50E507F91614B26B00B6915D /* Playlist+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E507F81614B26B00B6915D /* Playlist+additions.m */; };
 		50E7A2CC1C3076D400AAAED0 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50E7A2CB1C3076D400AAAED0 /* NotificationCenter.framework */; };
@@ -206,6 +207,8 @@
 		50E33F9816C1A9C30091AE21 /* QuizViewController_Phone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuizViewController_Phone.xib; sourceTree = "<group>"; };
 		50E343C91C90761F00269851 /* WebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		50E343CA1C90761F00269851 /* WebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
+		50E4D9E91E99791F007B87E8 /* ResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultView.h; sourceTree = "<group>"; };
+		50E4D9EA1E99791F007B87E8 /* ResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResultView.m; sourceTree = "<group>"; };
 		50E507F51614B24600B6915D /* verbs_lists_template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = verbs_lists_template.html; sourceTree = "<group>"; };
 		50E507F71614B26B00B6915D /* Playlist+additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Playlist+additions.h"; path = "Shared/Playlist+additions.h"; sourceTree = "<group>"; };
 		50E507F81614B26B00B6915D /* Playlist+additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Playlist+additions.m"; path = "Shared/Playlist+additions.m"; sourceTree = "<group>"; };
@@ -291,6 +294,8 @@
 				507F9BDF1B38B0CD002B5CF4 /* SearchResultsViewController.h */,
 				507F9BE01B38B0CD002B5CF4 /* SearchResultsViewController.m */,
 				500BD3A6123BF35000FC6947 /* SearchViewController.xib */,
+				50E4D9E91E99791F007B87E8 /* ResultView.h */,
+				50E4D9EA1E99791F007B87E8 /* ResultView.m */,
 				50CD97E0123CFF0900E31BC8 /* ResultViewController.h */,
 				50CD97E1123CFF0900E31BC8 /* ResultViewController.m */,
 				505D0FB916C55CF3007B3A90 /* HelpViewController.h */,
@@ -652,6 +657,7 @@
 				5009FC1419A5518900CFB284 /* UINavigationController+addition.m in Sources */,
 				506FE25E148E62290061045E /* PlaylistsViewController.m in Sources */,
 				5036F079160CE15700E0BECD /* MainViewController.m in Sources */,
+				50E4D9EB1E99791F007B87E8 /* ResultView.m in Sources */,
 				50F314A71611E75E00B83030 /* EditableTableViewCell.m in Sources */,
 				50F314B31612214200B83030 /* LandscapeViewController.m in Sources */,
 				5075F9CF1BC4512600D32FCB /* verbs.xcdatamodeld in Sources */,

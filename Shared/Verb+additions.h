@@ -12,7 +12,7 @@
 
 @interface Verb (additions)
 
-- (NSString *)HTMLFormat;
+- (NSString *)HTMLFormat DEPRECATED_ATTRIBUTE;
 
 - (NSAttributedString *)attributedDescription;
 

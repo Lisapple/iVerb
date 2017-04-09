@@ -15,15 +15,12 @@
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
 
-#import "IVWebView.h"
-
 #import "NSMutableAttributedString+addition.h"
 #import "UIFont+addition.h"
 
 @interface ResultViewController ()
 
-@property (nonatomic, strong) IVWebView * webView;
-@property (nonatomic, strong) UIActivityIndicatorView * activityIndicatorView;
+@property (nonatomic, strong) ResultView * resultView;
 @property (nonatomic, strong) AVSpeechSynthesizer * synthesizer;
 
 @end
@@ -43,41 +40,24 @@
 																				  style:UIBarButtonItemStylePlain
 																				 target:self action:@selector(tooggleFavoriteAction:)] ];
 	
-	WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc] init];
-	_webView = [[IVWebView alloc] initWithFrame:CGRectZero configuration:configuration];
-	_webView.translatesAutoresizingMaskIntoConstraints = NO;
-	_webView.navigationDelegate = self;
-	_webView.scrollView.delegate = self;
-	[self.view addSubview:_webView];
+	_resultView = [[ResultView alloc] initWithFrame:CGRectZero];
+	_resultView.translatesAutoresizingMaskIntoConstraints = NO;
+	_resultView.delegate = self;
+	[self.view addSubview:_resultView];
 	[self.view addConstraints:
   @[ [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
-									 toItem:_webView attribute:NSLayoutAttributeTop multiplier:1 constant:0],
+									 toItem:_resultView attribute:NSLayoutAttributeTop multiplier:1 constant:0],
 	 [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual
-									 toItem:_webView attribute:NSLayoutAttributeLeft multiplier:1 constant:0],
+									 toItem:_resultView attribute:NSLayoutAttributeLeft multiplier:1 constant:0],
 	 [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual
-									 toItem:_webView attribute:NSLayoutAttributeRight multiplier:1 constant:0],
+									 toItem:_resultView attribute:NSLayoutAttributeRight multiplier:1 constant:0],
 	 [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual
-									 toItem:_webView attribute:NSLayoutAttributeBottom multiplier:1 constant:0] ]];
-	
-	
-	_activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectZero];
-	_activityIndicatorView.translatesAutoresizingMaskIntoConstraints = NO;
-	_activityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-	[self.view addSubview:_activityIndicatorView];
-	[self.view addConstraints:
-	 @[ [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual
-										toItem:_activityIndicatorView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0],
-		[NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual
-										toItem:_activityIndicatorView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0] ]];
-	
-	[_activityIndicatorView startAnimating];
-	
-	[self loadResults];
+									 toItem:_resultView attribute:NSLayoutAttributeBottom multiplier:1 constant:0] ]];
     
 	[[NSNotificationCenter defaultCenter] addObserverForName:ResultDidReloadNotification
 													  object:nil queue:nil
 												  usingBlock:^(NSNotification * notification) {
-													  [self loadResults];
+													  [self reloadData];
 												  }];
 	[[NSNotificationCenter defaultCenter] addObserverForName:PlaylistDidUpdatedNotification
 													  object:nil queue:nil
@@ -88,7 +68,6 @@
 														  object:nil queue:nil
 													  usingBlock:^(NSNotification *note) {
 														  self.verb = (Verb *)note.object;
-														  [self loadResults];
 													  }];
 	}
 	
@@ -101,40 +80,33 @@
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-	[self updateUI];
+	[self reloadData];
 }
 
-- (void)loadResults
+- (void)reloadData
 {
-	NSMutableString * content = _verb.HTMLFormat.mutableCopy;
-	CGFloat fontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
-	[content replaceOccurrencesOfString:@"{{font-size}}" withString:[NSString stringWithFormat:@"%ldpx", (long)fontSize]
-								options:0 range: NSMakeRange(0, content.length)];
-	
-	NSString * basePath = [NSBundle mainBundle].bundlePath;
-	[_webView loadHTMLString:content baseURL:[NSURL fileURLWithPath:basePath]];
-	
-	_webView.scrollView.showsVerticalScrollIndicator = YES;
-	_webView.scrollView.scrollEnabled = YES;
+	_resultView.verb = _verb;
+	[self updateUI];
 }
 
 - (void)setVerb:(Verb *)verb
 {
 	_verb = verb;
 	
-	/* Update the verb from the history */
+	// Update the verb from history
 	_verb.lastUse = [NSDate date];
 	[_verb addToPlaylist:[Playlist historyPlaylist]];
-	[self updateUI];
+	
+	[self reloadData];
 }
 
 - (void)tooggleFavoriteAction:(id)sender
 {
-	if (_verb.isBookmarked) {
+	if (_verb.isBookmarked)
 		[[Playlist bookmarksPlaylist] removeVerb:_verb];
-	} else {
+	else
 		[[Playlist bookmarksPlaylist] addVerb:_verb];
-	}
+	
 	[self updateUI];
 }
 
@@ -176,8 +148,7 @@
 	NSMutableArray <UIPreviewAction *> * addActions = [[NSMutableArray alloc] initWithCapacity:playlists.count];
 	for (Playlist * playlist in playlists) {
 		if (![playlist.verbs containsObject:_verb]) {
-			[addActions addObject:[UIPreviewAction actionWithTitle:playlist.localizedName
-														  style:UIPreviewActionStyleDefault
+			[addActions addObject:[UIPreviewAction actionWithTitle:playlist.localizedName style:UIPreviewActionStyleDefault
 														   handler:^(UIPreviewAction * action, UIViewController * previewViewController) {
 															   [playlist addVerb:_verb];
 														   }]];
@@ -264,65 +235,42 @@
 	[self presentViewController:alertController animated:YES completion:NULL];
 }
 
-#pragma mark - Web view delegate
+#pragma mark - ResultView delegate
 
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
+- (NSString *)helpAnchorForTitle:(ResultTitle)title
 {
-	if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
-		NSURLRequest * const request = navigationAction.request;
-		NSString * const fragment = request.URL.fragment;
-		if ([fragment isEqualToString:@"help-infinitive"] ||
-			[fragment isEqualToString:@"help-simple-past"] ||
-			[fragment isEqualToString:@"help-past-participle"] ||
-			[fragment isEqualToString:@"help-definition"] ||
-			[fragment isEqualToString:@"help-example"] ||
-			[fragment isEqualToString:@"help-composition"] ||
-			[fragment isEqualToString:@"help-quote"]) {
-			
-			HelpViewController * helpViewController = [[HelpViewController alloc] init];
-			helpViewController.anchor = fragment;
-			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
-			if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-			[self presentViewController:navigationController animated:YES completion:NULL];
-			
-		} else if ([fragment isEqualToString:@"edit-note"]) {
-			EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
-			editNoteViewController.verb = _verb;
-			
-			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
-			if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-			[self presentViewController:navigationController animated:YES completion:NULL];
-		}
-		decisionHandler(WKNavigationActionPolicyCancel);
+	switch (title) {
+		case ResultTitleInfinitive: return @"help-infinitive";
+		case ResultTitlePast:		return @"help-simple-past";
+		case ResultTitleParticiple: return @"help-past-participle";
+		case ResultTitleDefinition: return @"help-definition";
+		case ResultTitleComposition: return @"help-composition";
+		case ResultTitleNote:		return @"help-quote";
+		case ResultTitleQuote:		break;
+	}
+	return nil;
+}
+
+- (void)resultView:(id)resultView didSelectTitle:(ResultTitle)title
+{
+	if (title == ResultTitleNote) {
+		EditNoteViewController * editNoteViewController = [[EditNoteViewController alloc] init];
+		editNoteViewController.verb = _verb;
+		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:editNoteViewController];
+		if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+		[self presentViewController:navigationController animated:YES completion:NULL];
+		
 	} else {
-		decisionHandler(WKNavigationActionPolicyAllow);
+		HelpViewController * helpViewController = [[HelpViewController alloc] init];
+		helpViewController.anchor = [self helpAnchorForTitle:title];
+		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:helpViewController];
+		if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+		[self presentViewController:navigationController animated:YES completion:NULL];
 	}
-}
-
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
-{
-	[_activityIndicatorView stopAnimating];
-}
-
-#pragma mark - Scroll view delegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-	if (scrollView.contentSize.height > 0 && scrollView.contentSize.height <= _webView.frame.size.height) {
-		scrollView.showsVerticalScrollIndicator = NO;
-		scrollView.scrollEnabled = NO; // Disable scrolling when no need (because of top inset, it always scrolls; 2 hours spent finding that...)
-		scrollView.contentOffset = CGPointMake(0, -scrollView.contentInset.top);
-	}
-}
-
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
-{
-	return nil; // Disable zooming
 }
 
 - (void)dealloc
 {
-	_webView.scrollView.delegate = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
