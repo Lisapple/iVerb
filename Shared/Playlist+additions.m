@@ -146,3 +146,44 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 }
 
 @end
+
+@implementation Playlist (SharedPlaylist)
+
+- (void)updateSharedVerbsFor:(SharedDestination)destination
+{
+	
+	switch (destination) {
+		case SharedDestinationWidget: {
+			NSMutableDictionary * verbs = [[NSMutableDictionary alloc] initWithCapacity:self.verbs.count];
+			for (Verb * verb in self.verbs) {
+				verbs[verb.infinitif] = [NSString stringWithFormat:@"%@|%@|%@",
+										 verb.past, verb.pastParticiple, verb.definition];
+			}
+			
+			NSUserDefaults * const sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.lisacintosh.iverb"];
+			[sharedDefaults setObject:verbs forKey:UserDefaultsWidgetSharedVerbsKey];
+			[sharedDefaults setObject:(self.isUserPlaylist) ? self.name : nil
+							   forKey:UserDefaultsLastUsedPlaylistKey]; // Share playlist only from user playlist (these can launch quiz)
+		}
+			break;
+		case SharedDestinationWatch: {
+			if (NSClassFromString(@"WCSession") && [WCSession isSupported] && [WCSession defaultSession].isWatchAppInstalled) {
+				
+				NSMutableDictionary * verbs = [[NSMutableDictionary alloc] initWithCapacity:self.verbs.count];
+				for (Verb * verb in self.verbs) {
+					verbs[verb.infinitif] = [NSString stringWithFormat:@"%@|%@|%@|%d|%d",
+											 verb.past, verb.pastParticiple, verb.definition,
+											 verb.isBookmarked, (verb.note.length > 0)];
+				}
+				NSDictionary <NSString *, id> * context = @{ @"verbs" : verbs };
+				NSError * error = nil;
+				BOOL success = [[WCSession defaultSession] updateApplicationContext:context error:&error];
+				if (!success)
+					NSLog(@"error: %@", error.localizedDescription);
+			}
+		}
+	}
+	
+}
+
+@end

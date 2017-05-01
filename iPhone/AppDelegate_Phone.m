@@ -26,6 +26,12 @@
 	[Fabric with:@[ CrashlyticsKit ]];
 #endif
 	
+	if ([WCSession isSupported]) {
+		WCSession * session = [WCSession defaultSession];
+		session.delegate = self;
+		[session activateSession];
+	}
+	
 	[[UserDataManager defaultManager] synchronize];
 	
 	NSDictionary * attributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:20.],
@@ -49,6 +55,9 @@
 		if (error) {
 			NSLog(@"error when building Spotlight index: %@", error.localizedDescription);
 		} }];
+	
+	// Update shared user default for watch content
+	[[Playlist allVerbsPlaylist] updateSharedVerbsFor:SharedDestinationWatch];
 	
 	return YES;
 }
@@ -303,6 +312,36 @@
     }
 	[[UserDataManager defaultManager] synchronize];
 }
+
+#pragma mark - Watch connectivity delegate
+
+- (void)session:(WCSession *)session activationDidCompleteWithState:(WCSessionActivationState)activationState error:(nullable NSError *)error {
+	if (activationState == WCSessionActivationStateActivated) {
+		[Answers logCustomEventWithName:@"watch-activated" customAttributes:nil];
+	}
+}
+
+- (void)sessionDidBecomeInactive:(WCSession *)session { }
+
+- (void)sessionDidDeactivate:(WCSession *)session { }
+
+- (void)session:(WCSession *)session didReceiveMessage:(NSDictionary<NSString *, id> *)message
+   replyHandler:(void(^)(NSDictionary<NSString *, id> *replyMessage))replyHandler
+{
+	NSString * const action = message[@"action"];
+	NSString * const infinitif = message[@"verb"];
+	Verb * verb = [Verb verbWithInfinitif:infinitif];
+	if /**/ ([action isEqualToString:@"show-note"]) {
+		replyHandler(@{ @"verb" : infinitif, @"note" : verb.note ?: @"" });
+	}
+	else if ([action isEqualToString:@"bookmark"]) {
+		[[Playlist bookmarksPlaylist] addVerb:verb];
+		replyHandler(@{ });
+	}
+	else if ([action isEqualToString:@"unbookmark"]) {
+		[[Playlist bookmarksPlaylist] removeVerb:verb];
+		replyHandler(@{ });
+	}
 }
 
 #pragma mark - Core Data stack

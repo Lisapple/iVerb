@@ -8,8 +8,11 @@
 
 @import CoreSpotlight;
 @import MobileCoreServices;
+@import WatchConnectivity;
 
 #import "Playlist.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSUInteger, PlaylistAction) {
 	/** When selecting a playlist (saved in user defaults) */
@@ -17,6 +20,14 @@ typedef NS_ENUM(NSUInteger, PlaylistAction) {
 	
 	/** When added/remove a verb to a playlist (not saved in user defaults) */
 	PlaylistActionAddTo
+};
+
+typedef NS_ENUM(NSUInteger, SharedDestination) {
+	/// Update shared user default for widget
+	SharedDestinationWidget,
+	
+	/// Update shared user default for Apple Watch; a valid WCSession must has been activated.
+	SharedDestinationWatch
 };
 
 @interface Playlist (additions)
@@ -38,3 +49,11 @@ typedef NS_ENUM(NSUInteger, PlaylistAction) {
 - (void)buildingSpolightIndexWithCompletionHandler:(void (^ _Nullable)(NSError * _Nullable error))completionHandler NS_AVAILABLE(NA, 9_0);
 
 @end
+
+@interface Playlist (SharedPlaylist)
+
+- (void)updateSharedVerbsFor:(SharedDestination)destination;
+
+@end
+
+NS_ASSUME_NONNULL_END

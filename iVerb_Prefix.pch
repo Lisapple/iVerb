@@ -49,3 +49,6 @@ static NSString * const UserDefaultsSharedVerbsKey = @"Shared Verbs";
 static inline void dispatch_after_main(CFTimeInterval delay, dispatch_block_t block) {
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
 }
+/// A dictionary with all verbs from all verbs playlist for watch.
+/// The format is `dict[infinitif] = "past|pastParticiple|definition|isFavorite|hasNote"`
+static NSString * const UserDefaultsWatchSharedVerbsKey = @"com.lisacintosh.iverb.watch.shared-verbs";

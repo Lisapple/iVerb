@@ -10,11 +10,13 @@
 @import QuartzCore;
 @import CoreSpotlight;
 @import Fabric;
+@import WatchConnectivity;
 
 #import "Playlist+additions.h"
 #import "ManagedObjectContext.h"
 
-@interface AppDelegate_Phone : UIResponder <UIApplicationDelegate, UITabBarDelegate, ManagedObjectContext>
+@interface AppDelegate_Phone : UIResponder
+	<UIApplicationDelegate, WCSessionDelegate, UITabBarDelegate, ManagedObjectContext>
  
 @property (nonatomic, strong) UIWindow * landscapeWindow;
 

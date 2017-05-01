@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="AgC-eL-Hgc">
+    <device id="watch38" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="watchOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="12029"/>
+    </dependencies>
+    <scenes>
+        <!--Verbs Controller-->
+        <scene sceneID="aou-V4-d1y">
+            <objects>
+                <controller id="AgC-eL-Hgc" customClass="VerbsController" customModule="Watch_Extension">
+                    <items>
+                        <table alignment="left" id="JlP-7A-0Kx">
+                            <items>
+                                <tableRow identifier="VerbIdentifier" id="Ojx-hu-YmT" customClass="VerbRowController" customModule="Watch_Extension">
+                                    <group key="rootItem" width="1" alignment="left" id="3xG-A8-hUd">
+                                        <items>
+                                            <label width="1" widthAdjustment="-2" alignment="left" verticalAlignment="center" text="abide" textAlignment="left" numberOfLines="2" minimumScaleFactor="0.59999999999999998" id="Uxp-xk-7yc">
+                                                <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                                            </label>
+                                            <separator height="28" alignment="right" verticalAlignment="center" id="abH-dB-4QY">
+                                                <color key="color" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
+                                            </separator>
+                                        </items>
+                                        <edgeInsets key="margins" left="7" right="0.0" top="0.0" bottom="0.0"/>
+                                        <connections>
+                                            <segue destination="Ev2-iL-2IL" kind="push" id="lxo-AL-WRx"/>
+                                        </connections>
+                                    </group>
+                                    <connections>
+                                        <outlet property="bookmarkIndicator" destination="abH-dB-4QY" id="CGh-YW-Ykp"/>
+                                        <outlet property="label" destination="Uxp-xk-7yc" id="Psn-W5-YQl"/>
+                                    </connections>
+                                </tableRow>
+                            </items>
+                        </table>
+                    </items>
+                    <connections>
+                        <outlet property="table" destination="JlP-7A-0Kx" id="DuC-cF-nYM"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="220" y="345"/>
+        </scene>
+        <!--abide-->
+        <scene sceneID="DVA-Cu-pEh">
+            <objects>
+                <controller title="abide" id="Ev2-iL-2IL" customClass="ResultController" customModule="Watch_Extension">
+                    <items>
+                        <separator alignment="left" alpha="0.0" id="pik-tw-tUD">
+                            <color key="color" cocoaTouchSystemColor="darkTextColor"/>
+                        </separator>
+                        <label alignment="left" text="Past" id="Tui-eb-6AM">
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                        </label>
+                        <label alignment="left" text="abode" textAlignment="justified" numberOfLines="0" id="l9p-eX-fpg">
+                            <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                        </label>
+                        <separator alignment="left" alpha="0.0" id="ycj-lb-hLl">
+                            <color key="color" cocoaTouchSystemColor="darkTextColor"/>
+                        </separator>
+                        <label alignment="left" text="Participle" id="UCl-CQ-kv1">
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                        </label>
+                        <label alignment="left" text="abode" textAlignment="right" numberOfLines="0" id="qMr-GG-Vsn">
+                            <fontDescription key="font" style="UICTFontTextStyleBody"/>
+                        </label>
+                        <separator alignment="left" id="tUe-sO-OyJ">
+                            <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        </separator>
+                        <separator width="70" alignment="center" id="xF2-5G-bk1">
+                            <color key="color" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                        </separator>
+                        <label alignment="left" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit." textAlignment="left" numberOfLines="0" id="LxC-ZM-wIV">
+                            <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                        </label>
+                    </items>
+                    <connections>
+                        <outlet property="definitionLabel" destination="LxC-ZM-wIV" id="zIw-82-6b8"/>
+                        <outlet property="participleLabel" destination="qMr-GG-Vsn" id="axV-Af-q5v"/>
+                        <outlet property="pastLabel" destination="l9p-eX-fpg" id="oo0-Ao-ANg"/>
+                    </connections>
+                </controller>
+            </objects>
+            <point key="canvasLocation" x="456" y="345"/>
+        </scene>
+    </scenes>
+</document>
