@@ -11,7 +11,7 @@
 #import "ManagedObjectContext.h"
 #import "Playlist+additions.h"
 
-#import "VerbOptionsViewController_Phone.h"
+#import "VerbOptionsViewController.h"
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
 
@@ -259,10 +259,14 @@
 	
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Add to list..." style:UIAlertActionStyleDefault
 													  handler:^(UIAlertAction * action) {
-														  VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
+														  VerbOptionsViewController * optionsViewController = [[VerbOptionsViewController alloc] init];
 														  optionsViewController.verbs = @[ _verb ];
 														  UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
-														  if (TARGET_IS_IPAD()) navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+														  if (TARGET_IS_IPAD()) {
+															  navigationController.modalPresentationStyle = UIModalPresentationPopover;
+															  UIPopoverPresentationController * popController = navigationController.popoverPresentationController;
+															  popController.barButtonItem = (UIBarButtonItem *)sender;
+														  }
 														  [self presentViewController:navigationController animated:YES completion:NULL];
 													  }]];
 	

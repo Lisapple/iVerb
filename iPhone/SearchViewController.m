@@ -8,8 +8,7 @@
 
 #import "SearchViewController.h"
 #import "ResultViewController.h"
-#import "VerbOptionsViewController_Phone.h"
-#import "VerbOptionsViewController_Pad.h"
+#import "VerbOptionsViewController.h"
 #import "SearchResultsViewController.h"
 
 #import "ManagedObjectContext.h"
@@ -435,26 +434,25 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 - (IBAction)addToAction:(id)sender
 {
 	if (!showingAddToPopover && checkedVerbs.count > 0) {
+		VerbOptionsViewController * optionsViewController = [[VerbOptionsViewController alloc] init];
+		optionsViewController.verbs = checkedVerbs;
+		
+		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
 		if (TARGET_IS_IPAD()) {
-			VerbOptionsViewController_Pad * verbOptionsViewController = [[VerbOptionsViewController_Pad alloc] init];
-			verbOptionsViewController.verbs = checkedVerbs;
-			verbOptionsViewController.modalPresentationStyle = UIModalPresentationPopover;
+			navigationController.modalPresentationStyle = UIModalPresentationPopover;
 			
-			_popoverPresentationController = verbOptionsViewController.popoverPresentationController;
+			_popoverPresentationController = navigationController.popoverPresentationController;
 			_popoverPresentationController.delegate = self;
 			[_popoverPresentationController.containerView sizeToFit];
 			_popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
 			
-			[self presentViewController:verbOptionsViewController animated:NO completion:NULL];
+			UITableViewCell * cell = [self.tableView cellForRowAtIndexPath:self.tableView.indexPathForSelectedRow];
+			_popoverPresentationController.sourceView = cell;
+			_popoverPresentationController.sourceRect = cell.bounds;
+			
 			showingAddToPopover = YES;
-		
-		} else {
-			/* Show an actionSheet to select a playlist (or bookmarks) *OR* show the VerbOptionsViewController_Phone */
-			VerbOptionsViewController_Phone * optionsViewController = [[VerbOptionsViewController_Phone alloc] init];
-			optionsViewController.verbs = checkedVerbs;
-			UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:optionsViewController];
-			[self presentViewController:navigationController animated:YES completion:NULL];
 		}
+		[self presentViewController:navigationController animated:YES completion:NULL];
 	}
 }
 

@@ -9,10 +9,7 @@
 #import "Playlist.h"
 #import "Verb.h"
 
-@interface VerbOptionsViewController_Phone : UITableViewController <UITableViewDelegate, UITableViewDataSource>
-{
-	NSArray * userPlaylists;
-}
+@interface VerbOptionsViewController : UITableViewController
 
 @property (nonatomic, strong) NSArray * verbs;
 
