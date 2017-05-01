@@ -19,7 +19,7 @@ extern NSString * const VerbDidRemoveNoteNotification; // object = verb
 
 @property (nonatomic, strong) NSString * infinitif, * past, * pastParticiple;
 @property (nonatomic, strong, nullable) NSString * definition;
-@property (nonatomic, strong, nullable) NSString * example DEPRECATED_ATTRIBUTE;
+@property (nonatomic, strong, nullable) NSString * example UNAVAILABLE_ATTRIBUTE;
 @property (nonatomic, strong, nullable) NSString * note;
 
 @property (nonatomic, strong, nullable) NSString * components;
@@ -31,8 +31,10 @@ extern NSString * const VerbDidRemoveNoteNotification; // object = verb
 
 @property (nonatomic, readonly) BOOL isBookmarked;
 
+/// Last verb which details was displayed.
 + (Verb * _Nullable)lastUsedVerb;
 
+/// Return YES if verb contains not many components., like "stand" but not "under•stand".
 - (BOOL)isBasicVerb;
 
 /**

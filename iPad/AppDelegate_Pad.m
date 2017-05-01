@@ -13,6 +13,9 @@
 #import "ManagedObjectContext.h"
 #import "UserDataManager.h"
 
+#import "UIColor+addition.h"
+#import "Verb+additions.h"
+
 @implementation AppDelegate_Pad
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -21,11 +24,13 @@
 	[Fabric with:@[ CrashlyticsKit ]];
 #endif
 	
+	[[UserDataManager defaultManager] synchronize];
+	
 	NSDictionary * attributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:20.],
 								   NSForegroundColorAttributeName : [UIColor darkGrayColor] };
 	[UINavigationBar appearance].titleTextAttributes = attributes;
 	
-    self.window.tintColor = [UIColor purpleColor];
+    self.window.tintColor = [UIColor foregroundColor];
 	
 	// On iOS 9+, index all verbs with Spotlight
 	[[Playlist allVerbsPlaylist] buildingSpolightIndexWithCompletionHandler:^(NSError * _Nullable error) {
@@ -38,7 +43,7 @@
 
 - (void)showVerbWithInfinitif:(NSString *)infinitif
 {
-	Verb * verb = [[Playlist allVerbsPlaylist] verbWithInfinitif:infinitif];
+	Verb * verb = [Verb verbWithInfinitif:infinitif];
 	if (verb)
 		[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
 }

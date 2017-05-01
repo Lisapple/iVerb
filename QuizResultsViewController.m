@@ -26,26 +26,18 @@
 		_dateLabel = [[UILabel alloc] init];
 		_dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		[self.contentView addSubview:_dateLabel];
-		[self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:_dateLabel attribute:NSLayoutAttributeLeft
-																		 relatedBy:NSLayoutRelationEqual
-																			toItem:self.contentView attribute:NSLayoutAttributeLeft
-																		multiplier:1 constant:15],
-											[NSLayoutConstraint constraintWithItem:_dateLabel attribute:NSLayoutAttributeHeight
-																		 relatedBy:NSLayoutRelationEqual
-																			toItem:self.contentView attribute:NSLayoutAttributeHeight
-																		multiplier:1 constant:0] ]];
+		[self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:_dateLabel attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual
+																			toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:15],
+											[NSLayoutConstraint constraintWithItem:_dateLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual
+																			toItem:self.contentView attribute:NSLayoutAttributeHeight multiplier:1 constant:0] ]];
 		
 		_resultLabel = [[UILabel alloc] init];
 		_resultLabel.translatesAutoresizingMaskIntoConstraints = NO;
 		[self.contentView addSubview:_resultLabel];
-		[self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeRight
-																		 relatedBy:NSLayoutRelationEqual
-																			toItem:_resultLabel attribute:NSLayoutAttributeRight
-																		multiplier:1 constant:15],
-											[NSLayoutConstraint constraintWithItem:_resultLabel attribute:NSLayoutAttributeHeight
-																		 relatedBy:NSLayoutRelationEqual
-																			toItem:self.contentView attribute:NSLayoutAttributeHeight
-																		multiplier:1 constant:0] ]];
+		[self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.contentView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual
+																			toItem:_resultLabel attribute:NSLayoutAttributeRight multiplier:1 constant:15],
+											[NSLayoutConstraint constraintWithItem:_resultLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual
+																			toItem:self.contentView attribute:NSLayoutAttributeHeight multiplier:1 constant:0] ]];
 		self.tintColor = [UIColor darkGrayColor];
 	}
 	return self;
@@ -90,18 +82,16 @@
 	self.title = @"Quiz Results";
 	
 	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-																						  target:self
-																						  action:@selector(cancelAction:)];
+																						  target:self action:@selector(cancelAction:)];
 	self.view.backgroundColor = [UIColor colorWithWhite:0.96 alpha:1.];
 	
 	self.tableView.showsVerticalScrollIndicator = NO;
+	[self.tableView registerClass:QuizResultCell.class forCellReuseIdentifier:@"QuizResultCellID"];
 	
-	if (!TARGET_IS_IPAD()) {
-		/* Disallow the landscape mode of the application */
+	if (!TARGET_IS_IPAD()) // Disallow the landscape mode of the application
 		[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-	}
 	
-	NSSortDescriptor * descriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO];
+	NSSortDescriptor * descriptor = [NSSortDescriptor sortDescriptorWithKey:SelectorName(date) ascending:NO];
 	_results = [_playlist.quizResults sortedArrayUsingDescriptors:@[ descriptor ]];
 	
 	if (_results.count >= 2) {
@@ -126,8 +116,19 @@
 		
 		self.tableView.tableHeaderView = view;
 	}
-	
-	[self.tableView registerClass:QuizResultCell.class forCellReuseIdentifier:@"QuizResultCellID"];
+	else if (_results.count == 0) {
+		UILabel * placeholder = [[UILabel alloc] initWithFrame:CGRectZero];
+		placeholder.translatesAutoresizingMaskIntoConstraints = NO;
+		placeholder.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+		placeholder.text = @"No quiz results";
+		placeholder.textColor = [UIColor grayColor];
+		[self.view addSubview:placeholder];
+		[self.view addConstraints:
+		 @[ [NSLayoutConstraint constraintWithItem:placeholder attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual
+											toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0],
+			[NSLayoutConstraint constraintWithItem:placeholder attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual
+											toItem:self.view attribute:NSLayoutAttributeCenterY multiplier:1 constant:-64] ]];
+	}
 }
 
 - (IBAction)cancelAction:(id)sender

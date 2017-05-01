@@ -43,20 +43,10 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 		
 		NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
 		[userDefaults setObject:playlist.name forKey:UserDefaultsLastUsedPlaylistKey];
-		[userDefaults synchronize];
 		
 		// Update shared default playlist content
 		Playlist * sharedPlaylist = (playlist.verbs.count) ? playlist : [Playlist commonsVerbsPlaylist];
-		NSMutableDictionary * verbs = [[NSMutableDictionary alloc] initWithCapacity:sharedPlaylist.verbs.count];
-		for (Verb * verb in sharedPlaylist.verbs) {
-			verbs[verb.infinitif] = [NSString stringWithFormat:@"%@|%@|%@|%@",
-									 verb.infinitif, verb.past, verb.pastParticiple, verb.definition];
-		}
-		NSUserDefaults * sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.lisacintosh.iverb"];
-		[sharedDefaults setObject:verbs forKey:UserDefaultsSharedVerbsKey];
-		[sharedDefaults setObject:(playlist.isUserPlaylist) ? playlist.name : nil
-						   forKey:UserDefaultsLastUsedPlaylistKey]; // Share playlist only from user playlist (these can launch quiz)
-		[sharedDefaults synchronize];
+		[sharedPlaylist updateSharedVerbsFor:SharedDestinationWidget];
 		
 		// Update shortcut items
 		UIApplication * app = [UIApplication sharedApplication];
@@ -121,6 +111,31 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 								options:0 range: NSMakeRange(0, template.length)];
 	return [template stringByReplacingOccurrencesOfString:@"{{@}}" withString:content];
 }
+
+- (Verb *)verbWithInfinitif:(NSString *)infinitif
+{
+	if (!infinitif)
+		return nil;
+	
+	infinitif = [infinitif stringByReplacingOccurrencesOfString:@"To " withString:@""
+														options:NSCaseInsensitiveSearch
+														  range:NSMakeRange(0, infinitif.length - 1)];
+	[infinitif stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	
+	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
+	request.fetchLimit = 1;
+	request.predicate = [NSPredicate predicateWithFormat:@"infinitif LIKE[cd] %@", infinitif];
+	Verb * verb = [self.managedObjectContext executeFetchRequest:request error:NULL].firstObject;
+	if (!verb) {
+		request.predicate = [NSPredicate predicateWithFormat:@"infinitif CONTAINS[cd] %@", infinitif];
+		verb = [self.managedObjectContext executeFetchRequest:request error:NULL].firstObject;
+	}
+	return verb;
+}
+
+@end
+
+@implementation Playlist (Spotlight)
 
 - (void)buildingSpolightIndexWithCompletionHandler:(void (^)(NSError * error))completionHandler
 {

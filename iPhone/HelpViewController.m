@@ -9,6 +9,8 @@
 #import "HelpViewController.h"
 #import "UIApplication+addition.h"
 
+#import "UIColor+addition.h"
+
 @interface HelpViewController ()
 
 @property (nonatomic, strong) WKWebView * webView;
@@ -25,7 +27,7 @@
 {
     [super viewDidLoad];
     
-    self.navigationController.navigationBar.tintColor = [UIColor purpleColor];
+    self.navigationController.navigationBar.tintColor = [UIColor foregroundColor];
     
 	self.title = @"Help";
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone

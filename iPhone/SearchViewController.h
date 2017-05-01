@@ -12,28 +12,19 @@
 
 #import "Playlist.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class Verb;
-@interface SearchViewController : UITableViewController <UISearchBarDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate, UIPopoverPresentationControllerDelegate>
-{
-	NSArray * sortedKeys, * filteredKeys;
-	
-	UIView * titleView;
-	
-	BOOL isSearching;// Search Bar is the First Responder, the keyboard is showing
-	
-	BOOL editing;
-	NSMutableArray <Verb *> * checkedVerbs;
-}
+@interface SearchViewController : UITableViewController
+	<UISearchBarDelegate, MFMailComposeViewControllerDelegate, UIActionSheetDelegate, UIPopoverPresentationControllerDelegate>
 
 @property (nonatomic, strong) Playlist * playlist;
 
-- (IBAction)addToAction:(id)sender;
-- (IBAction)shareAction:(id)sender;
-- (IBAction)removeAction:(id)sender;
-
 - (void)focusSearch;
 
-// Private
-- (void)reloadData;
+- (nullable Verb *)verbBefore:(Verb *)verb;
+- (nullable Verb *)verbAfter:(Verb *)verb;
 
 @end
+
+NS_ASSUME_NONNULL_END

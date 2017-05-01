@@ -59,18 +59,9 @@
 
 - (IBAction)doneAction:(id)sender
 {
-	NSString * note = _textView.text;
-	NSString * key = [NSString stringWithFormat:@"note_%@", _verb.infinitif];
+	_verb.note = _textView.text;
 	
-	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-	if ([note stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0)
-		[userDefaults setObject:_textView.text forKey:key];
-	else
-		[userDefaults removeObjectForKey:key];
-    [userDefaults synchronize];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:ResultDidReloadNotification object:nil];
-	
+	[[NSNotificationCenter defaultCenter] postNotificationName:ResultsDidChangeNotification object:nil];
 	[self dismissViewControllerAnimated:YES completion:NULL];
 }
 

@@ -97,32 +97,32 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 		let (key, value) = dict[index]
 		self.infinitif = key
 		let comps = (value as! String).components(separatedBy: "|")
-		guard (comps.count >= 3) else {
+		guard let infinitif = self.infinitif, comps.count >= 2 else {
 			// @TODO: Should show an error, format is not valid 
 			completionHandler(.noData)
 			return
 		}
 		
-		var string = "To \(comps[0]), \(comps[1]), \(comps[2])\n"
+		var string = "To \(infinitif), \(comps[0]), \(comps[1])\n"
 		
 		if (self.isQuizMode) {
 			self.playlistName = sharedDefaults!.string(forKey: kLastUsedPlaylistKey)
 			if (self.playlistName?.isUserPlaylist == true) {
 				let index = Int(arc4random() % 2)
 				self.tense = ["past", "past-participle"][index]
-				string = "To \(comps[0]), "
+				string = "To \(infinitif), "
 				
 				if (self.tense == "past") {
-					let placeholder = comps[1].characters.reduce("") { $0.0 + "_" }
+					let placeholder = comps[0].characters.reduce("") { $0.0 + "_" }
 					string += "\(placeholder), "
 				} else {
-					string += "\(comps[1]), "
+					string += "\(comps[0]), "
 				}
 				
 				if (self.tense == "past-participle") {
-					string += comps[2].characters.reduce("") { $0.0 + "_" }
+					string += comps[1].characters.reduce("") { $0.0 + "_" }
 				} else {
-					string += comps[2]
+					string += comps[1]
 				}
 				string += "\n"
 			}

@@ -18,6 +18,7 @@
 #import "Playlist+additions.h"
 #import "NSDate+addition.h"
 #import "UIApplication+addition.h"
+#import "UIColor+addition.h"
 
 const NSUInteger kRenamingTextFieldTag = 'rtft';
 
@@ -65,16 +66,6 @@ const NSUInteger kRenamingTextFieldTag = 'rtft';
     
 	self.title = @"Lists";
 	
-	if (TARGET_IS_IPAD()) {
-		UIButton * button = [UIButton buttonWithType:UIButtonTypeInfoDark];
-		[button sizeToFit];
-		[button addTarget:self action:@selector(moreInfo:) forControlEvents:UIControlEventTouchUpInside];
-		button.tintColor = self.view.window.tintColor;
-		
-		UIBarButtonItem * infoButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
-		self.navigationItem.leftBarButtonItem = infoButtonItem;
-	}
-	
 	defaultPlaylists = [Playlist defaultPlaylists];
 	
 	[self.tableView registerClass:TableViewCell.class forCellReuseIdentifier:TableViewCell.identifier];
@@ -84,36 +75,10 @@ const NSUInteger kRenamingTextFieldTag = 'rtft';
 												 name:PlaylistDidUpdatedNotification object:nil];
 }
 
-- (IBAction)moreInfo:(id)sender
-{
-	NSDictionary * infoDictionary = [NSBundle mainBundle].infoDictionary;
-	NSString * title = [NSString stringWithFormat:@"iVerb %@\nCopyright © %lu, Lis@cintosh", infoDictionary[@"CFBundleShortVersionString"], (long)[NSDate date].year];
-	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil
-																	  preferredStyle:UIAlertControllerStyleActionSheet];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Feedback & Support" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-		[[UIApplication sharedApplication] openExternalURL:[NSURL URLWithString:@"http://support.lisacintosh.com/iVerb/"]]; }]];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Go to my website" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-		[[UIApplication sharedApplication] openExternalURL:[NSURL URLWithString:@"http://lisacintosh.com/"]]; }]];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"See all my application" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-		[[UIApplication sharedApplication] openExternalURL:[NSURL URLWithString:@"http://applestore.com/lisacintosh"]]; }]];
-	[alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:NULL]];
-	
-	alertController.modalPresentationStyle = UIModalPresentationPopover;
-	UIPopoverPresentationController * popController = alertController.popoverPresentationController;
-	popController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-	popController.sourceRect = CGRectMake(30., 0., 0., 0.);
-	popController.sourceView = self.view;
-	[self.view.window.rootViewController presentViewController:alertController animated:YES completion:NULL];
-}
-
 - (void)createNewListWithName:(NSString *)name
 {
 	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
-	NSEntityDescription * entity = [NSEntityDescription entityForName:@"Playlist" inManagedObjectContext:context];
-	NSManagedObject * playlist = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
-	[playlist setValue:name forKey:@"name"];
-	[playlist setValue:[NSDate date] forKey:@"creationDate"];
-	
+	[Playlist insertPlaylistWithName:name inManagedObjectContext:context];
 	[context save:NULL];
 }
 
@@ -255,7 +220,7 @@ const NSUInteger kRenamingTextFieldTag = 'rtft';
 			UITableViewRowAction * rowAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal title:@"Quiz"
 																				handler:^(UITableViewRowAction * action, NSIndexPath * indexPath) {
 																					[self launchQuizForPlaylist:_selectedPlaylist]; }];
-			rowAction.backgroundColor = [UIColor purpleColor];
+			rowAction.backgroundColor = [UIColor foregroundColor];
 			[actions addObject:rowAction];
 		}
         return actions;
@@ -327,13 +292,16 @@ const NSUInteger kRenamingTextFieldTag = 'rtft';
 	} else {
 		AProposViewController * controller = [[AProposViewController alloc] initWithLicenseType:ApplicationLicenseTypeMIT];
 		controller.author = @"Lis@cintosh";
-		[controller setURLsStrings:@[ @"http://lisacintosh.com/iverb-online",
+		[controller setURLsStrings:@[ @"lisacintosh.com/iverb-online",
 									  @"appstore.com/lisacintosh",
-									  @"http://support.lisacintosh.com/iverb",
-									  @"http://lisacintosh.com" ]];
+									  @"support.lisacintosh.com/iverb",
+									  @"lisacintosh.com" ]];
 		controller.repositoryURL = [NSURL URLWithString:@"https://github.com/lisapple/iverb"];
 		
 		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+		if (TARGET_IS_IPAD())
+			navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+		
 		[self.navigationController presentViewController:navigationController animated:YES completion:nil];
 	}
 }

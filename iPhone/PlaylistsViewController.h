@@ -10,7 +10,7 @@
 
 #import "EditableTableViewCell.h"
 
-@interface PlaylistsViewController : UITableViewController <UINavigationControllerDelegate, EditableTableViewCellDelegate>
+@interface PlaylistsViewController : UITableViewController <EditableTableViewCellDelegate>
 {
 @private
 	NSArray * defaultPlaylists;

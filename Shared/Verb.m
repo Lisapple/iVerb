@@ -32,7 +32,7 @@ NSString * const VerbDidRemoveNoteNotification = @"VerbDidRemoveNoteNotification
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
 	request.predicate = [NSPredicate predicateWithFormat:@"TRUEPREDICATE"];
-	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
+	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:SelectorName(lastUse) ascending:NO];
 	request.sortDescriptors = @[ sortDescriptor ];
 	return [context executeFetchRequest:request error:NULL].firstObject;
 }
@@ -44,8 +44,8 @@ NSString * const VerbDidRemoveNoteNotification = @"VerbDidRemoveNoteNotification
 
 - (BOOL)isBasicVerb
 {
-	/* "components" return the composition of the verb separated by dot ("."), for non-composed (basic) verbs, "components" have the same value than infinitif */
-	return (!self.components || [self.components componentsSeparatedByString:@"."].count == 1);
+	// `components` contains verb composition elements separated by "."
+	return ([self.components componentsSeparatedByString:@"."].count <= 1);
 }
 
 - (NSString *)noteKey
@@ -73,7 +73,9 @@ NSString * const VerbDidRemoveNoteNotification = @"VerbDidRemoveNoteNotification
 - (NSString *)searchableDefinition
 {
 	if (self.definition.length > 2) {
-		NSString * definition = [self.definition substringFromIndex:2];
+		NSString * definition = ([self.definition hasPrefix:@"To "])
+			? [self.definition substringFromIndex:2] // Ignore "To " at the beginning
+			: self.definition;
 		return [definition stringByReplacingOccurrencesOfString:@" to " withString:@""];
 	}
 	return self.definition;

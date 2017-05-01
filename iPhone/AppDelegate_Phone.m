@@ -17,6 +17,9 @@
 #import "ResultViewController.h"
 #import "UserDataManager.h"
 
+#import "UIColor+addition.h"
+#import "Verb+additions.h"
+
 @implementation AppDelegate_Phone
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -39,7 +42,7 @@
 	[UINavigationBar appearance].titleTextAttributes = attributes;
 	
 	_window.backgroundColor = [UIColor blackColor];
-	_window.tintColor = [UIColor purpleColor];
+	_window.tintColor = [UIColor foregroundColor];
 	_navigationController = (UINavigationController *)_window.rootViewController;
 	
 	SearchViewController * searchViewController = [[SearchViewController alloc] init];
@@ -78,7 +81,7 @@
 
 - (void)showVerbWithInfinitif:(NSString *)infinitif
 {
-	Verb * verb = [[Playlist allVerbsPlaylist] verbWithInfinitif:infinitif];
+	Verb * verb = [Verb verbWithInfinitif:infinitif];
 	if (verb) {
 		if (_navigationController.presentedViewController)
 			[_navigationController dismissViewControllerAnimated:NO completion:nil];
@@ -119,19 +122,16 @@
 		return YES;
 		
 	} else { // iverb://quiz/[playlist name]/[infinitif]#[past/past-participle]
-		NSString * urlString = url.absoluteString.stringByRemovingPercentEncoding;
+		NSString * const urlString = url.absoluteString.stringByRemovingPercentEncoding;
+		const NSRange range = NSMakeRange(0, urlString.length);
 		NSRegularExpression * regex = [NSRegularExpression regularExpressionWithPattern:@"iverb://quiz\\/([^\\/]+)\\/([^#]+)#(.+)$"
-																				options:NSRegularExpressionCaseInsensitive
-																				  error:nil];
-		if ([regex matchesInString:urlString options:0 range:NSMakeRange(0, urlString.length)]) {
-			NSString * playlistName = [regex stringByReplacingMatchesInString:urlString options:0
-																		range:NSMakeRange(0, urlString.length) withTemplate:@"$1"];
-			Playlist * playlist = [Playlist playlistWithName:playlistName];
+																				options:NSRegularExpressionCaseInsensitive error:nil];
+		if ([regex matchesInString:urlString options:0 range:range]) {
+			NSString * playlistName = [regex stringByReplacingMatchesInString:urlString options:0 range:range withTemplate:@"$1"];
+			Playlist * const playlist = [Playlist playlistWithName:playlistName];
 			if (playlist) {
-				NSString * infinitif = [regex stringByReplacingMatchesInString:urlString options:0
-																		 range:NSMakeRange(0, urlString.length) withTemplate:@"$2"];
-				NSString * tense = [regex stringByReplacingMatchesInString:urlString options:0
-																	 range:NSMakeRange(0, urlString.length) withTemplate:@"$3"];
+				NSString * infinitif = [regex stringByReplacingMatchesInString:urlString options:0 range:range withTemplate:@"$2"];
+				NSString * tense = [regex stringByReplacingMatchesInString:urlString options:0 range:range withTemplate:@"$3"];
 				[self showQuizForPlaylist:playlist firstVerbWithInfinitif:infinitif tense:tense];
 				return YES;
 			}
@@ -183,7 +183,7 @@
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray * _Nullable))restorationHandler
 {
 	if ([userActivity.activityType isEqualToString:CSSearchableItemActionType]) {
-		NSString * infinitif = userActivity.userInfo[CSSearchableItemActivityIdentifier];
+		NSString * const infinitif = userActivity.userInfo[CSSearchableItemActivityIdentifier];
 		[self showVerbWithInfinitif:infinitif];
 	}
 	return YES;
@@ -346,21 +346,17 @@
 
 #pragma mark - Core Data stack
 
-/**
- Returns the managed object context for the application.
- If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
- */
 - (NSManagedObjectContext *)managedObjectContext
 {
-    if (_managedObjectContext != nil) {
+    if (_managedObjectContext != nil)
         return _managedObjectContext;
-    }
 	
     NSPersistentStoreCoordinator *coordinator = self.persistentStoreCoordinator;
     if (coordinator != nil) {
         _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         _managedObjectContext.persistentStoreCoordinator = coordinator;
 		
+		/*
 		NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
 		request.predicate = [NSPredicate predicateWithFormat:@"SELF.quote == nil"];
 		NSArray * verbs = [_managedObjectContext executeFetchRequest:request error:NULL];
@@ -401,14 +397,11 @@
 				[_managedObjectContext save:NULL];
 			}
 		}
+		 */
     }
     return _managedObjectContext;
 }
 
-/**
- Returns the managed object model for the application.
- If the model doesn't already exist, it is created by merging all of the models found in the application bundle.
- */
 - (NSManagedObjectModel *)managedObjectModel
 {
     if (_managedObjectModel != nil)
@@ -418,45 +411,31 @@
     return _managedObjectModel;
 }
 
-/**
- Returns the persistent store coordinator for the application.
- If the coordinator doesn't already exist, it is created and the application's store added to it.
- */
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
 	if (_persistentStoreCoordinator != nil)
 		return _persistentStoreCoordinator;
 	
-	NSString *storePath = [[self applicationDocumentsDirectory] stringByAppendingPathComponent:@"verbs.sqlite"];
+	NSString * const documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+	NSString * const storePath = [documentsPath stringByAppendingPathComponent:@"verbs.sqlite"];
 	if (![[NSFileManager defaultManager] fileExistsAtPath:storePath]) {
-		NSString *defaultStorePath = [[NSBundle mainBundle] pathForResource:@"verbs" ofType:@"sqlite"];
-		if (defaultStorePath) {
+		NSString * const defaultStorePath = [[NSBundle mainBundle] pathForResource:@"verbs" ofType:@"sqlite"];
+		if (defaultStorePath)
 			[[NSFileManager defaultManager] copyItemAtPath:defaultStorePath toPath:storePath error:NULL];
-		}
 	}
 	
 	_persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel];
 	
-	NSURL *storeUrl = [NSURL fileURLWithPath:storePath];
-	NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES };
-	NSError *error;
+	NSError * error;
+	NSURL * storeUrl = [NSURL fileURLWithPath:storePath];
+	NSDictionary * const options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES,
+									  NSInferMappingModelAutomaticallyOption: @YES };
 	if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
-		// Update to handle the error appropriately.
 		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-		exit(-1);  // Fail
+		exit(-1);
 	}
 	
 	return _persistentStoreCoordinator;
-}
-
-#pragma mark - Application's documents directory
-
-/**
- Returns the path to the application's documents directory.
- */
-- (NSString *)applicationDocumentsDirectory
-{
-    return NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
 }
 
 #pragma mark - Memory management

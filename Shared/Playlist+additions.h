@@ -15,10 +15,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSUInteger, PlaylistAction) {
-	/** When selecting a playlist (saved in user defaults) */
+	/// When selecting a playlist (saved in user defaults)
 	PlaylistActionSelect,
 	
-	/** When added/remove a verb to a playlist (not saved in user defaults) */
+	/// When added/remove a verb to a playlist (not saved in user defaults)
 	PlaylistActionAddTo
 };
 
@@ -35,17 +35,19 @@ typedef NS_ENUM(NSUInteger, SharedDestination) {
 + (nullable Playlist *)playlistForAction:(PlaylistAction)action;
 + (void)setPlaylist:(nullable Playlist *)playlist forAction:(PlaylistAction)action;
 
-- (nonnull NSString *)localizedName;
 + (Playlist *)insertPlaylistWithName:(NSString *)name inManagedObjectContext:(NSManagedObjectContext *)context;
 
+- (NSString *)localizedName;
+
+- (NSString *)HTMLFormat;
 
 - (nullable Verb *)verbWithInfinitif:(nullable NSString *)infinitif;
 
-- (nonnull NSString *)HTMLFormat;
+@end
 
-/**
- Index all verbs from the current playlist in Spotlight. Does nothing in iOS 8 and earlier (the completion handler is not even called).
- */
+@interface Playlist (Spotlight)
+
+/// Index all verbs from the current playlist in Spotlight. Does nothing in iOS 8 and earlier (the completion handler is not even called).
 - (void)buildingSpolightIndexWithCompletionHandler:(void (^ _Nullable)(NSError * _Nullable error))completionHandler NS_AVAILABLE(NA, 9_0);
 
 @end

@@ -14,6 +14,7 @@
 #import "QuizResult.h"
 
 #import "UIFont+addition.h"
+#import "UIColor+addition.h"
 
 @implementation SFSpeechRecognizer (Availability)
 
@@ -60,9 +61,9 @@ typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
 	if ((self = [super initWithCoder:aDecoder])) {
-		self.tintColor = [UIColor purpleColor];
+		self.tintColor = [UIColor foregroundColor];
 		
-		self.imageView.image = [[UIImage imageNamed:@"dictate"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+		self.imageView.image = [UIImage imageNamed:@"dictate"];
 		self.adjustsImageWhenHighlighted = NO;
 		
 		self.layer.borderColor = [UIColor grayColor].CGColor;
@@ -256,7 +257,7 @@ typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
 	[self.view addSubview:_responseView];
 	
 	_textField.delegate = self;
-	_backgroundFieldImageView.image = [[UIImage imageNamed:@"quiz-field"] stretchableImageWithLeftCapWidth:25. topCapHeight:0.];
+	_backgroundFieldImageView.image = [UIImage imageNamed:@"quiz-field"];
 	
 	_speechButton.hidden = !([SFSpeechRecognizer isAvailable]);
 	
@@ -568,6 +569,7 @@ typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
 - (void)pushResponse:(ResponseState)response animated:(BOOL)animated
 {
 	_responseImageView.image = [UIImage imageNamed:(response == ResponseStateTrue) ? @"true" : @"false"];
+	_responseImageView.tintColor = [UIColor foregroundColor];
 	_responseLabel.text = _currentResponse;
 	
 	_responseView.frame = self.view.bounds;
@@ -608,6 +610,7 @@ typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
 			cell.textLabel.text = [NSString stringWithFormat:@"%@ (not %@)", verbString, response];
 		
 		cell.imageView.image = [UIImage imageNamed:(correct) ? @"true-small" : @"false-small"];
+		cell.imageView.tintColor = [UIColor foregroundColor];
 	} else {
 		cell.textLabel.text = [NSString stringWithFormat:@"%@ (skipped)", verbString];
 		cell.textLabel.textColor = [UIColor lightGrayColor];
@@ -623,7 +626,6 @@ typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
 	if (TARGET_IS_IPAD()) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
 		[self dismissViewControllerAnimated:YES completion:NULL];
-		
 	} else {
 		ResultViewController * resultViewController = [[ResultViewController alloc] init];
 		resultViewController.verb = verb;

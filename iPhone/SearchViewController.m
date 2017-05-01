@@ -119,6 +119,15 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 {
 	BOOL showingAddToPopover; // Only on iPad
 	HistorySorting historySorting;
+	
+	NSArray * sortedKeys, * filteredKeys;
+	
+	UIView * titleView;
+	
+	BOOL isSearching;// Search Bar is the First Responder, the keyboard is showing
+	
+	BOOL editing;
+	NSMutableArray <Verb *> * checkedVerbs;
 }
 
 @property (nonatomic, strong) UISearchController * searchController;
@@ -126,6 +135,11 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 @property (nonatomic, strong) UIView * statusBarBackgroundView;
 @property (nonatomic, strong) AVSpeechSynthesizer * synthesizer;
 @property (nonatomic, assign) BOOL isMenuVisible;
+
+- (IBAction)addToAction:(id)sender;
+- (IBAction)shareAction:(id)sender;
+- (IBAction)removeAction:(id)sender;
+- (void)reloadData;
 
 @end
 
@@ -251,7 +265,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 - (void)updateData
 {
 	if (_playlist.isHistoryPlaylist) {
-		NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUse" ascending:NO];
+		NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:SelectorName(lastUse) ascending:NO];
 		sortedKeys = [_playlist.verbs sortedArrayUsingDescriptors:@[ sortDescriptor ]];
 		if (historySorting == HistorySortingViewed) {
 			Dictionary(String, Number) popularities = [[NSUserDefaults standardUserDefaults] dictionaryForKey:UserDefaultsVerbPopularitiesKey];
@@ -262,7 +276,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 			}];
 		}
 	} else {
-		NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"infinitif" ascending:YES];
+		NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:SelectorName(infinitif) ascending:YES];
 		sortedKeys = [_playlist.verbs sortedArrayUsingDescriptors:@[ sortDescriptor ]];
 	}
 	filteredKeys = sortedKeys.copy;
@@ -289,6 +303,24 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	[self.searchController.searchBar becomeFirstResponder];
 }
 
+- (nullable Verb *)verbBefore:(Verb *)verb
+{
+	NSUInteger index = [filteredKeys indexOfObject:verb];
+	if (index != NSNotFound && index > 0)
+		return filteredKeys[index-1];
+	
+	return nil;
+}
+
+- (nullable Verb *)verbAfter:(Verb *)verb
+{
+	NSUInteger index = [filteredKeys indexOfObject:verb];
+	if (index != NSNotFound && index < filteredKeys.count-1)
+		return filteredKeys[index+1];
+	
+	return nil;
+}
+
 - (NSInteger)indexOfObjectBeginingWith:(NSString *)beginString
 {
     if ([beginString isEqualToString:UITableViewIndexSearch])
@@ -313,7 +345,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	if (_playlist.verbs.count > 0) {
 		
 		void (^handler)(UIAlertAction *) = ^(UIAlertAction * action) {
-			[[_playlist mutableSetValueForKey:@"verbs"] removeAllObjects];
+			[[_playlist mutableSetValueForKey:SelectorName(verbs)] removeAllObjects];
 			[[ManagedObjectContext sharedContext] save:NULL];
 			[self reloadData];
 			[[NSUserDefaults standardUserDefaults] removeObjectForKey:UserDefaultsVerbPopularitiesKey];
@@ -404,7 +436,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	NSIndexPath * indexPath = self.tableView.indexPathForSelectedRow;
 	Verb * verb = filteredKeys[indexPath.row];
 	NSString * description = verb.attributedDescription.string;
-	[[UIPasteboard generalPasteboard] setValue:description forPasteboardType:@"public.text"]; // @TODO: Set as attrbuted string
+	[[UIPasteboard generalPasteboard] setValue:description forPasteboardType:@"public.text"]; // @TODO: Set as attributed string
 }
 
 - (void)listenAction:(id)sender
@@ -489,7 +521,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	
 	[self.tableView beginUpdates];
 	[self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationAutomatic];
-	[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
+	[[_playlist mutableSetValueForKey:SelectorName(verbs)] removeObject:verb];
 	[self updateData];
 	[self.tableView endUpdates];
 }
@@ -499,7 +531,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	if (checkedVerbs.count > 0) {
 		void (^handler)(UIAlertAction * action) = ^(UIAlertAction * action) {
 			for (Verb * verb in checkedVerbs)
-				[[_playlist mutableSetValueForKey:@"verbs"] removeObject:verb];
+				[[_playlist mutableSetValueForKey:SelectorName(verbs)] removeObject:verb];
 			
 			[checkedVerbs removeAllObjects];
 			[self reloadData];
@@ -622,7 +654,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 			menu.menuItems = menuItems;
 			
 			UITableViewCell * cell = [tableView cellForRowAtIndexPath:indexPath];
-			[menu setTargetRect:CGRectMake(CGRectGetMidX(cell.bounds), CGRectGetMidY(cell.bounds), 1, 1) inView:cell];
+			[menu setTargetRect:cell.bounds inView:cell];
 			[menu setMenuVisible:YES animated:YES];
 			_isMenuVisible = YES;
 		});
@@ -648,7 +680,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Verb * selectedVerb = filteredKeys[indexPath.row];
-    [[_playlist mutableSetValueForKey:@"verbs"] removeObject:selectedVerb];
+    [[_playlist mutableSetValueForKey:SelectorName(verbs)] removeObject:selectedVerb];
 	
 	[tableView beginUpdates];
 	[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];

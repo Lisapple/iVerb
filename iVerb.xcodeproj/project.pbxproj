@@ -17,18 +17,11 @@
 		5009FC1419A5518900CFB284 /* UINavigationController+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 5009FC1319A5518900CFB284 /* UINavigationController+addition.m */; };
 		500B9F7319A4208100C91E39 /* NSMutableAttributedString+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 500B9F7219A4208100C91E39 /* NSMutableAttributedString+addition.m */; };
 		500BD3A7123BF35000FC6947 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 500BD3A5123BF35000FC6947 /* SearchViewController.m */; };
-		500BD3A8123BF35000FC6947 /* SearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 500BD3A6123BF35000FC6947 /* SearchViewController.xib */; };
 		500C0C1E1C7497690033730B /* NSString+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 500C0C1D1C7497690033730B /* NSString+addition.m */; };
-		5012072E164C2CE40036BA98 /* VerbOptionsViewController_Pad.m in Sources */ = {isa = PBXBuildFile; fileRef = 5012072C164C2CE40036BA98 /* VerbOptionsViewController_Pad.m */; };
-		5012072F164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5012072D164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib */; };
-		501BDB7B170B4A3100F7154F /* index.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 501BDB7A170B4A3100F7154F /* index.min.css */; };
-		501BDB7D170B4D6B00F7154F /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 501BDB7C170B4D6B00F7154F /* MessageUI.framework */; };
-		501CFFB01986BB9800F8731D /* IVWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 501CFFAF1986BB9800F8731D /* IVWebView.m */; };
 		502F5543170F34BE00E7B454 /* EditNoteViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 502F5542170F34BE00E7B454 /* EditNoteViewController_Pad.xib */; };
 		5033236E1C51AAD300CCCBF3 /* QuizResultsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5033236C1C51AAD300CCCBF3 /* QuizResultsViewController.m */; };
 		5036F079160CE15700E0BECD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5036F077160CE15700E0BECD /* MainViewController.m */; };
-		503926D916497EC900E5B24C /* VerbOptionsViewController_Phone.m in Sources */ = {isa = PBXBuildFile; fileRef = 503926D716497EC900E5B24C /* VerbOptionsViewController_Phone.m */; };
-		503926DA16497EC900E5B24C /* VerbOptionsViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 503926D816497EC900E5B24C /* VerbOptionsViewController_Phone.xib */; };
+		503926D916497EC900E5B24C /* VerbOptionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 503926D716497EC900E5B24C /* VerbOptionsViewController.m */; };
 		503AACAB170F1A5B009230CD /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 503AACAA170F1A5B009230CD /* AVFoundation.framework */; };
 		503AACAD170F1B01009230CD /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 503AACAC170F1B01009230CD /* CoreMedia.framework */; };
 		503AACAF170F2268009230CD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 503AACAE170F2268009230CD /* QuartzCore.framework */; };
@@ -58,6 +51,7 @@
 		50A68C421C261464004A187C /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A68C3E1C261464004A187C /* Crashlytics.framework */; };
 		50AE533F1649608500FE8879 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 50AE53411649608500FE8879 /* Localizable.strings */; };
 		50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 50AE534616496B9A00FE8879 /* Verb+additions.m */; };
+		50B572971E9A7ED6009DFA22 /* UIColor+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B572961E9A7ED6009DFA22 /* UIColor+addition.m */; };
 		50C3A6F4161488E800317F92 /* ManagedObjectContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C3A6F3161488E700317F92 /* ManagedObjectContext.m */; };
 		50C5F0C11E97081A0026937A /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50C5F0BF1E97081A0026937A /* Interface.storyboard */; };
 		50C5F0C31E97081A0026937A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50C5F0C21E97081A0026937A /* Assets.xcassets */; };
@@ -66,11 +60,11 @@
 		50C5F0D31E97081A0026937A /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50C5F0D21E97081A0026937A /* ExtensionDelegate.swift */; };
 		50C5F0DB1E97081A0026937A /* Watch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 50C5F0BD1E97081A0026937A /* Watch.app */; };
 		50CD97E3123CFF0900E31BC8 /* ResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50CD97E1123CFF0900E31BC8 /* ResultViewController.m */; };
+		50CED3211EB638AF00545FE8 /* Launch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50CED3201EB638AE00545FE8 /* Launch.storyboard */; };
 		50D15B931C88D28200B2E49B /* Main~phone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50D15B921C88D28200B2E49B /* Main~phone.storyboard */; };
 		50D15B9C1C88DA1A00B2E49B /* NSDate+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 50D15B9B1C88DA1A00B2E49B /* NSDate+addition.m */; };
 		50D4402816CBEEEC00D4A5DC /* QuizViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50D4402716CBEEEC00D4A5DC /* QuizViewController_Pad.xib */; };
 		50D4402A16CBF9EE00D4A5DC /* CloudViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50D4402916CBF9EE00D4A5DC /* CloudViewController_Pad.xib */; };
-		50D9FBA4150FDFED00990B47 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 50D9FBA3150FDFED00990B47 /* index.html */; };
 		50DC173F1E5689AB007D953C /* UIView+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 50DC173E1E5689AB007D953C /* UIView+addition.m */; };
 		50DE02B01EA9179000980CF5 /* UserDataEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 50DE02AF1EA9179000980CF5 /* UserDataEvent.m */; };
 		50E08B311EA3C12400C6C736 /* UserDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E08B301EA3C12400C6C736 /* UserDataManager.m */; };
@@ -96,7 +90,6 @@
 		50F314B41612214200B83030 /* LandscapeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50F314B21612214200B83030 /* LandscapeViewController.xib */; };
 		50F5865F1C5510AE00E759E4 /* QuizResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F5865E1C5510AE00E759E4 /* QuizResultsView.m */; };
 		50FF56A91E4CDDC000C79586 /* AProposViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50FF56A81E4CDDC000C79586 /* AProposViewController.m */; };
-		9C51A90619D0650B00547659 /* Launch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9C51A90519D0650B00547659 /* Launch.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,31 +162,25 @@
 		2860E32C111B888700E27156 /* AppDelegate_Pad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate_Pad.m; sourceTree = "<group>"; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Shared/main.m; sourceTree = "<group>"; };
-		32CA4F630368D1EE00C91783 /* iVerb_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iVerb_Prefix.pch; sourceTree = "<group>"; };
+		32CA4F630368D1EE00C91783 /* iVerb_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = iVerb_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		5005483E1EA50E2200AC4E89 /* NSManagedObject+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+addition.h"; sourceTree = "<group>"; };
+		5005483F1EA50E2200AC4E89 /* NSManagedObject+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+addition.m"; sourceTree = "<group>"; };
 		5009FC1219A5518900CFB284 /* UINavigationController+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+addition.h"; sourceTree = "<group>"; };
 		5009FC1319A5518900CFB284 /* UINavigationController+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+addition.m"; sourceTree = "<group>"; };
 		500B9F7119A4208100C91E39 /* NSMutableAttributedString+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableAttributedString+addition.h"; sourceTree = "<group>"; };
 		500B9F7219A4208100C91E39 /* NSMutableAttributedString+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableAttributedString+addition.m"; sourceTree = "<group>"; };
 		500BD3A4123BF35000FC6947 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
 		500BD3A5123BF35000FC6947 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SearchViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		500BD3A6123BF35000FC6947 /* SearchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchViewController.xib; sourceTree = "<group>"; };
 		500C0C1C1C7497690033730B /* NSString+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+addition.h"; sourceTree = "<group>"; };
 		500C0C1D1C7497690033730B /* NSString+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+addition.m"; sourceTree = "<group>"; };
-		5012072B164C2CE40036BA98 /* VerbOptionsViewController_Pad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbOptionsViewController_Pad.h; sourceTree = "<group>"; };
-		5012072C164C2CE40036BA98 /* VerbOptionsViewController_Pad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VerbOptionsViewController_Pad.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		5012072D164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbOptionsViewController_Pad.xib; sourceTree = "<group>"; };
-		501BDB7A170B4A3100F7154F /* index.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = index.min.css; sourceTree = "<group>"; };
 		501BDB7C170B4D6B00F7154F /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		501CFFAE1986BB9800F8731D /* IVWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IVWebView.h; sourceTree = "<group>"; };
-		501CFFAF1986BB9800F8731D /* IVWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IVWebView.m; sourceTree = "<group>"; };
 		502F5542170F34BE00E7B454 /* EditNoteViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditNoteViewController_Pad.xib; sourceTree = "<group>"; };
 		5033236B1C51AAD300CCCBF3 /* QuizResultsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuizResultsViewController.h; sourceTree = "<group>"; };
 		5033236C1C51AAD300CCCBF3 /* QuizResultsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuizResultsViewController.m; sourceTree = "<group>"; };
 		5036F076160CE15700E0BECD /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		5036F077160CE15700E0BECD /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MainViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		503926D616497EC900E5B24C /* VerbOptionsViewController_Phone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbOptionsViewController_Phone.h; sourceTree = "<group>"; };
-		503926D716497EC900E5B24C /* VerbOptionsViewController_Phone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VerbOptionsViewController_Phone.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		503926D816497EC900E5B24C /* VerbOptionsViewController_Phone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbOptionsViewController_Phone.xib; sourceTree = "<group>"; };
+		503926D616497EC900E5B24C /* VerbOptionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbOptionsViewController.h; sourceTree = "<group>"; };
+		503926D716497EC900E5B24C /* VerbOptionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = VerbOptionsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		503AACAA170F1A5B009230CD /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		503AACAC170F1B01009230CD /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		503AACAE170F2268009230CD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -232,7 +219,9 @@
 		50A68C3E1C261464004A187C /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		50AE53401649608500FE8879 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		50AE534516496B9900FE8879 /* Verb+additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Verb+additions.h"; path = "Shared/Verb+additions.h"; sourceTree = "<group>"; };
-		50AE534616496B9A00FE8879 /* Verb+additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Verb+additions.m"; path = "Shared/Verb+additions.m"; sourceTree = "<group>"; };
+		50AE534616496B9A00FE8879 /* Verb+additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = "Verb+additions.m"; path = "Shared/Verb+additions.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		50B572951E9A7ED6009DFA22 /* UIColor+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+addition.h"; sourceTree = "<group>"; };
+		50B572961E9A7ED6009DFA22 /* UIColor+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+addition.m"; sourceTree = "<group>"; };
 		50C3A6F2161488E700317F92 /* ManagedObjectContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ManagedObjectContext.h; path = Shared/ManagedObjectContext.h; sourceTree = "<group>"; };
 		50C3A6F3161488E700317F92 /* ManagedObjectContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ManagedObjectContext.m; path = Shared/ManagedObjectContext.m; sourceTree = "<group>"; };
 		50C5F0BD1E97081A0026937A /* Watch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Watch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -246,12 +235,12 @@
 		50C5F0D81E97081A0026937A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50CD97E0123CFF0900E31BC8 /* ResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultViewController.h; sourceTree = "<group>"; };
 		50CD97E1123CFF0900E31BC8 /* ResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ResultViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		50CED3201EB638AE00545FE8 /* Launch.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Launch.storyboard; sourceTree = "<group>"; };
 		50D15B921C88D28200B2E49B /* Main~phone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Main~phone.storyboard"; sourceTree = "<group>"; };
 		50D15B9A1C88DA1A00B2E49B /* NSDate+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+addition.h"; sourceTree = "<group>"; };
 		50D15B9B1C88DA1A00B2E49B /* NSDate+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+addition.m"; sourceTree = "<group>"; };
 		50D4402716CBEEEC00D4A5DC /* QuizViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuizViewController_Pad.xib; sourceTree = "<group>"; };
 		50D4402916CBF9EE00D4A5DC /* CloudViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CloudViewController_Pad.xib; sourceTree = "<group>"; };
-		50D9FBA3150FDFED00990B47 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		50DC173D1E5689AB007D953C /* UIView+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+addition.h"; sourceTree = "<group>"; };
 		50DC173E1E5689AB007D953C /* UIView+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+addition.m"; sourceTree = "<group>"; };
 		50DE02AE1EA9179000980CF5 /* UserDataEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDataEvent.h; sourceTree = "<group>"; };
@@ -297,7 +286,6 @@
 		50FF56A71E4CDDC000C79586 /* AProposViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AProposViewController.h; path = "Carthage/Checkouts/a-propos/Classes/AProposViewController.h"; sourceTree = "<group>"; };
 		50FF56A81E4CDDC000C79586 /* AProposViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AProposViewController.m; path = "Carthage/Checkouts/a-propos/Classes/AProposViewController.m"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* iVerb-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iVerb-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		9C51A90519D0650B00547659 /* Launch.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Launch.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -310,7 +298,6 @@
 				503AACAD170F1B01009230CD /* CoreMedia.framework in Frameworks */,
 				50A68C3F1C261464004A187C /* Security.framework in Frameworks */,
 				503AACAB170F1A5B009230CD /* AVFoundation.framework in Frameworks */,
-				501BDB7D170B4D6B00F7154F /* MessageUI.framework in Frameworks */,
 				50A68C421C261464004A187C /* Crashlytics.framework in Frameworks */,
 				503B0DC412C7E3A00060B502 /* CoreData.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
@@ -319,6 +306,13 @@
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				50A68C401C261464004A187C /* SystemConfiguration.framework in Frameworks */,
 				503AACAF170F2268009230CD /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		50C5F0C61E97081A0026937A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,16 +350,14 @@
 				500BD3A5123BF35000FC6947 /* SearchViewController.m */,
 				507F9BDF1B38B0CD002B5CF4 /* SearchResultsViewController.h */,
 				507F9BE01B38B0CD002B5CF4 /* SearchResultsViewController.m */,
-				500BD3A6123BF35000FC6947 /* SearchViewController.xib */,
 				50E4D9E91E99791F007B87E8 /* ResultView.h */,
 				50E4D9EA1E99791F007B87E8 /* ResultView.m */,
 				50CD97E0123CFF0900E31BC8 /* ResultViewController.h */,
 				50CD97E1123CFF0900E31BC8 /* ResultViewController.m */,
 				505D0FB916C55CF3007B3A90 /* HelpViewController.h */,
 				505D0FBA16C55CF3007B3A90 /* HelpViewController.m */,
-				503926D616497EC900E5B24C /* VerbOptionsViewController_Phone.h */,
-				503926D716497EC900E5B24C /* VerbOptionsViewController_Phone.m */,
-				503926D816497EC900E5B24C /* VerbOptionsViewController_Phone.xib */,
+				503926D616497EC900E5B24C /* VerbOptionsViewController.h */,
+				503926D716497EC900E5B24C /* VerbOptionsViewController.m */,
 				50F314B01612214100B83030 /* LandscapeViewController.h */,
 				50F314B11612214100B83030 /* LandscapeViewController.m */,
 				50F314B21612214200B83030 /* LandscapeViewController.xib */,
@@ -385,9 +377,6 @@
 				5036F077160CE15700E0BECD /* MainViewController.m */,
 				50E343C91C90761F00269851 /* WebViewController.h */,
 				50E343CA1C90761F00269851 /* WebViewController.m */,
-				5012072B164C2CE40036BA98 /* VerbOptionsViewController_Pad.h */,
-				5012072C164C2CE40036BA98 /* VerbOptionsViewController_Pad.m */,
-				5012072D164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib */,
 			);
 			path = iPad;
 			sourceTree = "<group>";
@@ -415,15 +404,13 @@
 				502F5542170F34BE00E7B454 /* EditNoteViewController_Pad.xib */,
 				50C3A6F2161488E700317F92 /* ManagedObjectContext.h */,
 				50C3A6F3161488E700317F92 /* ManagedObjectContext.m */,
-				501CFFAE1986BB9800F8731D /* IVWebView.h */,
-				501CFFAF1986BB9800F8731D /* IVWebView.m */,
 				500B9F7419A4208500C91E39 /* Additions */,
 				503854BF19A139C100D69D62 /* HTML Files */,
 				50F314AC1611F9DD00B83030 /* Model */,
 				50E7A2DB1C30810500AAAED0 /* iVerb.entitlements */,
 				8D1107310486CEB800E47090 /* iVerb-Info.plist */,
 				50AE53411649608500FE8879 /* Localizable.strings */,
-				9C51A90519D0650B00547659 /* Launch.xib */,
+				50CED3201EB638AE00545FE8 /* Launch.storyboard */,
 				506509D31C24AF7700A740B0 /* spotlight.png */,
 				506509D41C24AF7700A740B0 /* spotlight@2x.png */,
 				506509D71C24B21100A740B0 /* spotlight@3x.png */,
@@ -497,6 +484,8 @@
 				50EA1E2C1E1E9DA700D41364 /* UIFont+addition.m */,
 				50DC173D1E5689AB007D953C /* UIView+addition.h */,
 				50DC173E1E5689AB007D953C /* UIView+addition.m */,
+				50B572951E9A7ED6009DFA22 /* UIColor+addition.h */,
+				50B572961E9A7ED6009DFA22 /* UIColor+addition.m */,
 				5005483E1EA50E2200AC4E89 /* NSManagedObject+addition.h */,
 				5005483F1EA50E2200AC4E89 /* NSManagedObject+addition.m */,
 			);
@@ -506,8 +495,6 @@
 		503854BF19A139C100D69D62 /* HTML Files */ = {
 			isa = PBXGroup;
 			children = (
-				50D9FBA3150FDFED00990B47 /* index.html */,
-				501BDB7A170B4A3100F7154F /* index.min.css */,
 				50E507F51614B24600B6915D /* verbs_lists_template.html */,
 				505D0FBE16C55E65007B3A90 /* help.html */,
 			);
@@ -603,6 +590,7 @@
 				50A68C3A1C261439004A187C /* ShellScript */,
 				50E7A2DA1C3076D400AAAED0 /* Embed App Extensions */,
 				50C5F0E31E97081A0026937A /* Embed Watch Content */,
+				5066C0491E9BB58F00852CAB /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -685,6 +673,29 @@
 							com.apple.Push = {
 								enabled = 0;
 							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
+					};
+					50C5F0BC1E97081A0026937A = {
+						CreatedOnToolsVersion = 8.3;
+						DevelopmentTeam = 79MVQZ8SAR;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+						};
+					};
+					50C5F0C81E97081A0026937A = {
+						CreatedOnToolsVersion = 8.3;
+						DevelopmentTeam = 79MVQZ8SAR;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
 						};
 					};
 					50E7A2C91C3076D400AAAED0 = {
@@ -725,27 +736,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				5075F9D01BC457DB00D32FCB /* verbs.xcdatamodeld in Resources */,
-				500BD3A8123BF35000FC6947 /* SearchViewController.xib in Resources */,
 				503B0DC212C7E0E20060B502 /* verbs.sqlite in Resources */,
 				50D15B931C88D28200B2E49B /* Main~phone.storyboard in Resources */,
 				50F1014D1985610C005D852F /* Images.xcassets in Resources */,
-				50D9FBA4150FDFED00990B47 /* index.html in Resources */,
 				50F314B41612214200B83030 /* LandscapeViewController.xib in Resources */,
 				50E507F61614B24600B6915D /* verbs_lists_template.html in Resources */,
+				50CED3211EB638AF00545FE8 /* Launch.storyboard in Resources */,
 				506509D81C24B21100A740B0 /* spotlight@3x.png in Resources */,
 				50AE533F1649608500FE8879 /* Localizable.strings in Resources */,
-				503926DA16497EC900E5B24C /* VerbOptionsViewController_Phone.xib in Resources */,
 				506509D61C24AF7700A740B0 /* spotlight@2x.png in Resources */,
 				506509D51C24AF7700A740B0 /* spotlight.png in Resources */,
-				5012072F164C2CE40036BA98 /* VerbOptionsViewController_Pad.xib in Resources */,
 				50E31E1D16C150E10007FFBA /* CloudViewController_Phone.xib in Resources */,
 				506D911B1C8FAE4B00E09415 /* Main~pad.storyboard in Resources */,
 				50E33F9A16C1A9C30091AE21 /* QuizViewController_Phone.xib in Resources */,
 				505D0FBF16C55E65007B3A90 /* help.html in Resources */,
 				50D4402816CBEEEC00D4A5DC /* QuizViewController_Pad.xib in Resources */,
 				50D4402A16CBF9EE00D4A5DC /* CloudViewController_Pad.xib in Resources */,
-				9C51A90619D0650B00547659 /* Launch.xib in Resources */,
-				501BDB7B170B4A3100F7154F /* index.min.css in Resources */,
 				508784E7170B6BBA00693C3C /* EditNoteViewController_Phone.xib in Resources */,
 				502F5543170F34BE00E7B454 /* EditNoteViewController_Pad.xib in Resources */,
 			);
@@ -778,6 +784,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		5066C0491E9BB58F00852CAB /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TAGS=\"TODO:|FIXME:|\\?\\?\\?:|!!!:\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" -or -name \"*.swift\" \\) -print0\\\n| xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\"\\\n| perl -p -e \"s/($TAGS)/ warning: \\$1/\"\n\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" -or -name \"*.swift\" \\) -print0\\\n| xargs -0 egrep --with-filename --line-number --only-matching \"// ?DEBUG\"\\\n| perl -p -e \"s/\\/\\/ ?DEBUG/ warning: DEBUG comment found/\"\n";
+		};
 		50A68C3A1C261439004A187C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -826,9 +845,9 @@
 				5075F9D31BC45FB500D32FCB /* Quote.m in Sources */,
 				50E507F91614B26B00B6915D /* Playlist+additions.m in Sources */,
 				50AE534716496B9B00FE8879 /* Verb+additions.m in Sources */,
-				503926D916497EC900E5B24C /* VerbOptionsViewController_Phone.m in Sources */,
-				5012072E164C2CE40036BA98 /* VerbOptionsViewController_Pad.m in Sources */,
+				503926D916497EC900E5B24C /* VerbOptionsViewController.m in Sources */,
 				50E31E1C16C150E10007FFBA /* CloudViewController.m in Sources */,
+				50B572971E9A7ED6009DFA22 /* UIColor+addition.m in Sources */,
 				50746AFD1C52947800A35633 /* QuizResult.m in Sources */,
 				50F5865F1C5510AE00E759E4 /* QuizResultsView.m in Sources */,
 				50E33F9916C1A9C30091AE21 /* QuizViewController.m in Sources */,
@@ -838,7 +857,6 @@
 				505D0FCC16C5922D007B3A90 /* CloudView.m in Sources */,
 				508784E6170B6BBA00693C3C /* EditNoteViewController.m in Sources */,
 				50D15B9C1C88DA1A00B2E49B /* NSDate+addition.m in Sources */,
-				501CFFB01986BB9800F8731D /* IVWebView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -889,6 +907,14 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
+		50C5F0BF1E97081A0026937A /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				50C5F0C01E97081A0026937A /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
 		50E7A2D01C3076D400AAAED0 /* MainInterface.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -920,7 +946,6 @@
 				GCC_PREFIX_HEADER = iVerb_Prefix.pch;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "iVerb-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;
@@ -949,7 +974,6 @@
 				GCC_PREFIX_HEADER = iVerb_Prefix.pch;
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "iVerb-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb;
 				PRODUCT_NAME = iVerb;
@@ -1139,7 +1163,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = Widget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb.widget;
@@ -1179,7 +1202,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = Widget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lisacintosh.iverb.widget;

@@ -14,6 +14,7 @@
 #import "VerbOptionsViewController.h"
 #import "HelpViewController.h"
 #import "EditNoteViewController.h"
+#import "SearchViewController.h"
 
 #import "NSMutableAttributedString+addition.h"
 #import "UIFont+addition.h"
@@ -78,8 +79,8 @@
 	if (TARGET_IS_IPAD()) {
 		[[NSNotificationCenter defaultCenter] addObserverForName:SearchTableViewDidSelectCellNotification
 														  object:nil queue:nil
-													  usingBlock:^(NSNotification *note) {
-														  self.verb = (Verb *)note.object;
+													  usingBlock:^(NSNotification * notification) {
+														  self.verb = (Verb *)notification.object;
 													  }];
 	}
 	

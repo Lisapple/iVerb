@@ -7,6 +7,8 @@
 #  import <UIKit/UIKit.h>
 #endif
 
+#pragma mark - Utilities
+
 #if TARGET_IPHONE_SIMULATOR
 #  define NSDebugLog(format, ...)  NSLog(format, ##__VA_ARGS__)
 #else
@@ -16,20 +18,44 @@
 #define ComparisonResult(A, B) \
 	((A > B) ? NSOrderedAscending : ((A < B) ? NSOrderedDescending : NSOrderedSame ))
 
-#define Dictionary(K,V) NSDictionary < NS##K *, NS##V * > *
-#define MDictionary(K,V) NSMutableDictionary < NS##K *, NS##V * > *
+#define DictionaryTy(K,V)	NSDictionary < NS##K *, NS##V * >
+#define Dictionary(K,V)		DictionaryTy(K,V) *
+#define MDictionaryTy(K,V)	NSMutableDictionary < NS##K *, NS##V * >
+#define MDictionary(K,V)	MDictionaryTy(K,V) *
 
-#define Array(E) NSArray < NS##E * > *
-#define MArray(E) NSMutableArray < NS##E * > *
+#define ArrayTy(E)	NSArray < NS##E * >
+#define Array(E)	ArrayTy(E) *
+#define MArrayTy(E) NSMutableArray < NS##E * >
+#define MArray(E)	MArrayTy(E) *
+
+#define SelectorName(method) NSStringFromSelector(@selector(method))
 
 #define TARGET_IS_IPAD() (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-
 #define TARGET_IOS_8() ([UIDevice currentDevice].systemVersion.floatValue < 9.0)
 
-static NSString * const SearchTableViewDidSelectCellNotification = @"SearchTableViewDidSelectCellNotification"; // object is a Verb
-static NSString * const ResultDidReloadNotification = @"ResultDidReloadNotification"; // No object and no userInfo
-static NSString * const PlaylistDidUpdatedNotification = @"PlaylistDidUpdatedNotification"; // object is a Playlist
-static NSString * const CloudLabelDidSelectedNotification = @"CloudLabelDidSelectedNotification"; // object is a Verb
+static inline void dispatch_after_main(CFTimeInterval delay, dispatch_block_t block) {
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
+}
+
+#pragma mark - Notifications
+
+/// A verb has been selected from search controller. On iPhone, a result controller is pushed and on iPad, the displayed one is updated.
+/// `object` is a Verb
+static NSString * const SearchTableViewDidSelectCellNotification = @"SearchTableViewDidSelectCellNotification";
+
+/// Verb informations displayed on result UI did change and need reloading.
+/// No object and no userInfo
+static NSString * const ResultsDidChangeNotification = @"ResultsDidChangeNotification";
+
+/// A verb has been added or removed on a playlist from playlist controller UI.
+/// `object` is a Playlist; is nil when many playlists need to reload. 
+static NSString * const PlaylistDidUpdatedNotification = @"PlaylistDidUpdatedNotification";
+
+/// A cloud label has been selected from cloud controller.
+/// `object` is a Verb
+static NSString * const CloudLabelDidSelectedNotification = @"CloudLabelDidSelectedNotification";
+
+#pragma mark - User default keys
 
 /// A key to a user defaults dictionary with infinitif as key and verb viewed count as value
 static NSString * const UserDefaultsVerbPopularitiesKey = @"verbs.popularities";
@@ -40,15 +66,10 @@ static NSString * const UserDefaultsClearHistoryAlertCountKey = @"clear-history.
 /// Last select playlist name
 static NSString * const UserDefaultsLastUsedPlaylistKey = @"Last Used Playlist";
 
-/**
- A dictionary with all verbs from the current playlist.
- The format is [infinitif] = "infinitif|past|pastParticiple|definition"
- */
-static NSString * const UserDefaultsSharedVerbsKey = @"Shared Verbs";
+/// A dictionary with all verbs from the current playlist for widget.
+/// The format is `dict[infinitif] = "infinitif|past|pastParticiple|definition"`
+static NSString * const UserDefaultsWidgetSharedVerbsKey = @"Shared Verbs";
 
-static inline void dispatch_after_main(CFTimeInterval delay, dispatch_block_t block) {
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), block);
-}
 /// A dictionary with all verbs from all verbs playlist for watch.
 /// The format is `dict[infinitif] = "past|pastParticiple|definition|isFavorite|hasNote"`
 static NSString * const UserDefaultsWatchSharedVerbsKey = @"com.lisacintosh.iverb.watch.shared-verbs";
