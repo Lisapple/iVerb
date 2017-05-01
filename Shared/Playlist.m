@@ -9,6 +9,15 @@
 #import "Playlist.h"
 #import "ManagedObjectContext.h"
 
+// Notification names
+NSString * const PlaylistDidCreateNotification = @"PlaylistDidCreateNotification";
+NSString * const PlaylistDidUpdateNameNotification = @"PlaylistDidUpdateNameNotification";
+NSString * const PlaylistWillDeleteNotification = @"PlaylistWillDeleteNotification";
+
+NSString * const PlaylistDidAddVerbNotification = @"PlaylistDidAddVerbNotification";
+NSString * const PlaylistDidRemoveVerbNotification = @"PlaylistDidRemoveVerbNotification";
+
+// Default playlist names
 NSString * const kPlaylistCommonsName = @"_COMMONS_";
 NSString * const kPlaylistHistoryName = @"_HISTORY_";
 NSString * const kPlaylistBookmarksName = @"_BOOKMARKS_";
@@ -63,17 +72,12 @@ NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
 	return __historyPlaylist;
 }
 
-+ (NSArray *)defaultPlaylist
-{
-	return [Playlist defaultPlaylists];
-}
-
 + (NSArray *)defaultPlaylists
 {
 	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
-	request.predicate = [NSPredicate predicateWithFormat:@"creationDate == NULL"];
+	request.predicate = [NSPredicate predicateWithFormat:@"%K == NULL", SelectorName(creationDate)];
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
 	request.sortDescriptors = @[ sortDescriptor ];
@@ -85,7 +89,7 @@ NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
 	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
-	request.predicate = [NSPredicate predicateWithFormat:@"creationDate != NULL"];
+	request.predicate = [NSPredicate predicateWithFormat:@"%K != NULL", SelectorName(creationDate)];
 	
 	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:YES];
 	request.sortDescriptors = @[ sortDescriptor ];
@@ -97,10 +101,10 @@ NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
 	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
 	
 	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Playlist"];
-	request.predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
+	request.predicate = [NSPredicate predicateWithFormat:@"%K == %@", SelectorName(name), name];
 	request.fetchLimit = 1;
 	
-	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
+	NSSortDescriptor * sortDescriptor = [[NSSortDescriptor alloc] initWithKey:SelectorName(creationDate) ascending:NO];
 	request.sortDescriptors = @[ sortDescriptor ];
 	return [context executeFetchRequest:request error:NULL].firstObject;
 }
@@ -137,42 +141,50 @@ NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
 
 - (BOOL)isUserPlaylist
 {
-	return !self.isDefaultPlaylist;
+	return !(self.isDefaultPlaylist);
 }
 
-- (Verb *)verbWithInfinitif:(NSString *)infinitif
+- (void)awakeFromInsert
 {
-	if (!infinitif)
-		return nil;
+	[super awakeFromInsert];
+	[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistDidCreateNotification object:self.name];
+}
+
+- (void)prepareForDeletion
+{
+	[super prepareForDeletion];
+	[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistWillDeleteNotification object:self.name];
+}
+
+- (void)setName:(NSString *)name
+{
+	NSString * const oldName = self.name;
+	NSString * const key = SelectorName(name);
+	[self willChangeValueForKey:key];
+	[self setPrimitiveValue:name forKey:key];
+	[self didChangeValueForKey:key];
 	
-	infinitif = [infinitif stringByReplacingOccurrencesOfString:@"To " withString:@""
-														options:NSCaseInsensitiveSearch
-														  range:NSMakeRange(0, infinitif.length - 1)];
-	[infinitif stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	
-	NSFetchRequest * request = [[NSFetchRequest alloc] initWithEntityName:@"Verb"];
-	request.fetchLimit = 1;
-	request.predicate = [NSPredicate predicateWithFormat:@"infinitif LIKE[cd] %@", infinitif];
-	Verb * verb = [self.managedObjectContext executeFetchRequest:request error:NULL].firstObject;
-	if (!verb) {
-		request.predicate = [NSPredicate predicateWithFormat:@"infinitif CONTAINS[cd] %@", infinitif];
-		verb = [self.managedObjectContext executeFetchRequest:request error:NULL].firstObject;
-	}
-	return verb;
+	if (oldName)
+		[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistDidUpdateNameNotification
+															object:self userInfo:@{ @"oldName" : oldName }];
 }
 
 - (void)addVerb:(Verb *)verb
 {
 	[[self mutableSetValueForKey:@"verbs"] addObject:verb];
-	
 	[self.managedObjectContext save:NULL];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistDidAddVerbNotification
+														object:self userInfo:@{ @"verb" : verb }];
 }
 
 - (void)removeVerb:(Verb *)verb
 {
 	[[self mutableSetValueForKey:@"verbs"] removeObject:verb];
-	
 	[self.managedObjectContext save:NULL];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistDidRemoveVerbNotification
+														object:self userInfo:@{ @"verb" : verb }];
 }
 
 @end

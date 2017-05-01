@@ -9,6 +9,7 @@
 #import "Playlist+additions.h"
 
 #import "Verb.h"
+#import "NSManagedObject+addition.h"
 
 @implementation Playlist (additions)
 
@@ -75,6 +76,15 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 	else if (action == PlaylistActionAddTo) {
 		_lastPlaylistSelectedToAddVerb = playlist;
 	}
+}
+
++ (Playlist *)insertPlaylistWithName:(NSString *)name inManagedObjectContext:(NSManagedObjectContext *)context
+{
+	NSParameterAssert(name); NSParameterAssert(context);
+	Playlist * playlist = [Playlist instanciateInContext:context];
+	playlist.name = name;
+	playlist.creationDate = [NSDate date];
+	return playlist;
 }
 
 - (NSString *)localizedName

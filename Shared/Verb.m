@@ -11,6 +11,9 @@
 
 #import "ManagedObjectContext.h"
 
+NSString * const VerbDidUpdateNoteNotification = @"VerbDidUpdateNoteNotification";
+NSString * const VerbDidRemoveNoteNotification = @"VerbDidRemoveNoteNotification";
+
 @implementation Verb
 
 @dynamic infinitif, past, pastParticiple;
@@ -45,34 +48,26 @@
 	return (!self.components || [self.components componentsSeparatedByString:@"."].count == 1);
 }
 
-- (Playlist *)playlist
+- (NSString *)noteKey
 {
-	return [self mutableSetValueForKey:@"playlists"].anyObject;
-}
-
-- (void)addToPlaylist:(Playlist *)playlist
-{
-	if (playlist) {
-		if (![self.playlists containsObject:playlist]) {
-			[[self mutableSetValueForKey:@"playlists"] addObject:playlist];
-			[self.managedObjectContext save:NULL];
-		}
-	}
-}
-
-- (void)removePlaylist:(Playlist *)playlist
-{
-	if (playlist) {
-		[[self mutableSetValueForKey:@"playlists"] removeObject:playlist];
-		[self.managedObjectContext save:NULL];
-	}
+	return [NSString stringWithFormat:@"note_%@", self.infinitif];
 }
 
 - (NSString *)note
 {
+	return [[NSUserDefaults standardUserDefaults] stringForKey:self.noteKey];
+}
+
+- (void)setNote:(NSString *)note
+{
 	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-	NSString * key = [NSString stringWithFormat:@"note_%@", self.infinitif];
-	return [userDefaults stringForKey:key];
+	if ([note stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length > 0) {
+		[userDefaults setObject:note forKey:self.noteKey];
+		[[NSNotificationCenter defaultCenter] postNotificationName:VerbDidUpdateNoteNotification object:self];
+	} else {
+		[userDefaults removeObjectForKey:self.noteKey];
+		[[NSNotificationCenter defaultCenter] postNotificationName:VerbDidRemoveNoteNotification object:self];
+	}
 }
 
 - (NSString *)searchableDefinition

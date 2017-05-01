@@ -271,6 +271,11 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 
 - (void)reloadData
 {
+	if (_playlist.isDeleted) { // If has been externally deleted from Core Data
+		[self.navigationController popViewControllerAnimated:YES];
+		return ;
+	}
+	
 	self.title = _playlist.localizedName;
 	[self updateNavBar];
 	[self updateToolbar];

@@ -107,7 +107,7 @@
 	
 	// Update the verb from history
 	_verb.lastUse = [NSDate date];
-	[_verb addToPlaylist:[Playlist historyPlaylist]];
+	[[Playlist historyPlaylist] addVerb:_verb];
 	
 	[self reloadData];
 }

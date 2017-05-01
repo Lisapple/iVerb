@@ -10,10 +10,17 @@
 
 #import "Verb.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface Verb (additions)
 
-- (NSString *)HTMLFormat DEPRECATED_ATTRIBUTE;
++ (nullable Verb *)verbWithInfinitif:(NSString *)infinitif;
++ (nullable NSArray <Verb *> *)verbsWithInfinitives:(Array(String))infinitives;
+
+- (NSString *)HTMLFormat UNAVAILABLE_ATTRIBUTE;
 
 - (NSAttributedString *)attributedDescription;
 
 @end
+
+NS_ASSUME_NONNULL_END

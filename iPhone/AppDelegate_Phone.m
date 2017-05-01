@@ -15,6 +15,7 @@
 #import "PlaylistsViewController.h"
 #import "SearchViewController.h"
 #import "ResultViewController.h"
+#import "UserDataManager.h"
 
 @implementation AppDelegate_Phone
 
@@ -24,6 +25,8 @@
 #else
 	[Fabric with:@[ CrashlyticsKit ]];
 #endif
+	
+	[[UserDataManager defaultManager] synchronize];
 	
 	NSDictionary * attributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:20.],
 								   NSForegroundColorAttributeName : [UIColor darkGrayColor] };
@@ -285,6 +288,11 @@
 	}
 }
 
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+	[[UserDataManager defaultManager] synchronize];
+}
+
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     NSError *error;
@@ -293,6 +301,8 @@
 			// @TODO: Do something with the error
         } 
     }
+	[[UserDataManager defaultManager] synchronize];
+}
 }
 
 #pragma mark - Core Data stack

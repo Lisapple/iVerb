@@ -11,6 +11,7 @@
 #import "MainViewController.h"
 
 #import "ManagedObjectContext.h"
+#import "UserDataManager.h"
 
 @implementation AppDelegate_Pad
 
@@ -108,6 +109,11 @@
 	return UIInterfaceOrientationMaskAll;
 }
 
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+	[[UserDataManager defaultManager] synchronize];
+}
+
 - (void)applicationWillTerminate:(UIApplication *)application {
 	
     NSError *error;
@@ -116,6 +122,7 @@
 			// @TODO: Do something with the error
         }
     }
+	[[UserDataManager defaultManager] synchronize];
 }
 
 #pragma mark - Core Data stack

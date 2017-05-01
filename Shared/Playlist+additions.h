@@ -25,6 +25,10 @@ typedef NS_ENUM(NSUInteger, PlaylistAction) {
 + (void)setPlaylist:(nullable Playlist *)playlist forAction:(PlaylistAction)action;
 
 - (nonnull NSString *)localizedName;
++ (Playlist *)insertPlaylistWithName:(NSString *)name inManagedObjectContext:(NSManagedObjectContext *)context;
+
+
+- (nullable Verb *)verbWithInfinitif:(nullable NSString *)infinitif;
 
 - (nonnull NSString *)HTMLFormat;
 

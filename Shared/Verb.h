@@ -8,11 +8,13 @@
 
 @import CoreData;
 
-@class Playlist;
-@class Quote;
-
 NS_ASSUME_NONNULL_BEGIN
 
+extern NSString * const VerbDidUpdateNoteNotification; // object = verb
+extern NSString * const VerbDidRemoveNoteNotification; // object = verb
+
+@class Playlist;
+@class Quote;
 @interface Verb : NSManagedObject
 
 @property (nonatomic, strong) NSString * infinitif, * past, * pastParticiple;
@@ -32,9 +34,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (Verb * _Nullable)lastUsedVerb;
 
 - (BOOL)isBasicVerb;
-
-- (void)addToPlaylist:(Playlist *)playlist;
-- (void)removePlaylist:(Playlist *)playlist;
 
 /**
  Same as `definition' with the first "To" and occurences of " to " removed.

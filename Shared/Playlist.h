@@ -8,20 +8,30 @@
 
 @import CoreData;
 
-@class Verb;
-@class QuizResult;
-
 NS_ASSUME_NONNULL_BEGIN
+
+#pragma mark - Notification names
+
+extern NSString * const PlaylistDidCreateNotification; // object = playlist name
+extern NSString * const PlaylistDidUpdateNameNotification; // object = playlist, userInfo = { "oldName" = NSString }
+extern NSString * const PlaylistWillDeleteNotification; // object = playlist name
+	
+extern NSString * const PlaylistDidAddVerbNotification; // object = playlist, userInfo = { "verb" = Verb }
+extern NSString * const PlaylistDidRemoveVerbNotification; // object = playlist, userInfo = { "verb" = Verb }
+
+#pragma mark - Default playlist names
 
 extern NSString * const kPlaylistCommonsName;
 extern NSString * const kPlaylistHistoryName;
 extern NSString * const kPlaylistBookmarksName;
 extern NSString * const kPlaylistAllVerbsName;
 
+@class Verb;
+@class QuizResult;
 @interface Playlist : NSManagedObject // @TODO: Rename to "Verblist"
 
 @property (nonatomic, strong) NSString * name;
-@property (nonatomic, strong) NSDate * creationDate;
+@property (nonatomic, strong) NSDate * creationDate; // @TODO: Should be readonly
 
 @property (nonatomic, strong) NSSet <Verb *> * verbs;
 @property (nonatomic, strong) NSSet <QuizResult *> * quizResults;
@@ -46,7 +56,6 @@ extern NSString * const kPlaylistAllVerbsName;
 - (BOOL)isDefaultPlaylist;
 - (BOOL)isUserPlaylist;
 
-- (nullable Verb *)verbWithInfinitif:(nullable NSString *)infinitif;
 - (void)addVerb:(Verb *)verb;
 - (void)removeVerb:(Verb *)verb;
 
