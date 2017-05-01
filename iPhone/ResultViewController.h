@@ -17,6 +17,14 @@
 #import "Verb.h"
 #import "Verb+additions.h"
 
+typedef NS_ENUM(NSUInteger, TransitionDirection) {
+	// Show previous verb on playlist
+	TransitionDirectionLeft,
+	
+	// Show next verb on playlist
+	TransitionDirectionRight
+};
+
 @interface ResultViewController : UIViewController <ResultViewDelegate>
 
 @property (nonatomic, strong) NSString * verbString;

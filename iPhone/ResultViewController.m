@@ -53,8 +53,20 @@
 									 toItem:_resultView attribute:NSLayoutAttributeRight multiplier:1 constant:0],
 	 [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual
 									 toItem:_resultView attribute:NSLayoutAttributeBottom multiplier:1 constant:0] ]];
-    
-	[[NSNotificationCenter defaultCenter] addObserverForName:ResultDidReloadNotification
+	
+	if (!TARGET_IS_IPAD()) {
+		UISwipeGestureRecognizer * leftGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrevNextVerbAction:)];
+		leftGesture.direction = UISwipeGestureRecognizerDirectionLeft;
+		[leftGesture requireGestureRecognizerToFail:_resultView.panGestureRecognizer];
+		[_resultView addGestureRecognizer:leftGesture];
+		
+		UISwipeGestureRecognizer * rightGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showPrevNextVerbAction:)];
+		rightGesture.direction = UISwipeGestureRecognizerDirectionRight;
+		[rightGesture requireGestureRecognizerToFail:_resultView.panGestureRecognizer];
+		[_resultView addGestureRecognizer:rightGesture];
+	}
+	
+	[[NSNotificationCenter defaultCenter] addObserverForName:ResultsDidChangeNotification
 													  object:nil queue:nil
 												  usingBlock:^(NSNotification * notification) {
 													  [self reloadData];
@@ -112,9 +124,54 @@
 
 - (void)updateUI
 {
+	NSString * infinitif = _verb.infinitif;
+	self.title = [@"To " stringByAppendingString:infinitif];
+	
 	UIBarButtonItem * favoriteItem = self.navigationItem.rightBarButtonItems.lastObject;
 	NSString * name = (_verb.isBookmarked) ? @"favorite-highlighted" : @"favorite";
 	favoriteItem.image = [UIImage imageNamed:name];
+}
+
+- (void)showPrevNextVerbAction:(id)sender
+{
+	UISwipeGestureRecognizer * gesture = (UISwipeGestureRecognizer *)sender;
+	assert([gesture isKindOfClass:UISwipeGestureRecognizer.class]);
+	
+	NSArray * controllers = self.navigationController.viewControllers;
+	if (controllers.count >= 2) {
+		SearchViewController * searchController = (SearchViewController *)controllers[controllers.count - 2];
+		if ([searchController isKindOfClass:SearchViewController.class]) {
+			BOOL swipingToLeft = (gesture.direction == UISwipeGestureRecognizerDirectionLeft);
+			Verb * verb = (swipingToLeft) ? [searchController verbAfter:_verb] : [searchController verbBefore:_verb];
+			if (verb)
+				[self startVerbTransition:verb direction:(swipingToLeft) ? TransitionDirectionRight : TransitionDirectionLeft];
+		}
+	}
+}
+
+- (void)startVerbTransition:(Verb *)verb direction:(TransitionDirection)direction
+{
+	ResultViewController * controller = [[ResultViewController alloc] init];
+	controller.verb = verb;
+	[controller.navigationItem setHidesBackButton:YES animated:YES];
+	
+	if (direction == TransitionDirectionRight)
+		[self.navigationController pushViewController:controller animated:YES];
+	
+	// Update controllers stack
+	NSMutableArray * viewControllers = self.navigationController.viewControllers.mutableCopy;
+	if (direction == TransitionDirectionLeft)
+		[viewControllers insertObject:controller atIndex:viewControllers.count - 1];
+	else
+		[viewControllers removeObjectAtIndex:viewControllers.count - 2];
+	self.navigationController.viewControllers = viewControllers;
+	
+	if (direction == TransitionDirectionLeft)
+		[self.navigationController popViewControllerAnimated:true];
+	
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+		[controller.navigationItem setHidesBackButton:NO animated:YES];
+	});
 }
 
 - (void)listenAction:(id)sender

@@ -14,9 +14,36 @@
 #import "UIColor+addition.h"
 
 @interface ResultLabel: UILabel
+
+@property (nonatomic, assign, getter=isSelected) BOOL selected;
+
 @end
 
 @implementation ResultLabel
+
+- (BOOL)canBecomeFirstResponder
+{
+	return YES; // For copy menu
+}
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+	return (action == @selector(copy:));
+}
+
+- (void)copy:(id)sender
+{
+	[UIPasteboard generalPasteboard].string = self.text;
+}
+
+- (void)setSelected:(BOOL)selected
+{
+	_selected = selected;
+	
+	self.backgroundColor = (_selected) ? [UIColor colorWithWhite:0.95 alpha:1] : [UIColor clearColor];
+	self.layer.cornerRadius = 6;
+	self.clipsToBounds = YES;
+}
 
 - (void)drawTextInRect:(CGRect)rect
 {
@@ -31,19 +58,19 @@
 @property (nonatomic, strong) UIView * contentView;
 
 @property (nonatomic, strong) UIButton * infinitiveButton;
-@property (nonatomic, strong) UILabel * infinitiveLabel;
+@property (nonatomic, strong) ResultLabel * infinitiveLabel;
 @property (nonatomic, strong) UIButton * pastButton;
-@property (nonatomic, strong) UILabel * pastLabel;
+@property (nonatomic, strong) ResultLabel * pastLabel;
 @property (nonatomic, strong) UIButton * participleButton;
-@property (nonatomic, strong) UILabel * participleLabel;
+@property (nonatomic, strong) ResultLabel * participleLabel;
 @property (nonatomic, nullable, strong) UIButton * definitionButton;
-@property (nonatomic, nullable, strong) UILabel * definitionLabel;
+@property (nonatomic, nullable, strong) ResultLabel * definitionLabel;
 @property (nonatomic, nullable, strong) UIButton * compositionButton;
-@property (nonatomic, nullable, strong) UILabel * compositionLabel;
+@property (nonatomic, nullable, strong) ResultLabel * compositionLabel;
 @property (nonatomic, nullable, strong) UIButton * noteButton;
-@property (nonatomic, nullable, strong) UILabel * noteLabel;
+@property (nonatomic, nullable, strong) ResultLabel * noteLabel;
 @property (nonatomic, nullable, strong) UIButton * quoteButton;
-@property (nonatomic, nullable, strong) UILabel * quoteLabel;
+@property (nonatomic, nullable, strong) ResultLabel * quoteLabel;
 
 @end
 
@@ -74,6 +101,14 @@
 																toItem:_contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:0],
 								[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual
 																toItem:_contentView attribute:NSLayoutAttributeWidth multiplier:1 constant:0] ]];
+		
+		[[NSNotificationCenter defaultCenter] addObserverForName:UIMenuControllerWillHideMenuNotification object:nil queue:nil
+													  usingBlock:^ (NSNotification * _Nonnull note) {
+														  for (UIView * subview in _contentView.subviews) {
+															  if ([subview isKindOfClass:ResultLabel.class])
+																  ((ResultLabel *)subview).selected = NO;
+														  }
+													  }];
 	}
 	return self;
 }
@@ -86,7 +121,7 @@
 
 - (void)reloadData
 {
-	[_contentView.subviews valueForKey:NSStringFromSelector(@selector(removeFromSuperview))];
+	[_contentView.subviews valueForKey:SelectorName(removeFromSuperview)];
 	
 	// Infinitive
 	_infinitiveButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -229,54 +264,74 @@
 	}
 	
 	NSMutableDictionary <NSString *, UIView *> * views = [NSMutableDictionary dictionaryWithCapacity:14];
-	for (UIView * subview in _contentView.subviews) {
-		NSString * const key = [NSString stringWithFormat:@"v%lu", subview.hash];
-		views[key] = subview;
-	}
-	
 	NSMutableArray <NSString *> * formats = [NSMutableArray arrayWithCapacity:14];
 	for (UIView * subview in _contentView.subviews) {
-		NSString * const key = [NSString stringWithFormat:@"v%lu", subview.hash];
+		NSString * const key = [NSString stringWithFormat:@"v%lu", (unsigned long)subview.hash];
+		views[key] = subview;
 		[formats addObject:[NSString stringWithFormat:@"[%@]", key]];
 	}
 	
+	// Vertical constraints
 	assert(views.count == formats.count);
 	[_contentView addConstraints:
 	 [NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%@-|", [formats componentsJoinedByString:@"-15-"]]
-											 options:(NSLayoutFormatAlignAllLeft | NSLayoutFormatAlignAllRight)
-											 metrics:nil
-											   views:views]];
-	[_contentView addConstraints:
-	 @[ [NSLayoutConstraint constraintWithItem:_contentView attribute:NSLayoutAttributeTopMargin relatedBy:NSLayoutRelationEqual
-										toItem:_infinitiveButton attribute:NSLayoutAttributeTop multiplier:1 constant:0],
-		[NSLayoutConstraint constraintWithItem:_contentView attribute:NSLayoutAttributeLeftMargin relatedBy:NSLayoutRelationEqual
-										toItem:_infinitiveButton attribute:NSLayoutAttributeLeft multiplier:1 constant:0],
-		[NSLayoutConstraint constraintWithItem:_contentView attribute:NSLayoutAttributeRightMargin relatedBy:NSLayoutRelationEqual
-										toItem:_infinitiveButton attribute:NSLayoutAttributeRight multiplier:1 constant:0],
-		[NSLayoutConstraint constraintWithItem:_contentView attribute:NSLayoutAttributeBottomMargin relatedBy:NSLayoutRelationEqual
-										toItem:_contentView.subviews.lastObject attribute:NSLayoutAttributeBottom multiplier:1 constant:0] ]];
+											 options:NSLayoutFormatAlignAllLeft metrics:nil views:views]];
+	
+	// Buttons and labels left constraint
+	[_contentView addConstraint:
+	 [NSLayoutConstraint constraintWithItem:_infinitiveButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual
+									 toItem:_contentView attribute:NSLayoutAttributeLeftMargin multiplier:1 constant:7]];
+	
+	// Labels right constraint
+	for (UIView * subview in _contentView.subviews) {
+		if ([subview isKindOfClass:UILabel.class]) {
+			[_contentView addConstraint:
+			 [NSLayoutConstraint constraintWithItem:subview attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual
+											 toItem:_contentView attribute:NSLayoutAttributeRightMargin multiplier:1 constant:0]];
+			
+			UIGestureRecognizer * gesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressLabel:)];
+			[subview addGestureRecognizer:gesture];
+			subview.userInteractionEnabled = YES;
+		}
+	}
 }
 
 - (void)titleAction:(UIButton *)sender
 {
 	ResultTitle title;
-	if /*  */ (sender == _infinitiveButton) {
+	if /**/ (sender == _infinitiveButton)
 		title = ResultTitleInfinitive;
-	} else if (sender == _pastButton) {
+	else if (sender == _pastButton)
 		title = ResultTitlePast;
-	} else if (sender == _participleButton) {
+	else if (sender == _participleButton)
 		title = ResultTitleParticiple;
-	} else if (sender == _definitionButton) {
+	else if (sender == _definitionButton)
 		title = ResultTitleDefinition;
-	} else if (sender == _compositionButton) {
+	else if (sender == _compositionButton)
 		title = ResultTitleComposition;
-	} else if (sender == _noteButton) {
+	else if (sender == _noteButton)
 		title = ResultTitleNote;
-	} else if (sender == _quoteButton) {
+	else if (sender == _quoteButton)
 		title = ResultTitleQuote;
-	} else { assert(false); }
+	else { assert(false); }
 	
 	[self.delegate resultView:self didSelectTitle:title];
+}
+
+- (void)longPressLabel:(UIGestureRecognizer *)gesture
+{
+	ResultLabel * label = (ResultLabel *)gesture.view;
+	label.selected = YES;
+	[label becomeFirstResponder];
+	
+	UIMenuController * menu = [UIMenuController sharedMenuController];
+	[menu setTargetRect:label.bounds inView:label];
+	[menu setMenuVisible:YES animated:YES];
+}
+
+- (void)dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
