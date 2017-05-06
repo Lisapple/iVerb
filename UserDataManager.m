@@ -51,9 +51,9 @@
 
 static UserDataManager * __defaultManager = nil;
 
-NSString * const KeyValueStoreListsKey = @"lists"; // Value is `KVSLists` type
-NSString * const KeyValueStoreBookmarksKey = @"bookmarks"; // Value is `KVSBookmarks` type
-NSString * const KeyValueStoreNotesKey = @"notes"; // Value is `KVSNotes` type
+NSString * const KeyValueStoreListsKey = @"lists"; // Value is of `KVSLists` type
+NSString * const KeyValueStoreBookmarksKey = @"bookmarks"; // Value is of `KVSBookmarks` type
+NSString * const KeyValueStoreNotesKey = @"notes"; // Value is of `KVSNotes` type
 
 /// An array of dictionary with all playlists:
 ///   `@{ "name": playlist name, "verbs": @[ infinitives ], "quiz": { "16/04/17 12:37:00": "6/8" } }`
@@ -77,6 +77,10 @@ NSString * const UserDataEventsKey = @"userDataEvents";
 
 /// Local Core Data's managed object context; contains lists, verbs, quotes and quiz results
 @property (nonatomic, strong) NSManagedObjectContext * managedObjectContext;
+
+/// Remove old events (more than 2 weeks) that should not be applied on iCloud synchronisation merge.
+/// This also clean up saved events if iCloud sync is disabled to avoid growing user default storage.
+- (void)removeStaleEvents;
 
 @end
 
@@ -106,6 +110,25 @@ NSString * const UserDataEventsKey = @"userDataEvents";
 		[_keyValueStore synchronize];
 	}
 	return self;
+}
+
+- (void)removeStaleEvents
+{
+	NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
+	NSMutableArray <UserDataEvent *> * events = [NSMutableArray arrayWithCapacity:10];
+	for (NSData * eventData in [userDefaults arrayForKey:UserDataEventsKey]) {
+		UserDataEvent * const event = [NSKeyedUnarchiver unarchiveObjectWithData:eventData];
+		if (event) [events addObject:event];
+	}
+	
+	NSDate * const date = [NSDate dateWithTimeIntervalSinceNow:-2 * 7 * 24 * 60 * 60]; // 2 weeks
+	[events filterUsingPredicate:[NSPredicate predicateWithFormat:@"%K > %@", SelectorName(timestamp), date]];
+	
+	NSMutableArray <NSData *> * eventDatas = ([userDefaults arrayForKey:UserDataEventsKey] ?: @[]).mutableCopy;
+	for (UserDataEvent * event in events)
+		[eventDatas addObject:[NSKeyedArchiver archivedDataWithRootObject:event]];
+	
+	[userDefaults setObject:eventDatas forKey:UserDataEventsKey]; // ???: Should be saved as dict with timestamp as key (more efficient)?
 }
 
 - (NSArray <NSString *> *)eventNotificationNames
@@ -290,6 +313,8 @@ NSString * const UserDataEventsKey = @"userDataEvents";
 		// Re-apply events
 		[self stopObservingEventNotifications];
 		
+		[self removeStaleEvents];
+		
 		NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
 		NSMutableArray <UserDataEvent *> * events = [NSMutableArray arrayWithCapacity:10];
 		for (NSData * eventData in [userDefaults arrayForKey:UserDataEventsKey]) {
@@ -298,11 +323,7 @@ NSString * const UserDataEventsKey = @"userDataEvents";
 		}
 		[events sortUsingDescriptors:@[ [NSSortDescriptor sortDescriptorWithKey:SelectorName(timestamp)
 																	  ascending:YES] ]];
-		
 		for (UserDataEvent * anEvent in events) {
-			if (anEvent.timestamp.timeIntervalSinceNow < -2 * 7 * 24 * 60 * 60) // Ignore if older than 2 weeks
-				continue;
-			
 			if /**/ ([anEvent isKindOfClass:UDPlaylistCreateEvent.class]) {
 				UDPlaylistEvent * event = (UDPlaylistCreateEvent *)anEvent;
 				NSString * const name = event.playlistName;
@@ -353,6 +374,8 @@ NSString * const UserDataEventsKey = @"userDataEvents";
 
 - (BOOL)synchronize
 {
+	[self removeStaleEvents];
+	
 	NSFetchRequest * request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass(Verb.class)];
 	request.predicate = [NSPredicate predicateWithValue:YES];
 	NSArray <Verb *> * allVerbs = (NSArray *)[_managedObjectContext executeFetchRequest:request error:nil];
