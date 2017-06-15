@@ -21,6 +21,8 @@
 
 @implementation ResultLabel
 
+static UIEdgeInsets DefaultMargins = { 0, 10, 0, 10 };
+
 - (BOOL)canBecomeFirstResponder
 {
 	return YES; // For copy menu
@@ -45,10 +47,15 @@
 	self.clipsToBounds = YES;
 }
 
+- (CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines
+{
+	return [super textRectForBounds:UIEdgeInsetsInsetRect(bounds, DefaultMargins)
+			 limitedToNumberOfLines:numberOfLines];
+}
+
 - (void)drawTextInRect:(CGRect)rect
 {
-	UIEdgeInsets insets = UIEdgeInsetsMake(0, 10, 0, 10);
-	[super drawTextInRect:UIEdgeInsetsInsetRect(rect, insets)];
+	[super drawTextInRect:UIEdgeInsetsInsetRect(rect, DefaultMargins)];
 }
 
 @end
@@ -138,7 +145,6 @@
 	_infinitiveLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 	_infinitiveLabel.textColor = [UIColor darkGrayColor];
 	_infinitiveLabel.text = _verb.infinitif;
-	_infinitiveLabel.layoutMargins = UIEdgeInsetsMake(0, 10, 0, 10);
 	[_contentView addSubview:_infinitiveLabel];
 	
 	// Past
