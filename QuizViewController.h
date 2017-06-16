@@ -21,8 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 typedef NS_ENUM(NSUInteger, ResponseState) {
-	ResponseStateTrue,
-	ResponseStateFalse
+	ResponseStateRight,
+	ResponseStateWrong
 };
 
 typedef NS_ENUM(NSInteger, VerbForm) {
@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger, VerbForm) {
 	VerbFormPastParticiple
 };
 
-@interface QuizViewController : UIViewController <UITextFieldDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface QuizViewController : UIViewController <UITextFieldDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, weak) IBOutlet UIView * quizView, * responseView;
 

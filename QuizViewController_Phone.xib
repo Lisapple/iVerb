@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -105,36 +105,46 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="center" image="true" translatesAutoresizingMaskIntoConstraints="NO" id="21">
-                    <rect key="frame" x="80" y="52" width="160" height="160"/>
+                    <rect key="frame" x="80" y="72" width="160" height="160"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="160" id="aYp-DU-xHq"/>
                         <constraint firstAttribute="height" constant="160" id="g5f-Tt-Rw7"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Response:" textAlignment="right" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="120">
-                    <rect key="frame" x="37" y="229" width="105" height="22"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5jw-49-zrp">
+                    <rect key="frame" x="92.5" y="240" width="136.5" height="22"/>
+                    <subviews>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Response:" textAlignment="right" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="120">
+                            <rect key="frame" x="0.0" y="0.0" width="84.5" height="22"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                            <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="121">
+                            <rect key="frame" x="89.5" y="0.0" width="47" height="22"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                            <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="105" id="0te-UT-a9F"/>
+                        <constraint firstItem="120" firstAttribute="top" secondItem="5jw-49-zrp" secondAttribute="top" id="0SK-6Y-FTB"/>
+                        <constraint firstItem="120" firstAttribute="leading" secondItem="5jw-49-zrp" secondAttribute="leading" id="43N-Ep-lgI"/>
+                        <constraint firstItem="121" firstAttribute="baseline" secondItem="120" secondAttribute="baseline" id="QSI-72-Ocd"/>
+                        <constraint firstItem="121" firstAttribute="leading" secondItem="120" secondAttribute="trailing" constant="5" id="WhI-aR-ekk"/>
+                        <constraint firstItem="121" firstAttribute="top" secondItem="5jw-49-zrp" secondAttribute="top" id="bzn-Gv-KAk"/>
+                        <constraint firstAttribute="bottom" secondItem="120" secondAttribute="bottom" id="eie-tD-qo2"/>
+                        <constraint firstAttribute="trailing" secondItem="121" secondAttribute="trailing" id="rhu-vM-d6N"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                    <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="121">
-                    <rect key="frame" x="146" y="229" width="47" height="22"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
-                    <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
+                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="21" firstAttribute="top" secondItem="20" secondAttribute="top" constant="52" id="1uP-te-69R"/>
-                <constraint firstItem="120" firstAttribute="leading" secondItem="20" secondAttribute="leading" constant="37" id="Ugj-uc-imk"/>
-                <constraint firstItem="121" firstAttribute="leading" secondItem="120" secondAttribute="trailing" constant="4" id="cpw-sE-5zX"/>
+                <constraint firstItem="5jw-49-zrp" firstAttribute="centerX" secondItem="20" secondAttribute="centerX" id="0kW-nW-Hdc"/>
+                <constraint firstItem="21" firstAttribute="top" secondItem="20" secondAttribute="top" constant="72" id="1uP-te-69R"/>
+                <constraint firstItem="5jw-49-zrp" firstAttribute="top" secondItem="21" secondAttribute="bottom" constant="8" id="9Ym-UL-QzB"/>
                 <constraint firstItem="21" firstAttribute="centerX" secondItem="20" secondAttribute="centerX" id="ilW-y6-vWs"/>
-                <constraint firstItem="120" firstAttribute="top" secondItem="21" secondAttribute="bottom" constant="17" id="p9A-sa-1AF"/>
-                <constraint firstItem="121" firstAttribute="baseline" secondItem="120" secondAttribute="baseline" id="qby-g3-sge"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -142,7 +152,7 @@
     </objects>
     <resources>
         <image name="dictate" width="15" height="24"/>
-        <image name="true" width="130" height="130"/>
+        <image name="true" width="160" height="160"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

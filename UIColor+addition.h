@@ -12,4 +12,6 @@
 
 + (UIColor *)foregroundColor;
 
++ (UIColor *)errorColor;
+
 @end

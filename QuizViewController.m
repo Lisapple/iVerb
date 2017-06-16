@@ -15,6 +15,7 @@
 
 #import "UIFont+addition.h"
 #import "UIColor+addition.h"
+#import "NSString+addition.h"
 
 @implementation SFSpeechRecognizer (Availability)
 
@@ -568,69 +569,19 @@ typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
 
 - (void)pushResponse:(ResponseState)response animated:(BOOL)animated
 {
-	_responseImageView.image = [UIImage imageNamed:(response == ResponseStateTrue) ? @"true" : @"false"];
-	_responseImageView.tintColor = [UIColor foregroundColor];
-	_responseLabel.text = _currentResponse;
+	const BOOL correct = (response == ResponseStateRight);
+	_responseImageView.image = [UIImage imageNamed:correct ? @"true" : @"false"];
+	_responseImageView.tintColor = (correct) ? [UIColor foregroundColor] : [UIColor errorColor];
+	
+	NSString * const answers = _textField.text;
+	_responseLabel.attributedText = [answers highlightDifferencesAgainstReference:_currentResponse];
 	
 	_responseView.frame = self.view.bounds;
 	[self pushView:_responseView animated:animated];
 	
-	double delayInSeconds = ((animated)? 0.25 : 0.) + 1.;
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC)),
+	const double seconds = (animated ? (correct ? 0.2 : 0.5) : 0.) + 1.;
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC)),
 				   dispatch_get_main_queue(), ^{ [self pushNewVerbAction:nil]; });
-}
-
-#pragma mark - Table view delegate & dataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-	return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-	return _allVerbs.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"CellID"];
-	
-	if (!cell)
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"CellID"];
-	
-	NSString * response = _responses[indexPath.row];
-	Verb * verb = _allVerbs[indexPath.row];
-	NSString * verbString = (_forms[indexPath.row].unsignedIntegerValue == VerbFormPastSimple) ? (verb.past) : (verb.pastParticiple);
-	if (response.length > 0) {
-		BOOL correct = _responsesCorrect[indexPath.row].boolValue;
-		if (correct)
-			cell.textLabel.text = [NSString stringWithFormat:@"%@", response];
-		else
-			cell.textLabel.text = [NSString stringWithFormat:@"%@ (not %@)", verbString, response];
-		
-		cell.imageView.image = [UIImage imageNamed:(correct) ? @"true-small" : @"false-small"];
-		cell.imageView.tintColor = [UIColor foregroundColor];
-	} else {
-		cell.textLabel.text = [NSString stringWithFormat:@"%@ (skipped)", verbString];
-		cell.textLabel.textColor = [UIColor lightGrayColor];
-		cell.imageView.image = nil;
-	}
-	
-	return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	Verb * verb = _allVerbs[indexPath.row];
-	if (TARGET_IS_IPAD()) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:SearchTableViewDidSelectCellNotification object:verb];
-		[self dismissViewControllerAnimated:YES completion:NULL];
-	} else {
-		ResultViewController * resultViewController = [[ResultViewController alloc] init];
-		resultViewController.verb = verb;
-		[self.navigationController pushViewController:resultViewController animated:YES];
-	}
 }
 
 #pragma mark - Text field delegate
@@ -641,10 +592,10 @@ typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
 		BOOL goodResponse = [textField.text isEqualToString:_currentResponse];
 		if (goodResponse) {
 			_goodResponseCount++;
-			[self pushResponse:ResponseStateTrue animated:YES];
+			[self pushResponse:ResponseStateRight animated:YES];
 		} else {
 			_badResponseCount++;
-			[self pushResponse:ResponseStateFalse animated:YES];
+			[self pushResponse:ResponseStateWrong animated:YES];
 		}
 		
 		[_responses addObject:textField.text];
@@ -652,7 +603,7 @@ typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
 		return YES;
 		
 	} else
-		_remainingCount.textColor = [UIColor redColor];
+		_remainingCount.textColor = [UIColor errorColor];
 	
 	return NO;
 }
@@ -680,7 +631,7 @@ typedef NS_ENUM(NSUInteger, SpeechRecognizerButtonState) {
 	// Update the label with the number of remaining letters
 	NSInteger rem = _currentResponse.length - _textField.text.length;
 	_remainingCount.text = [NSString stringWithFormat:@"%ld remaining letters", (long)rem];
-	_remainingCount.textColor = (rem < 0) ? [UIColor redColor] : [UIColor grayColor];
+	_remainingCount.textColor = (rem < 0) ? [UIColor errorColor] : [UIColor grayColor];
 }
 
 #pragma mark - Navigation controller delegate
