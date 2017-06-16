@@ -159,6 +159,7 @@ typedef NS_ENUM(NSUInteger, HistorySorting) {
 	checkedVerbs = [[NSMutableArray alloc] initWithCapacity:10];
 	
     self.clearsSelectionOnViewWillAppear = YES;
+	self.definesPresentationContext = YES;
 	
 	SearchResultsViewController * searchResultsViewController = [[SearchResultsViewController alloc] init];
 	searchResultsViewController.tableView.delegate = self;
