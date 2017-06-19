@@ -308,14 +308,15 @@
     if (_managedObjectContext != nil) {
         if (_managedObjectContext.hasChanges && ![_managedObjectContext save:&error]) {
 			// @TODO: Do something with the error
-        } 
+        }
     }
 	[[UserDataManager defaultManager] synchronize];
 }
 
 #pragma mark - Watch connectivity delegate
 
-- (void)session:(WCSession *)session activationDidCompleteWithState:(WCSessionActivationState)activationState error:(nullable NSError *)error {
+- (void)session:(WCSession *)session activationDidCompleteWithState:(WCSessionActivationState)activationState error:(nullable NSError *)error
+{
 	if (activationState == WCSessionActivationStateActivated) {
 		[Answers logCustomEventWithName:@"watch-activated" customAttributes:nil];
 	}
@@ -430,10 +431,8 @@
 	NSURL * storeUrl = [NSURL fileURLWithPath:storePath];
 	NSDictionary * const options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES,
 									  NSInferMappingModelAutomaticallyOption: @YES };
-	if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-		exit(-1);
-	}
+	if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error])
+		NSAssert(false, @"Unresolved error %@, %@", error, error.userInfo);
 	
 	return _persistentStoreCoordinator;
 }

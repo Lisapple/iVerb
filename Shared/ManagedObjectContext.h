@@ -6,6 +6,10 @@
 //  Copyright (c) 2012 Lis@cintosh. All rights reserved.
 //
 
+@import CoreData;
+
+NS_ASSUME_NONNULL_BEGIN
+
 @protocol ManagedObjectContext <NSObject>
 
 - (NSManagedObjectContext *)managedObjectContext;
@@ -17,3 +21,5 @@
 + (NSManagedObjectContext *)sharedContext;
 
 @end
+
+NS_ASSUME_NONNULL_END

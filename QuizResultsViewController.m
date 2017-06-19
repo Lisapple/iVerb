@@ -81,7 +81,7 @@
 	
 	self.title = @"Quiz Results";
 	
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
 																						  target:self action:@selector(cancelAction:)];
 	self.view.backgroundColor = [UIColor colorWithWhite:0.96 alpha:1.];
 	

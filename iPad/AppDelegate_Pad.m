@@ -61,7 +61,6 @@
 			form = VerbFormPastParticiple;
 		
 		QuizViewController * controller = [[QuizViewController alloc] initWithPlaylist:playlist firstVerb:verb verbForm:form];
-		
 		UINavigationController * navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
 		navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 		[_window.rootViewController presentViewController:navigationController animated:NO completion:nil];
@@ -134,9 +133,8 @@
 
 - (NSManagedObjectContext *) managedObjectContext {
 	
-    if (managedObjectContext != nil) {
+    if (managedObjectContext != nil)
         return managedObjectContext;
-    }
 	
     NSPersistentStoreCoordinator *coordinator = self.persistentStoreCoordinator;
     if (coordinator != nil) {
@@ -148,18 +146,17 @@
 
 - (NSManagedObjectModel *)managedObjectModel {
 	
-    if (managedObjectModel != nil) {
+    if (managedObjectModel != nil)
         return managedObjectModel;
-    }
+	
     managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];
     return managedObjectModel;
 }
 
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
 	
-    if (persistentStoreCoordinator != nil) {
+    if (persistentStoreCoordinator != nil)
         return persistentStoreCoordinator;
-    }
 	
 	NSString *storePath = [[self applicationDocumentsDirectory] stringByAppendingPathComponent:@"verbs.sqlite"];
 	if (![[NSFileManager defaultManager] fileExistsAtPath:storePath]) {
@@ -174,11 +171,8 @@
 	NSURL *storeUrl = [NSURL fileURLWithPath:storePath];
 	NSDictionary *options = @{ NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES };
 	NSError *error;
-	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
-		// Update to handle the error appropriately.
-		NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-		exit(-1);  // Fail
-    }
+	if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error])
+		NSAssert(false, @"Unresolved error %@, %@", error, error.userInfo);
 	
     return persistentStoreCoordinator;
 }

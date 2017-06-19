@@ -81,8 +81,7 @@
 		
 		BOOL containsAllVerbs = YES;
 		for (Verb * verb in _verbs) {
-			NSMutableSet * playlistsName = [verb mutableSetValueForKeyPath:@"playlists.name"];
-			containsAllVerbs &= ([playlistsName containsObject:playlist.name]);
+			containsAllVerbs &= ([verb.playlists containsObject:playlist]);
 			if (!containsAllVerbs) break;
 		}
 		cell.accessoryType = (containsAllVerbs)? UITableViewCellAccessoryCheckmark: UITableViewCellAccessoryNone;
@@ -129,7 +128,7 @@
 	[aTableView deselectRowAtIndexPath:indexPath animated:YES];
 	
 	if (_userPlaylists.count == 0) // Only bookmarks...
-		[self doneAction:nil]; // ... dismiss controller
+		[self performSelector:@selector(doneAction:) withObject:nil afterDelay:0.5]; // ... dismiss controller
 }
 
 @end

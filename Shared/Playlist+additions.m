@@ -22,7 +22,7 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 		case PlaylistActionSelect: {
 			if (!_lastSelectedPlaylist) {
 				NSUserDefaults * userDefaults = [NSUserDefaults standardUserDefaults];
-				NSString * name = [userDefaults stringForKey:UserDefaultsLastUsedPlaylistKey];
+				NSString * const name = [userDefaults stringForKey:UserDefaultsLastUsedPlaylistKey];
 				_lastSelectedPlaylist = [Playlist playlistWithName:name];
 				if (!_lastSelectedPlaylist)
 					_lastSelectedPlaylist = [Playlist allVerbsPlaylist];
