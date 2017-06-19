@@ -29,8 +29,11 @@ static Playlist * _lastPlaylistSelectedToAddVerb = nil;
 			}
 			return _lastSelectedPlaylist;
 		}
-		case PlaylistActionAddTo:
-			return _lastPlaylistSelectedToAddVerb;
+		case PlaylistActionAddTo: {
+			NSString * const name = _lastPlaylistSelectedToAddVerb.name;
+			// If the playlist is about to be deleted, the name is nil, return no playlist in this case. 
+			return (name) ? [Playlist playlistWithName:name] : nil;
+		}
 		default: break;
 	}
 	return nil;
