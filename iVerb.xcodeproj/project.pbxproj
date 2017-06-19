@@ -13,6 +13,7 @@
 		2860E328111B887F00E27156 /* AppDelegate_Phone.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E326111B887F00E27156 /* AppDelegate_Phone.m */; };
 		2860E32E111B888700E27156 /* AppDelegate_Pad.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E32C111B888700E27156 /* AppDelegate_Pad.m */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		500072EC1EF7F9E100106CA6 /* UserDataEvent+additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 500072EB1EF7F9E100106CA6 /* UserDataEvent+additions.m */; };
 		500548401EA50E2300AC4E89 /* NSManagedObject+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 5005483F1EA50E2200AC4E89 /* NSManagedObject+addition.m */; };
 		5009FC1419A5518900CFB284 /* UINavigationController+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 5009FC1319A5518900CFB284 /* UINavigationController+addition.m */; };
 		500B9F7319A4208100C91E39 /* NSMutableAttributedString+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 500B9F7219A4208100C91E39 /* NSMutableAttributedString+addition.m */; };
@@ -163,6 +164,8 @@
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Shared/main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* iVerb_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = iVerb_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		500072EA1EF7F9E100106CA6 /* UserDataEvent+additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UserDataEvent+additions.h"; sourceTree = "<group>"; };
+		500072EB1EF7F9E100106CA6 /* UserDataEvent+additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UserDataEvent+additions.m"; sourceTree = "<group>"; };
 		5005483E1EA50E2200AC4E89 /* NSManagedObject+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+addition.h"; sourceTree = "<group>"; };
 		5005483F1EA50E2200AC4E89 /* NSManagedObject+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+addition.m"; sourceTree = "<group>"; };
 		5009FC1219A5518900CFB284 /* UINavigationController+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+addition.h"; sourceTree = "<group>"; };
@@ -550,6 +553,8 @@
 				50E08B301EA3C12400C6C736 /* UserDataManager.m */,
 				50DE02AE1EA9179000980CF5 /* UserDataEvent.h */,
 				50DE02AF1EA9179000980CF5 /* UserDataEvent.m */,
+				500072EA1EF7F9E100106CA6 /* UserDataEvent+additions.h */,
+				500072EB1EF7F9E100106CA6 /* UserDataEvent+additions.m */,
 				50E91C6D16135B65009254F6 /* Playlist.h */,
 				50E91C6E16135B65009254F6 /* Playlist.m */,
 				50E507F71614B26B00B6915D /* Playlist+additions.h */,
@@ -853,6 +858,7 @@
 				50E33F9916C1A9C30091AE21 /* QuizViewController.m in Sources */,
 				505D0FBC16C55CF3007B3A90 /* HelpViewController.m in Sources */,
 				50E08B311EA3C12400C6C736 /* UserDataManager.m in Sources */,
+				500072EC1EF7F9E100106CA6 /* UserDataEvent+additions.m in Sources */,
 				50E343CB1C90761F00269851 /* WebViewController.m in Sources */,
 				505D0FCC16C5922D007B3A90 /* CloudView.m in Sources */,
 				508784E6170B6BBA00693C3C /* EditNoteViewController.m in Sources */,

@@ -121,10 +121,17 @@ NSString * const UserDataEventsKey = @"userDataEvents";
 		if (event) [events addObject:event];
 	}
 	
-	NSDate * const date = [NSDate dateWithTimeIntervalSinceNow:-2 * 7 * 24 * 60 * 60]; // 2 weeks
-	[events filterUsingPredicate:[NSPredicate predicateWithFormat:@"%K > %@", SelectorName(timestamp), date]];
+	// Remove events older than 2 weeks
+	NSDate * const date = [NSDate dateWithTimeIntervalSinceNow:-2*7*24*60*60/*2 weeks*/];
+	[events filterUsingPredicate:[NSPredicate predicateWithFormat:@"%K > %@", NSStringFromSelector(@selector(timestamp)), date]];
 	
-	NSMutableArray <NSData *> * eventDatas = @[].mutableCopy;
+	// Remove duplicates
+	NSSet <NSString *> * const eventDescriptionsToKeep = [[NSSet setWithArray:events] valueForKey:NSStringFromSelector(@selector(description))];
+	[events filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(UserDataEvent * event, NSDictionary * bindings) {
+		return [eventDescriptionsToKeep member:event.description]; // Check equality on pointer
+	}]];
+	
+	NSMutableArray <NSData *> * eventDatas = [NSMutableArray arrayWithCapacity:events.count];
 	for (UserDataEvent * event in events)
 		[eventDatas addObject:[NSKeyedArchiver archivedDataWithRootObject:event]];
 	

@@ -24,13 +24,13 @@
 	[Fabric with:@[ CrashlyticsKit ]];
 #endif
 	
-	[[UserDataManager defaultManager] synchronize];
-	
 	NSDictionary * attributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:20.],
 								   NSForegroundColorAttributeName : [UIColor darkGrayColor] };
 	[UINavigationBar appearance].titleTextAttributes = attributes;
 	
     self.window.tintColor = [UIColor foregroundColor];
+	
+	[[UserDataManager defaultManager] synchronize];
 	
 	// On iOS 9+, index all verbs with Spotlight
 	[[Playlist allVerbsPlaylist] buildingSpolightIndexWithCompletionHandler:^(NSError * _Nullable error) {
