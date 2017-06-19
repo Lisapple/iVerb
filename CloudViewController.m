@@ -20,18 +20,11 @@
 @property (nonatomic, strong) CADisplayLink * link;
 @property (nonatomic, strong) NSArray * verbs;
 
-@property (nonatomic, weak) IBOutlet CloudView * cloudView;
+@property (nonatomic, strong) CloudView * cloudView;
 
 @end
 
 @implementation CloudViewController
-
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-	NSString * nibName = (TARGET_IS_IPAD())? @"CloudViewController_Pad" : @"CloudViewController_Phone";
-    if ((self = [super initWithNibName:nibName bundle:nibBundleOrNil])) { }
-    return self;
-}
 
 #pragma mark - View lifecycle
 
@@ -40,6 +33,7 @@
     [super viewDidLoad];
 	
 	self.title = @"Cloud";
+	self.view.backgroundColor = [UIColor whiteColor];
 	self.view.clipsToBounds = YES;
 	
 	if (TARGET_IS_IPAD()) {
@@ -48,28 +42,38 @@
                                                                                                target:self action:@selector(doneAction:)];
 	}
 	
-	NSSet * verbsSet = [Playlist allVerbsPlaylist].verbs;
+	const CGFloat parallaxExtraMargin = 30; // Extra margin for parallax effect
+	_cloudView = [[CloudView alloc] init];
+	_cloudView.translatesAutoresizingMaskIntoConstraints = NO;
+	_cloudView.backgroundColor = [UIColor whiteColor];
+	[self.view addSubview:_cloudView];
+	[self.view addConstraints:
+  @[ [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual
+									 toItem:_cloudView attribute:NSLayoutAttributeTop multiplier:1 constant:-parallaxExtraMargin],
+	 [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual
+									 toItem:_cloudView attribute:NSLayoutAttributeLeft multiplier:1 constant:-parallaxExtraMargin],
+	 [NSLayoutConstraint constraintWithItem:_cloudView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual
+									 toItem:self.view attribute:NSLayoutAttributeRight multiplier:1 constant:-parallaxExtraMargin],
+	 [NSLayoutConstraint constraintWithItem:_cloudView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual
+									 toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:-parallaxExtraMargin] ]];
 	
-	float * sizes = (float *)malloc(3 * sizeof(float)); // Use dynamic alloc to be used into a block
-	sizes[0] = 24., sizes[1] = 18., sizes[2] = 14.;
-	
-	__block float x = 0.;
-	__block int index = 0;
-	
+	__block float x = 0.; __block int index = 0;
 	__block float * oldYs = (float *)calloc(3, sizeof(float));
+	const CGFloat viewHeight = TARGET_IS_IPAD() ? self.view.frame.size.height : [UIScreen mainScreen].bounds.size.height;
+	const CGFloat height = viewHeight - (44/*navigation bar*/ + parallaxExtraMargin + 2*20/*top and bottom margins*/);
 	
-	const float height = ((TARGET_IS_IPAD()) ? self.view.frame.size.height : [UIScreen mainScreen].bounds.size.height) - (20. + 44./*navigation bar height*/ + 30./*extra margin for parallax effect*/) - 29./*label height*/;
-	
+	NSSet * verbsSet = [Playlist allVerbsPlaylist].verbs;
 	[verbsSet enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
 		
 		NSString * infinitif = ((Verb *)obj).infinitif;
 		
-		UIFont * font = [UIFont systemFontOfSize:sizes[(index % 3)]];
+		CGFloat fontSizes[] = { 24, 18, 14 };
+		UIFont * font = [UIFont systemFontOfSize:fontSizes[(index % 3)]];
 		CGSize size = [infinitif sizeWithAttributes:@{ NSFontAttributeName : font }];
 		size.width += 8.;
 		
 		float y = 0;
-		do { y = (int)((rand() / (float)RAND_MAX) * height) + 20. + 30./*extra margin for parallax effect*/ + 44.; }
+		do { y = (int)((rand() / (float)RAND_MAX) * height) + parallaxExtraMargin; }
 		while (ABS(y - oldYs[0]) < 60. || ABS(y - oldYs[1]) < 60. || ABS(y - oldYs[2]) < 60.);
 		
 		/* Switch older "y" values */
@@ -113,8 +117,7 @@
 		
 		++index;
 	}];
-	
-	free(oldYs);
+	free(oldYs); oldYs = NULL;
 	
 	_cloudView.totalWidth = x - self.view.frame.size.width;
 	[_cloudView addParallaxEffect:(ParallaxAxisVertical | ParallaxAxisHorizontal) offset:30];

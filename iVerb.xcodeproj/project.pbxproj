@@ -65,12 +65,10 @@
 		50D15B931C88D28200B2E49B /* Main~phone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50D15B921C88D28200B2E49B /* Main~phone.storyboard */; };
 		50D15B9C1C88DA1A00B2E49B /* NSDate+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 50D15B9B1C88DA1A00B2E49B /* NSDate+addition.m */; };
 		50D4402816CBEEEC00D4A5DC /* QuizViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50D4402716CBEEEC00D4A5DC /* QuizViewController_Pad.xib */; };
-		50D4402A16CBF9EE00D4A5DC /* CloudViewController_Pad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50D4402916CBF9EE00D4A5DC /* CloudViewController_Pad.xib */; };
 		50DC173F1E5689AB007D953C /* UIView+addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 50DC173E1E5689AB007D953C /* UIView+addition.m */; };
 		50DE02B01EA9179000980CF5 /* UserDataEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 50DE02AF1EA9179000980CF5 /* UserDataEvent.m */; };
 		50E08B311EA3C12400C6C736 /* UserDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E08B301EA3C12400C6C736 /* UserDataManager.m */; };
 		50E31E1C16C150E10007FFBA /* CloudViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E31E1A16C150E10007FFBA /* CloudViewController.m */; };
-		50E31E1D16C150E10007FFBA /* CloudViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50E31E1B16C150E10007FFBA /* CloudViewController_Phone.xib */; };
 		50E33F9916C1A9C30091AE21 /* QuizViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E33F9716C1A9C30091AE21 /* QuizViewController.m */; };
 		50E33F9A16C1A9C30091AE21 /* QuizViewController_Phone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50E33F9816C1A9C30091AE21 /* QuizViewController_Phone.xib */; };
 		50E343CB1C90761F00269851 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E343CA1C90761F00269851 /* WebViewController.m */; };
@@ -88,7 +86,6 @@
 		50F2E2E41E97B231009091EE /* Verb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F2E2E31E97B231009091EE /* Verb.swift */; };
 		50F314A71611E75E00B83030 /* EditableTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F314A61611E75E00B83030 /* EditableTableViewCell.m */; };
 		50F314B31612214200B83030 /* LandscapeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F314B11612214100B83030 /* LandscapeViewController.m */; };
-		50F314B41612214200B83030 /* LandscapeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50F314B21612214200B83030 /* LandscapeViewController.xib */; };
 		50F5865F1C5510AE00E759E4 /* QuizResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50F5865E1C5510AE00E759E4 /* QuizResultsView.m */; };
 		50FF56A91E4CDDC000C79586 /* AProposViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50FF56A81E4CDDC000C79586 /* AProposViewController.m */; };
 /* End PBXBuildFile section */
@@ -243,7 +240,6 @@
 		50D15B9A1C88DA1A00B2E49B /* NSDate+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+addition.h"; sourceTree = "<group>"; };
 		50D15B9B1C88DA1A00B2E49B /* NSDate+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+addition.m"; sourceTree = "<group>"; };
 		50D4402716CBEEEC00D4A5DC /* QuizViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuizViewController_Pad.xib; sourceTree = "<group>"; };
-		50D4402916CBF9EE00D4A5DC /* CloudViewController_Pad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CloudViewController_Pad.xib; sourceTree = "<group>"; };
 		50DC173D1E5689AB007D953C /* UIView+addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+addition.h"; sourceTree = "<group>"; };
 		50DC173E1E5689AB007D953C /* UIView+addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+addition.m"; sourceTree = "<group>"; };
 		50DE02AE1EA9179000980CF5 /* UserDataEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDataEvent.h; sourceTree = "<group>"; };
@@ -252,7 +248,6 @@
 		50E08B301EA3C12400C6C736 /* UserDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = UserDataManager.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		50E31E1916C150E10007FFBA /* CloudViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CloudViewController.h; sourceTree = "<group>"; };
 		50E31E1A16C150E10007FFBA /* CloudViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CloudViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		50E31E1B16C150E10007FFBA /* CloudViewController_Phone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CloudViewController_Phone.xib; sourceTree = "<group>"; };
 		50E33F9616C1A9C30091AE21 /* QuizViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuizViewController.h; sourceTree = "<group>"; };
 		50E33F9716C1A9C30091AE21 /* QuizViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = QuizViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		50E33F9816C1A9C30091AE21 /* QuizViewController_Phone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuizViewController_Phone.xib; sourceTree = "<group>"; };
@@ -283,7 +278,6 @@
 		50F314A61611E75E00B83030 /* EditableTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTableViewCell.m; sourceTree = "<group>"; };
 		50F314B01612214100B83030 /* LandscapeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LandscapeViewController.h; sourceTree = "<group>"; };
 		50F314B11612214100B83030 /* LandscapeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LandscapeViewController.m; sourceTree = "<group>"; };
-		50F314B21612214200B83030 /* LandscapeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LandscapeViewController.xib; sourceTree = "<group>"; };
 		50F5865D1C5510AE00E759E4 /* QuizResultsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuizResultsView.h; sourceTree = "<group>"; };
 		50F5865E1C5510AE00E759E4 /* QuizResultsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuizResultsView.m; sourceTree = "<group>"; };
 		50FF56A71E4CDDC000C79586 /* AProposViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AProposViewController.h; path = "Carthage/Checkouts/a-propos/Classes/AProposViewController.h"; sourceTree = "<group>"; };
@@ -363,7 +357,6 @@
 				503926D716497EC900E5B24C /* VerbOptionsViewController.m */,
 				50F314B01612214100B83030 /* LandscapeViewController.h */,
 				50F314B11612214100B83030 /* LandscapeViewController.m */,
-				50F314B21612214200B83030 /* LandscapeViewController.xib */,
 				50F314A51611E75E00B83030 /* EditableTableViewCell.h */,
 				50F314A61611E75E00B83030 /* EditableTableViewCell.m */,
 			);
@@ -389,8 +382,6 @@
 			children = (
 				50E31E1916C150E10007FFBA /* CloudViewController.h */,
 				50E31E1A16C150E10007FFBA /* CloudViewController.m */,
-				50E31E1B16C150E10007FFBA /* CloudViewController_Phone.xib */,
-				50D4402916CBF9EE00D4A5DC /* CloudViewController_Pad.xib */,
 				505D0FCA16C5922D007B3A90 /* CloudView.h */,
 				505D0FCB16C5922D007B3A90 /* CloudView.m */,
 				50E33F9616C1A9C30091AE21 /* QuizViewController.h */,
@@ -744,19 +735,16 @@
 				503B0DC212C7E0E20060B502 /* verbs.sqlite in Resources */,
 				50D15B931C88D28200B2E49B /* Main~phone.storyboard in Resources */,
 				50F1014D1985610C005D852F /* Images.xcassets in Resources */,
-				50F314B41612214200B83030 /* LandscapeViewController.xib in Resources */,
 				50E507F61614B24600B6915D /* verbs_lists_template.html in Resources */,
 				50CED3211EB638AF00545FE8 /* Launch.storyboard in Resources */,
 				506509D81C24B21100A740B0 /* spotlight@3x.png in Resources */,
 				50AE533F1649608500FE8879 /* Localizable.strings in Resources */,
 				506509D61C24AF7700A740B0 /* spotlight@2x.png in Resources */,
 				506509D51C24AF7700A740B0 /* spotlight.png in Resources */,
-				50E31E1D16C150E10007FFBA /* CloudViewController_Phone.xib in Resources */,
 				506D911B1C8FAE4B00E09415 /* Main~pad.storyboard in Resources */,
 				50E33F9A16C1A9C30091AE21 /* QuizViewController_Phone.xib in Resources */,
 				505D0FBF16C55E65007B3A90 /* help.html in Resources */,
 				50D4402816CBEEEC00D4A5DC /* QuizViewController_Pad.xib in Resources */,
-				50D4402A16CBF9EE00D4A5DC /* CloudViewController_Pad.xib in Resources */,
 				508784E7170B6BBA00693C3C /* EditNoteViewController_Phone.xib in Resources */,
 				502F5543170F34BE00E7B454 /* EditNoteViewController_Pad.xib in Resources */,
 			);

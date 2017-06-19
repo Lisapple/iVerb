@@ -8,6 +8,4 @@
 
 @interface LandscapeViewController : UIViewController
 
-@property (nonatomic, assign) IBOutlet UIWebView * webView;
-
 @end
