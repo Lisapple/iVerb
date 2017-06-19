@@ -7,6 +7,9 @@
 //
 
 #import "UserDataEvent.h"
+#import "ManagedObjectContext.h"
+
+#import "NSManagedObject+addition.h"
 
 @implementation UserDataEvent
 
@@ -42,9 +45,21 @@
 
 @implementation UDPlaylistEvent
 
+- (instancetype)initWithPlaylist:(Playlist *)playlist;
+{
+	if ((self = [super init])) {
+		_playlistID = playlist.permanentObjectID ?: playlist.objectID;
+		_playlistName = playlist.name;
+	}
+	return self;
+}
+
 - (nullable instancetype)initWithCoder:(NSCoder *)aDecoder
 {
 	if ((self = [super initWithCoder:aDecoder])) {
+		NSString * const stringRepresentation = [aDecoder decodeObjectOfClass:NSString.class
+																	   forKey:SelectorName(playlistID)];
+		_playlistID = [[ManagedObjectContext sharedContext] objectIDWithRepresentation:stringRepresentation];
 		_playlistName = [aDecoder decodeObjectOfClass:NSString.class
 											   forKey:SelectorName(playlistName)];
 	}
@@ -54,22 +69,37 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
 	[super encodeWithCoder:aCoder];
+	[aCoder encodeObject:_playlistID.stringReprentation forKey:SelectorName(playlistID)];
 	[aCoder encodeObject:_playlistName forKey:SelectorName(playlistName)];
+}
+
+- (Playlist *)playlist
+{
+	if (_playlistID)
+		return [Playlist playlistWithObjectID:_playlistID];
+	
+	if (_playlistName) // For migration only, try finding with the name
+		return [Playlist playlistWithName:_playlistName];
+	
+	return nil;
 }
 
 @end
 
 @implementation UDPlaylistCreateEvent
 
-@end
-
-@implementation UDPlaylistRenameEvent
+- (instancetype)initWithPlaylist:(Playlist *)playlist;
+{
+	if ((self = [super initWithPlaylist:playlist])) {
+		_name = playlist.name;
+	}
+	return self;
+}
 
 - (nullable instancetype)initWithCoder:(NSCoder *)aDecoder
 {
 	if ((self = [super initWithCoder:aDecoder])) {
-		_originalName = [aDecoder decodeObjectOfClass:NSString.class
-											   forKey:SelectorName(name)];
+		_name = [aDecoder decodeObjectOfClass:NSString.class forKey:SelectorName(name)];
 	}
 	return self;
 }
@@ -77,7 +107,45 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
 	[super encodeWithCoder:aCoder];
-	[aCoder encodeObject:_originalName forKey:SelectorName(name)];
+	[aCoder encodeObject:_name forKey:SelectorName(name)];
+}
+
+- (NSString *)name
+{
+	return _name ?: self.playlist.name ?: self.playlistName;
+}
+
+@end
+
+@implementation UDPlaylistRenameEvent
+
+- (instancetype)initWithPlaylist:(Playlist *)playlist;
+{
+	if ((self = [super initWithPlaylist:playlist])) {
+		_name = playlist.name;
+	}
+	return self;
+}
+
+- (nullable instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+	if ((self = [super initWithCoder:aDecoder])) {
+		_oldName = [aDecoder decodeObjectOfClass:NSString.class forKey:@"name"];
+		_name = [aDecoder decodeObjectOfClass:NSString.class forKey:@"currentName"];
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+	[super encodeWithCoder:aCoder];
+	[aCoder encodeObject:_oldName forKey:@"name"];
+	[aCoder encodeObject:_name forKey:@"currentName"];
+}
+
+- (NSString *)name
+{
+	return _name ?: self.playlist.name ?: self.playlistName;
 }
 
 @end

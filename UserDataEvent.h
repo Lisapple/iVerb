@@ -9,6 +9,9 @@
 @import Foundation;
 
 #import "Verb.h"
+#import "Playlist.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface UserDataEvent : NSObject <NSSecureCoding>
 
@@ -19,17 +22,28 @@
 
 @interface /* abstract */ UDPlaylistEvent : UserDataEvent
 
-@property (nonatomic, strong) NSString * playlistName;
+/// The unique object ID of the playlist.
+@property (nonatomic, strong, readonly) NSManagedObjectID * playlistID;
+
+/// A reference to the playlist in the current managed context; nil if no playlist with matching ID found.
+@property (nonatomic, strong, readonly, nullable) Playlist * playlist;
+
+@property (nonatomic, strong, nullable) NSString * playlistName DEPRECATED_MSG_ATTRIBUTE("Migration from 2.6 only. Use 'playlist.name' or 'playlistID' instead.");
+
+- (instancetype)initWithPlaylist:(Playlist *)playlist;
 
 @end
 
 @interface UDPlaylistCreateEvent : UDPlaylistEvent
 
+@property (nonatomic, strong) NSString * name;
+
 @end
 
 @interface UDPlaylistRenameEvent : UDPlaylistEvent
 
-@property (nonatomic, strong) NSString * originalName;
+@property (nonatomic, strong) NSString * oldName;
+@property (nonatomic, strong) NSString * name;
 
 @end
 
@@ -65,3 +79,5 @@
 @interface UDVerbRemoveNoteEvent : UDVerbEvent
 
 @end
+
+NS_ASSUME_NONNULL_END

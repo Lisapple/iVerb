@@ -96,6 +96,11 @@ NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
 	return [context executeFetchRequest:request error:NULL];
 }
 
++ (Playlist *)playlistWithObjectID:(NSManagedObjectID *)objectID
+{
+	return [ManagedObjectContext.sharedContext existingObjectWithID:objectID error:nil];
+}
+
 + (Playlist *)playlistWithName:(NSString *)name
 {
 	NSManagedObjectContext * context = [ManagedObjectContext sharedContext];
@@ -147,13 +152,13 @@ NSString * const kPlaylistAllVerbsName = @"_ALL_VERBS_";
 - (void)awakeFromInsert
 {
 	[super awakeFromInsert];
-	[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistDidCreateNotification object:self.name];
+	[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistDidCreateNotification object:self];
 }
 
 - (void)prepareForDeletion
 {
 	[super prepareForDeletion];
-	[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistWillDeleteNotification object:self.name];
+	[[NSNotificationCenter defaultCenter] postNotificationName:PlaylistWillDeleteNotification object:self];
 }
 
 - (void)setName:(NSString *)name

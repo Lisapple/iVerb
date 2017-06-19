@@ -158,36 +158,35 @@ NSString * const UserDataEventsKey = @"userDataEvents";
 	
 	UserDataEvent* (^createEventFromNotification)(NSNotification *) = ^UserDataEvent*(NSNotification * notification){
 		if /**/ ([notification.name isEqualToString:PlaylistDidCreateNotification]) {
-			UDPlaylistEvent * event = [[UDPlaylistCreateEvent alloc] init];
-			event.playlistName = playlist.name;
-			return event;
+			assert(playlist);
+			return [[UDPlaylistCreateEvent alloc] initWithPlaylist:playlist];
 		}
 		else if ([notification.name isEqualToString:PlaylistWillDeleteNotification]) {
-			UDPlaylistEvent * event = [[UDPlaylistDeleteEvent alloc] init];
-			event.playlistName = playlist.name;
-			return event;
+			assert(playlist);
+			return [[UDPlaylistDeleteEvent alloc] initWithPlaylist:playlist];
 		}
 		else if ([notification.name isEqualToString:PlaylistDidUpdateNameNotification]) {
-			UDPlaylistRenameEvent * event = [[UDPlaylistRenameEvent alloc] init];
-			event.playlistName = playlist.name;
-			event.originalName = notification.userInfo[@"oldName"];
-			assert(event.originalName);
+			assert(playlist);
+			UDPlaylistRenameEvent * event = [[UDPlaylistRenameEvent alloc] initWithPlaylist:playlist];
+			assert(event.name);
+			event.oldName = notification.userInfo[@"oldName"];
+			assert(event.oldName);
 			return event;
 		}
 		else if ([notification.name isEqualToString:PlaylistDidAddVerbNotification]) {
-			UDPlaylistAddVerbEvent * event = [[UDPlaylistAddVerbEvent alloc] init];
+			assert(playlist);
+			UDPlaylistAddVerbEvent * event = [[UDPlaylistAddVerbEvent alloc] initWithPlaylist:playlist];
 			Verb * const verb = notification.userInfo[@"verb"];
 			assert(verb);
 			event.infinitif = verb.infinitif;
-			event.playlistName = playlist.name;
 			return event;
 		}
 		else if ([notification.name isEqualToString:PlaylistDidRemoveVerbNotification]) {
-			UDPlaylistRemoveVerbEvent * event = [[UDPlaylistRemoveVerbEvent alloc] init];
+			assert(playlist);
+			UDPlaylistRemoveVerbEvent * event = [[UDPlaylistRemoveVerbEvent alloc] initWithPlaylist:playlist];
 			Verb * const verb = notification.userInfo[@"verb"];
 			assert(verb);
 			event.infinitif = verb.infinitif;
-			event.playlistName = playlist.name;
 			return event;
 		}
 		else if ([notification.name isEqualToString:VerbDidUpdateNoteNotification]) {
@@ -325,33 +324,29 @@ NSString * const UserDataEventsKey = @"userDataEvents";
 																	  ascending:YES] ]];
 		for (UserDataEvent * anEvent in events) {
 			if /**/ ([anEvent isKindOfClass:UDPlaylistCreateEvent.class]) {
-				UDPlaylistEvent * event = (UDPlaylistCreateEvent *)anEvent;
-				NSString * const name = event.playlistName;
-				Playlist * const playlist = [Playlist playlistWithName:name];
-				if (!playlist && name)
+				UDPlaylistCreateEvent * event = (UDPlaylistCreateEvent *)anEvent;
+				NSString * const name = event.name;
+				if (!event.playlist && name)
 					[Playlist insertPlaylistWithName:name
 							  inManagedObjectContext:_managedObjectContext];
 			}
 			else if ([anEvent isKindOfClass:UDPlaylistDeleteEvent.class]) {
 				UDPlaylistEvent * event = (UDPlaylistDeleteEvent *)anEvent;
-				Playlist * const playlist = [Playlist playlistWithName:event.playlistName];
-				if (playlist)
-					[_managedObjectContext deleteObject:playlist];
+				if (event.playlist)
+					[_managedObjectContext deleteObject:event.playlist];
 			}
 			else if ([anEvent isKindOfClass:UDPlaylistRenameEvent.class]) {
 				UDPlaylistRenameEvent * event = (UDPlaylistRenameEvent *)anEvent;
-				Playlist * const playlist = [Playlist playlistWithName:event.originalName];
-				playlist.name = event.playlistName;
+				Playlist * const playlist = [Playlist playlistWithName:event.oldName];
+				playlist.name = event.name;
 			}
 			else if ([anEvent isKindOfClass:UDPlaylistAddVerbEvent.class]) {
 				UDPlaylistAddVerbEvent * event = (UDPlaylistAddVerbEvent *)anEvent;
-				Playlist * const playlist = [Playlist playlistWithName:event.playlistName];
-				[playlist addVerb:[Verb verbWithInfinitif:event.infinitif]];
+				[event.playlist addVerb:[Verb verbWithInfinitif:event.infinitif]];
 			}
 			else if ([anEvent isKindOfClass:UDPlaylistRemoveVerbEvent.class]) {
 				UDPlaylistRemoveVerbEvent * event = (UDPlaylistRemoveVerbEvent *)anEvent;
-				Playlist * const playlist = [Playlist playlistWithName:event.playlistName];
-				[playlist removeVerb:[Verb verbWithInfinitif:event.infinitif]];
+				[event.playlist removeVerb:[Verb verbWithInfinitif:event.infinitif]];
 			}
 			else if ([anEvent isKindOfClass:UDVerbAddNoteEvent.class]) {
 				UDVerbAddNoteEvent * event = (UDVerbAddNoteEvent *)anEvent;
@@ -381,7 +376,7 @@ NSString * const UserDataEventsKey = @"userDataEvents";
 	NSArray <Verb *> * allVerbs = (NSArray *)[_managedObjectContext executeFetchRequest:request error:nil];
 	
 	// Notes
-	MDictionary(String, String) notes = [NSMutableDictionary dictionaryWithCapacity:100];
+	MDictionary(String, String) notes = [NSMutableDictionary dictionaryWithCapacity:30];
 	for (NSString * infinitif in [allVerbs valueForKey:SelectorName(infinitif)]) {
 		NSString * const key = [NSString stringWithFormat:@"note_%@", infinitif];
 		NSString * note = [_userDefaults stringForKey:key];

@@ -12,9 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Notification names
 
-extern NSString * const PlaylistDidCreateNotification; // object = playlist name
+extern NSString * const PlaylistDidCreateNotification; // object = playlist
 extern NSString * const PlaylistDidUpdateNameNotification; // object = playlist, userInfo = { "oldName" = NSString }
-extern NSString * const PlaylistWillDeleteNotification; // object = playlist name
+extern NSString * const PlaylistWillDeleteNotification; // object = playlist
 	
 extern NSString * const PlaylistDidAddVerbNotification; // object = playlist, userInfo = { "verb" = Verb }
 extern NSString * const PlaylistDidRemoveVerbNotification; // object = playlist, userInfo = { "verb" = Verb }
@@ -46,6 +46,7 @@ extern NSString * const kPlaylistAllVerbsName;
 + (NSArray <Playlist *> *)defaultPlaylists;
 + (NSArray <Playlist *> *)userPlaylists;
 
++ (nullable Playlist *)playlistWithObjectID:(NSManagedObjectID *)objectID;
 + (nullable Playlist *)playlistWithName:(NSString *)name;
 
 - (BOOL)canBeModified;
